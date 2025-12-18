@@ -1,0 +1,127 @@
+<mxfile host="65bd71144e">
+    <diagram id="sellerFeedback" name="Use case - Nhà bán hàng phản hồi khách hàng">
+        <mxGraphModel dx="1632" dy="779" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="boundary" value="Module phản hồi khách hàng" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#6c8ebf;dashed=1;fontSize=16;fontStyle=1;fillColor=#ffffff;" parent="1" vertex="1">
+                    <mxGeometry x="320" y="120" width="900" height="600" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_inbox" value="1. Xem hộp thư chat / yêu cầu" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="40" y="30" width="280" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_assign" value="1.1 Phân loại &amp; gắn thẻ" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#6c8ebf;fillColor=#ffffff;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="350" y="30" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_reply" value="2. Trả lời nhanh khách hàng" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#82b366;fillColor=#d5e8d4;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="630" y="40" width="260" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_template" value="2.1 Chèn mẫu trả lời/FAQ" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#82b366;fillColor=#ffffff;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="30" y="170" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_attachment" value="3. Gửi ảnh/video/chứng từ" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#9673a6;fillColor=#e1d5e7;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="330" y="170" width="260" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_translate" value="4. Dịch tự động / gợi ý câu trả lời" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#9673a6;fillColor=#e1d5e7;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="620" y="170" width="260" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_rating" value="5. Theo dõi đánh giá &amp; phản hồi" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#d6b656;fillColor=#fff2cc;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="30" y="290" width="260" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_review_reply" value="5.1 Phản hồi đánh giá tiêu cực" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#d6b656;fillColor=#ffffff;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="630" y="290" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_escalate" value="7. Chuyển yêu cầu sang CSKH" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#b85450;fillColor=#f8cecc;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="540" y="390" width="260" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_dispute" value="8. Xử lý tranh chấp/complaint" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#b85450;fillColor=#f8cecc;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="20" y="490" width="260" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_sla" value="9. Theo dõi SLA phản hồi" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#82b366;fillColor=#d5e8d4;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="290" y="490" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_report" value="10. Báo cáo hiệu suất CSKH" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#666666;fillColor=#f5f5f5;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="580" y="490" width="260" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_flow_inbox_assign" style="endArrow=classic;html=1;dashed=1;strokeColor=#6c8ebf;" parent="boundary" source="uc_inbox" target="uc_assign" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_flow_assign_reply" style="endArrow=classic;html=1;dashed=1;strokeColor=#82b366;" parent="boundary" source="uc_assign" target="uc_reply" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_flow_reply_template" style="endArrow=classic;html=1;dashed=1;strokeColor=#82b366;" parent="boundary" source="uc_reply" target="uc_template" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_flow_reply_attachment" style="endArrow=classic;html=1;dashed=1;strokeColor=#9673a6;" parent="boundary" source="uc_reply" target="uc_attachment" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_flow_rating_review" style="endArrow=classic;html=1;dashed=1;strokeColor=#d6b656;" parent="boundary" source="uc_rating" target="uc_review_reply" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_flow_sla_report" style="endArrow=classic;html=1;dashed=1;strokeColor=#666666;" parent="boundary" source="uc_sla" target="uc_report" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_compensation" value="6. Tạo ưu đãi/ hoàn tiền bù" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#b85450;fillColor=#f8cecc;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="110" y="390" width="260" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_flow_dispute_compensation" style="endArrow=classic;html=1;dashed=1;strokeColor=#b85450;" parent="boundary" source="uc_dispute" target="uc_compensation" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_customer_dispute" style="endArrow=classic;html=1;strokeColor=#b85450;" parent="boundary" source="uc_compensation" target="uc_dispute" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="actor_seller" value="Nhà bán hàng" style="shape=actor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fontSize=14;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="320" width="60" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="actor_customer" value="Khách hàng" style="shape=actor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fontSize=14;" parent="1" vertex="1">
+                    <mxGeometry x="1320" y="280" width="60" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="actor_cskh" value="CSKH Harvest Hub" style="shape=actor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fontSize=14;" parent="1" vertex="1">
+                    <mxGeometry x="1320" y="440" width="60" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_seller_inbox" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="1" source="actor_seller" target="uc_inbox" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_seller_reply" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="1" source="actor_seller" target="uc_reply" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_seller_attach" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="1" source="actor_seller" target="uc_attachment" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_seller_rating" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="1" source="actor_seller" target="uc_rating" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_seller_compensation" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="1" source="actor_seller" target="uc_compensation" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_seller_dispute" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="1" source="actor_seller" target="uc_dispute" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_seller_report" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="1" source="actor_seller" target="uc_report" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_customer_reply" style="endArrow=classic;html=1;strokeColor=#82b366;" parent="1" source="actor_customer" target="uc_reply" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_customer_review" style="endArrow=classic;html=1;strokeColor=#d6b656;" parent="1" source="actor_customer" target="uc_review_reply" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_cskh_escalate" style="endArrow=classic;html=1;strokeColor=#b85450;" parent="1" source="actor_cskh" target="uc_escalate" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_cskh_dispute" style="endArrow=classic;html=1;strokeColor=#b85450;" parent="1" source="actor_cskh" target="uc_dispute" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_cskh_report" style="endArrow=classic;html=1;strokeColor=#666666;" parent="1" source="actor_cskh" target="uc_report" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="2" value="" style="endArrow=classic;html=1;strokeColor=#b85450;" edge="1" parent="1" source="actor_customer" target="uc_compensation">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1320" y="351" as="sourcePoint"/>
+                        <mxPoint x="581" y="615" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

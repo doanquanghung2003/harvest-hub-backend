@@ -1,0 +1,149 @@
+<mxfile host="app.diagrams.net" modified="2025-11-21T18:50:00.000Z" agent="cascade" version="24.7.8" editor="desktop">
+  <diagram id="erdHarvestHub" name="Sơ đồ quan hệ CSDL Harvest Hub">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1500" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="canvas" value="Sơ đồ quan hệ CSDL Harvest Hub" style="swimlane;rounded=1;horizontal=0;whiteSpace=wrap;html=1;fontSize=16;strokeColor=#000000;fillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="1420" height="840" as="geometry" />
+        </mxCell>
+        <!-- Entities -->
+        <mxCell id="entity_user" value="&lt;b&gt;Người dùng&lt;/b&gt;&#xa;- id (PK)&#xa;- username&#xa;- email&#xa;- role&#xa;----------------&#xa;+dangKy()&#xa;+capNhatTK()" style="shape=rectangle;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#ffffff;fontSize=13;" vertex="1" parent="canvas">
+          <mxGeometry x="60" y="40" width="220" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="entity_seller" value="&lt;b&gt;Nhà bán hàng&lt;/b&gt;&#xa;- id (PK)&#xa;- userId (FK)&#xa;- businessName&#xa;- status&#xa;----------------&#xa;+dangKySeller()&#xa;+duyetSeller()" style="shape=rectangle;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#ffffff;fontSize=13;" vertex="1" parent="canvas">
+          <mxGeometry x="320" y="40" width="220" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="entity_shop" value="&lt;b&gt;Gian hàng&lt;/b&gt;&#xa;- shopId&#xa;- ownerId (FK)&#xa;- contactInfo&#xa;- status&#xa;----------------&#xa;+taoShop()&#xa;+capNhatShop()" style="shape=rectangle;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#ffffff;fontSize=13;" vertex="1" parent="canvas">
+          <mxGeometry x="580" y="40" width="210" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="entity_finance" value="&lt;b&gt;Tài chính Seller&lt;/b&gt;&#xa;- id&#xa;- sellerId (FK)&#xa;- bankAccount&#xa;- availableBalance&#xa;----------------&#xa;+capNhatDoanhThu()&#xa;+rutTien()" style="shape=rectangle;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#ffffff;fontSize=13;" vertex="1" parent="canvas">
+          <mxGeometry x="840" y="40" width="220" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="entity_category" value="&lt;b&gt;Danh mục&lt;/b&gt;&#xa;- id (PK)&#xa;- name&#xa;- parentId (FK)&#xa;- slug&#xa;----------------&#xa;+themDanhMuc()&#xa;+suaDanhMuc()" style="shape=rectangle;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#ffffff;fontSize=13;" vertex="1" parent="canvas">
+          <mxGeometry x="1100" y="60" width="220" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="entity_cart" value="&lt;b&gt;Giỏ hàng&lt;/b&gt;&#xa;- cartId (PK)&#xa;- userId (FK)&#xa;- totalPrice&#xa;- updatedAt&#xa;----------------&#xa;+themItem()&#xa;+capNhatSL()&#xa;+xoaItem()" style="shape=rectangle;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#ffffff;fontSize=13;" vertex="1" parent="canvas">
+          <mxGeometry x="60" y="260" width="220" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="entity_cart_item" value="&lt;b&gt;Mục giỏ hàng&lt;/b&gt;&#xa;- cartItemId&#xa;- cartId (FK)&#xa;- productId (FK)&#xa;- quantity&#xa;----------------&#xa;+themSP()&#xa;+capNhatGia()" style="shape=rectangle;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#ffffff;fontSize=13;" vertex="1" parent="canvas">
+          <mxGeometry x="60" y="480" width="220" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="entity_product" value="&lt;b&gt;Sản phẩm&lt;/b&gt;&#xa;- id (PK)&#xa;- sellerId (FK)&#xa;- categoryId (FK)&#xa;- price&#xa;- status&#xa;----------------&#xa;+taoSP()&#xa;+duyetSP()&#xa;+voHieuHoa()" style="shape=rectangle;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#ffffff;fontSize=13;" vertex="1" parent="canvas">
+          <mxGeometry x="320" y="250" width="240" height="210" as="geometry" />
+        </mxCell>
+        <mxCell id="entity_inventory" value="&lt;b&gt;Tồn kho&lt;/b&gt;&#xa;- inventoryId&#xa;- productId (FK)&#xa;- currentStock&#xa;- reservedStock&#xa;- status&#xa;----------------&#xa;+nhapKho()&#xa;+capNhatTon()" style="shape=rectangle;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#ffffff;fontSize=13;" vertex="1" parent="canvas">
+          <mxGeometry x="600" y="260" width="220" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="entity_order" value="&lt;b&gt;Đơn hàng&lt;/b&gt;&#xa;- orderId (PK)&#xa;- userId (FK)&#xa;- totalPrice&#xa;- paymentStatus&#xa;- shippingAddress&#xa;----------------&#xa;+taoDon()&#xa;+capNhatTrangThai()&#xa;+huyDon()" style="shape=rectangle;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#ffffff;fontSize=13;" vertex="1" parent="canvas">
+          <mxGeometry x="880" y="260" width="240" height="210" as="geometry" />
+        </mxCell>
+        <mxCell id="entity_order_item" value="&lt;b&gt;Chi tiết đơn&lt;/b&gt;&#xa;- orderItemId&#xa;- orderId (FK)&#xa;- productId (FK)&#xa;- quantity&#xa;- unitPrice&#xa;----------------&#xa;+ghiNhanSP()" style="shape=rectangle;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#ffffff;fontSize=13;" vertex="1" parent="canvas">
+          <mxGeometry x="1180" y="280" width="220" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="entity_review" value="&lt;b&gt;Đánh giá&lt;/b&gt;&#xa;- reviewId (PK)&#xa;- productId (FK)&#xa;- orderId (FK)&#xa;- userId (FK)&#xa;- rating&#xa;----------------&#xa;+themReview()&#xa;+duyetReview()" style="shape=rectangle;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#ffffff;fontSize=13;" vertex="1" parent="canvas">
+          <mxGeometry x="900" y="520" width="240" height="200" as="geometry" />
+        </mxCell>
+        <!-- Relationships -->
+        <mxCell id="rel_user_seller" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;" edge="1" parent="canvas" source="entity_user" target="entity_seller">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label_user_seller" value="1 - 0..n" style="text;html=1;fontSize=11;" vertex="1" connectable="0" parent="rel_user_seller">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_seller_shop" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;" edge="1" parent="canvas" source="entity_seller" target="entity_shop">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label_seller_shop" value="1 - 0..1" style="text;html=1;fontSize=11;" vertex="1" connectable="0" parent="rel_seller_shop">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_seller_finance" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;" edge="1" parent="canvas" source="entity_seller" target="entity_finance">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label_seller_finance" value="1 - 1" style="text;html=1;fontSize=11;" vertex="1" connectable="0" parent="rel_seller_finance">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_user_cart" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;" edge="1" parent="canvas" source="entity_user" target="entity_cart">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label_user_cart" value="1 - 0..1" style="text;html=1;fontSize=11;" vertex="1" connectable="0" parent="rel_user_cart">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_cart_cartItem" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;" edge="1" parent="canvas" source="entity_cart" target="entity_cart_item">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label_cart_cartItem" value="1 - 0..n" style="text;html=1;fontSize=11;" vertex="1" connectable="0" parent="rel_cart_cartItem">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_cartItem_product" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;" edge="1" parent="canvas" source="entity_cart_item" target="entity_product">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label_cartItem_product" value="0..n - 1" style="text;html=1;fontSize=11;" vertex="1" connectable="0" parent="rel_cartItem_product">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_seller_product" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;" edge="1" parent="canvas" source="entity_seller" target="entity_product">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label_seller_product" value="1 - 0..n" style="text;html=1;fontSize=11;" vertex="1" connectable="0" parent="rel_seller_product">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_category_product" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;" edge="1" parent="canvas" source="entity_category" target="entity_product">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label_category_product" value="1 - 0..n" style="text;html=1;fontSize=11;" vertex="1" connectable="0" parent="rel_category_product">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_product_inventory" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;" edge="1" parent="canvas" source="entity_product" target="entity_inventory">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label_product_inventory" value="1 - 1" style="text;html=1;fontSize=11;" vertex="1" connectable="0" parent="rel_product_inventory">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_user_order" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;" edge="1" parent="canvas" source="entity_user" target="entity_order">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label_user_order" value="1 - 0..n" style="text;html=1;fontSize=11;" vertex="1" connectable="0" parent="rel_user_order">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_order_orderItem" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;" edge="1" parent="canvas" source="entity_order" target="entity_order_item">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label_order_orderItem" value="1 - 1..n" style="text;html=1;fontSize=11;" vertex="1" connectable="0" parent="rel_order_orderItem">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_orderItem_product" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;" edge="1" parent="canvas" source="entity_order_item" target="entity_product">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label_orderItem_product" value="0..n - 1" style="text;html=1;fontSize=11;" vertex="1" connectable="0" parent="rel_orderItem_product">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_order_review" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;" edge="1" parent="canvas" source="entity_order" target="entity_review">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label_order_review" value="1 - 0..n" style="text;html=1;fontSize=11;" vertex="1" connectable="0" parent="rel_order_review">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_product_review" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;" edge="1" parent="canvas" source="entity_product" target="entity_review">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label_product_review" value="1 - 0..n" style="text;html=1;fontSize=11;" vertex="1" connectable="0" parent="rel_product_review">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_user_review" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;" edge="1" parent="canvas" source="entity_user" target="entity_review">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label_user_review" value="1 - 0..n" style="text;html=1;fontSize=11;" vertex="1" connectable="0" parent="rel_user_review">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_category_parent" style="edgeStyle=orthogonalEdgeStyle;dashed=1;html=1;strokeColor=#000000;" edge="1" parent="canvas" source="entity_category" target="entity_category">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1220" y="60" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label_category_parent" value="1 - 0..n (cấp con)" style="text;html=1;fontSize=11;" vertex="1" connectable="0" parent="rel_category_parent">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

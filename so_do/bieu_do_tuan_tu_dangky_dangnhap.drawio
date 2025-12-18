@@ -1,0 +1,227 @@
+<mxfile host="65bd71144e">
+    <diagram id="seqRegisterLogin" name="Tuần tự - Đăng ký &amp; Đăng nhập">
+        <mxGraphModel dx="2374" dy="1558" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="canvas" value="Biểu đồ tuần tự Đăng ký/Đăng nhập" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fontSize=16;strokeColor=#6c8ebf;fillColor=#ffffff;rounded=1;" parent="1" vertex="1">
+                    <mxGeometry y="40" width="1930" height="480" as="geometry"/>
+                </mxCell>
+                <mxCell id="actor_user" value="Người dùng" style="shape=rect;rounded=1;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#dae8fc;fontSize=14;" parent="canvas" vertex="1">
+                    <mxGeometry x="110" y="230" width="150" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="actor_app" value="Ứng dụng/Web" style="shape=rect;rounded=1;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#e1d5e7;fontSize=14;" parent="canvas" vertex="1">
+                    <mxGeometry x="480" y="230" width="170" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="actor_auth" value="Auth Service" style="shape=rect;rounded=1;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#d5e8d4;fontSize=14;" parent="canvas" vertex="1">
+                    <mxGeometry x="1280" y="230" width="200" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="actor_email" value="Dịch vụ OTP/Email" style="shape=rect;rounded=1;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#fff2cc;fontSize=14;" parent="canvas" vertex="1">
+                    <mxGeometry x="870" y="230" width="220" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="actor_db" value="Database" style="shape=rect;rounded=1;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#f8cecc;fontSize=14;" parent="canvas" vertex="1">
+                    <mxGeometry x="1710" y="230" width="200" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="lifeline_user" style="shape=line;strokeColor=#666666;dashed=1;" parent="canvas" vertex="1">
+                    <mxGeometry x="95" y="90" height="700" as="geometry"/>
+                </mxCell>
+                <mxCell id="lifeline_app" style="shape=line;strokeColor=#666666;dashed=1;" parent="canvas" vertex="1">
+                    <mxGeometry x="305" y="90" height="700" as="geometry"/>
+                </mxCell>
+                <mxCell id="lifeline_auth" style="shape=line;strokeColor=#666666;dashed=1;" parent="canvas" vertex="1">
+                    <mxGeometry x="540" y="90" height="700" as="geometry"/>
+                </mxCell>
+                <mxCell id="lifeline_email" style="shape=line;strokeColor=#666666;dashed=1;" parent="canvas" vertex="1">
+                    <mxGeometry x="820" y="90" height="700" as="geometry"/>
+                </mxCell>
+                <mxCell id="lifeline_db" style="shape=line;strokeColor=#666666;dashed=1;" parent="canvas" vertex="1">
+                    <mxGeometry x="1280" y="90" height="700" as="geometry"/>
+                </mxCell>
+                <mxCell id="msg_auth_db_check" value="Kiểm tra email trùng" style="endArrow=classic;html=1;strokeColor=#b85450;" parent="canvas" target="actor_db" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint y="190" as="targetPoint"/>
+                        <mxPoint x="1480" y="255" as="sourcePoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="msg_auth_email_send" value="Gửi OTP/xác thực" style="endArrow=classic;html=1;strokeColor=#d79b00;" parent="canvas" source="actor_auth" target="actor_email" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint y="240" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="2" value="Xác minh thông tin" style="endArrow=classic;html=1;strokeColor=#b85450;exitX=0.801;exitY=1.008;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.397;entryY=1.009;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="canvas" target="actor_db">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1791.6000000000004" y="281.85" as="targetPoint"/>
+                        <mxPoint x="1440.2000000000003" y="280" as="sourcePoint"/>
+                        <Array as="points">
+                            <mxPoint x="1440" y="310"/>
+                            <mxPoint x="1510" y="310"/>
+                            <mxPoint x="1790" y="310"/>
+                            <mxPoint x="1790" y="300"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="3" value="Lưu tài khoản" style="endArrow=classic;html=1;strokeColor=#82b366;entryX=0.197;entryY=1.003;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="canvas">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1749.6000000000001" y="280" as="targetPoint"/>
+                        <mxPoint x="1460" y="284.05" as="sourcePoint"/>
+                        <Array as="points">
+                            <mxPoint x="1460" y="294.05"/>
+                            <mxPoint x="1710" y="294.05"/>
+                            <mxPoint x="1750" y="294.05"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="5" value="Tồn tại?" style="endArrow=classic;html=1;strokeColor=#666666;dashed=1;entryX=0.8;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.2;exitY=0.04;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="canvas" source="actor_db" target="actor_auth">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1440" y="210" as="targetPoint"/>
+                        <mxPoint x="1750" y="210" as="sourcePoint"/>
+                        <Array as="points">
+                            <mxPoint x="1750" y="200"/>
+                            <mxPoint x="1440" y="200"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="6" value="Hợp lệ?" style="endArrow=classic;html=1;strokeColor=#666666;dashed=1;entryX=0.8;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="canvas">
+                    <mxGeometry x="0.5111" y="10" relative="1" as="geometry">
+                        <mxPoint x="1710" y="240" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="1640" y="240"/>
+                            <mxPoint x="1480" y="240"/>
+                        </Array>
+                        <mxPoint x="1700" y="240" as="sourcePoint"/>
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="7" value="Hiển thị lỗi cho người dùng" style="endArrow=classic;html=1;strokeColor=#ff0000;dashed=1;entryX=0.668;entryY=1.053;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="canvas" target="actor_user">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="240" y="389.5" as="targetPoint"/>
+                        <mxPoint x="1390" y="283" as="sourcePoint"/>
+                        <Array as="points">
+                            <mxPoint x="1390" y="360"/>
+                            <mxPoint x="210" y="360"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="8" value="Đăng nhập thành công" style="endArrow=classic;html=1;strokeColor=#82b366;" edge="1" parent="canvas">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="260" y="240" as="targetPoint"/>
+                        <mxPoint x="480" y="240" as="sourcePoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="9" value="Nhập email/mật khẩu" style="endArrow=classic;html=1;strokeColor=#6c8ebf;exitX=0.798;exitY=1.071;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.178;entryY=1.014;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="canvas" source="actor_user" target="actor_app">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="450" y="300" as="targetPoint"/>
+                        <mxPoint x="230" y="300" as="sourcePoint"/>
+                        <Array as="points">
+                            <mxPoint x="230" y="300"/>
+                            <mxPoint x="370" y="300"/>
+                            <mxPoint x="510" y="300"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="10" value="Thông báo thành công" style="endArrow=classic;html=1;strokeColor=#82b366;entryX=0.533;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.15;exitY=0;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="canvas" source="actor_auth" target="actor_user">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="190" y="160" as="targetPoint"/>
+                        <mxPoint x="1310" y="160" as="sourcePoint"/>
+                        <Array as="points">
+                            <mxPoint x="1310" y="160"/>
+                            <mxPoint x="190" y="160"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="11" value="Nhập OTP" style="endArrow=classic;html=1;strokeColor=#6c8ebf;exitX=0.802;exitY=-0.016;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.176;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="canvas" source="actor_user" target="actor_app">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="450" y="200" as="targetPoint"/>
+                        <mxPoint x="230" y="200" as="sourcePoint"/>
+                        <Array as="points">
+                            <mxPoint x="230" y="200"/>
+                            <mxPoint x="510" y="200"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="12" value="Nhập thông tin đăng ký" style="endArrow=classic;html=1;strokeColor=#6c8ebf;exitX=0.797;exitY=1.046;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="canvas" source="actor_user">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="510" y="280" as="targetPoint"/>
+                        <mxPoint x="230" y="330" as="sourcePoint"/>
+                        <Array as="points">
+                            <mxPoint x="230" y="330"/>
+                            <mxPoint x="510" y="330"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="13" value="OTP/link xác nhận" style="endArrow=classic;html=1;strokeColor=#d79b00;exitX=0.177;exitY=-0.04;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.665;entryY=-0.02;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="canvas" source="actor_email" target="actor_user">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="210" y="180" as="targetPoint"/>
+                        <mxPoint x="820" y="180" as="sourcePoint"/>
+                        <Array as="points">
+                            <mxPoint x="909" y="180"/>
+                            <mxPoint x="210" y="180"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="15" value="Thông báo lỗi (sai OTP/mật khẩu)" style="endArrow=classic;html=1;strokeColor=#ff0000;dashed=1;entryX=0.403;entryY=1.053;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.35;exitY=1;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="canvas" source="actor_auth" target="actor_app">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="550" y="320" as="targetPoint"/>
+                        <mxPoint x="1180" y="320" as="sourcePoint"/>
+                        <Array as="points">
+                            <mxPoint x="1350" y="320"/>
+                            <mxPoint x="549" y="320"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="16" value="Gửi token/phiên" style="endArrow=classic;html=1;strokeColor=#82b366;entryX=0.871;entryY=-0.04;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.055;exitY=-0.06;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="canvas" source="actor_auth" target="actor_app">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="630" y="200" as="targetPoint"/>
+                        <mxPoint x="1260" y="200" as="sourcePoint"/>
+                        <Array as="points">
+                            <mxPoint x="1291" y="200"/>
+                            <mxPoint x="628" y="200"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="18" value="Trả kết quả đăng ký" style="endArrow=classic;html=1;strokeColor=#82b366;entryX=0.5;entryY=1;entryDx=0;entryDy=0;exitX=0.417;exitY=1.053;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="canvas" source="actor_auth" target="actor_app">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="580" y="340" as="targetPoint"/>
+                        <mxPoint x="1210" y="340" as="sourcePoint"/>
+                        <Array as="points">
+                            <mxPoint x="1363" y="340"/>
+                            <mxPoint x="565" y="340"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="20" value="Gửi yêu cầu đăng ký" style="endArrow=classic;html=1;strokeColor=#6c8ebf;entryX=0.25;entryY=0;entryDx=0;entryDy=0;exitX=0.79;exitY=-0.063;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="canvas" source="actor_app" target="actor_auth">
+                    <mxGeometry x="0.4198" relative="1" as="geometry">
+                        <mxPoint x="1380" y="180" as="targetPoint"/>
+                        <mxPoint x="750" y="180" as="sourcePoint"/>
+                        <Array as="points">
+                            <mxPoint x="614" y="190"/>
+                            <mxPoint x="1330" y="190"/>
+                        </Array>
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="19" value="Xác thực OTP" style="endArrow=classic;html=1;strokeColor=#6c8ebf;exitX=0.712;exitY=1.037;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.25;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="canvas" source="actor_app" target="actor_auth">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1230" y="300" as="targetPoint"/>
+                        <mxPoint x="600" y="300" as="sourcePoint"/>
+                        <Array as="points">
+                            <mxPoint x="600" y="300"/>
+                            <mxPoint x="1330" y="300"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="17" value="Yêu cầu đăng nhập" style="endArrow=classic;html=1;strokeColor=#6c8ebf;exitX=1;exitY=0;exitDx=0;exitDy=0;entryX=0.02;entryY=0.085;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="canvas" source="actor_app" target="actor_auth">
+                    <mxGeometry x="0.5883" relative="1" as="geometry">
+                        <mxPoint x="1280" y="220" as="targetPoint"/>
+                        <mxPoint x="650" y="220" as="sourcePoint"/>
+                        <Array as="points">
+                            <mxPoint x="650" y="220"/>
+                            <mxPoint x="1280" y="220"/>
+                        </Array>
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

@@ -1,0 +1,142 @@
+<mxfile host="app.diagrams.net" modified="2025-11-21T04:10:00.000Z" agent="cascade" version="24.7.8" editor="desktop">
+  <diagram id="adminReviewSellerV2" name="Use case - Quản trị duyệt hồ sơ bán hàng">
+    <mxGraphModel dx="1428" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="boundary" value="Module duyệt hồ sơ nhà bán hàng" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#6c8ebf;dashed=1;fontSize=16;fontStyle=1;fillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="360" y="120" width="960" height="640" as="geometry" />
+        </mxCell>
+        <mxCell id="actor_admin" value="Quản trị viên" style="shape=actor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="140" y="360" width="60" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="actor_seller" value="Nhà bán hàng" style="shape=actor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="1340" y="260" width="60" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="actor_alert" value="Hệ thống cảnh báo" style="shape=actor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="1340" y="460" width="60" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_queue" value="1. Xem danh sách hồ sơ chờ" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="100" y="60" width="260" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_filter" value="1.1 Lọc theo ngành/KPI" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#6c8ebf;fillColor=#ffffff;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="380" y="60" width="240" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_detail" value="2. Xem chi tiết hồ sơ" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#82b366;fillColor=#d5e8d4;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="660" y="60" width="240" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_docs" value="2.1 Kiểm tra giấy tờ / đính kèm" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#82b366;fillColor=#ffffff;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="920" y="60" width="260" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_assign" value="3. Ghi chú &amp; phân công reviewer" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#9673a6;fillColor=#e1d5e7;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="100" y="150" width="300" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_request" value="4. Yêu cầu bổ sung thông tin" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#d79b00;fillColor=#ffe6cc;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="440" y="150" width="260" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_verification" value="5. Xác minh thực địa/KYC" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#d6b656;fillColor=#fff2cc;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="720" y="150" width="240" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_decision" value="6. Phê duyệt hồ sơ" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#82b366;fillColor=#d5e8d4;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="980" y="150" width="220" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_reject" value="7. Từ chối &amp; ghi lý do" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#b85450;fillColor=#f8cecc;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="120" y="240" width="240" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_notify" value="8. Gửi thông báo kết quả" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="380" y="240" width="240" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_history" value="9. Lưu vết &amp; nhật ký audit" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#666666;fillColor=#f5f5f5;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="640" y="240" width="260" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_stats" value="10. Thống kê tỷ lệ duyệt" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#9673a6;fillColor=#e1d5e7;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="920" y="240" width="240" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_export" value="11. Xuất báo cáo &amp; chia sẻ" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#666666;fillColor=#ffffff;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="120" y="330" width="240" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_admin_queue" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" edge="1" parent="1" source="actor_admin" target="uc_queue">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_admin_detail" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" edge="1" parent="1" source="actor_admin" target="uc_detail">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_admin_assign" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" edge="1" parent="1" source="actor_admin" target="uc_assign">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_admin_request" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" edge="1" parent="1" source="actor_admin" target="uc_request">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_admin_verification" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" edge="1" parent="1" source="actor_admin" target="uc_verification">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_admin_decision" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" edge="1" parent="1" source="actor_admin" target="uc_decision">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_admin_reject" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" edge="1" parent="1" source="actor_admin" target="uc_reject">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_admin_notify" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" edge="1" parent="1" source="actor_admin" target="uc_notify">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_admin_history" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" edge="1" parent="1" source="actor_admin" target="uc_history">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_admin_stats" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" edge="1" parent="1" source="actor_admin" target="uc_stats">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_admin_export" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" edge="1" parent="1" source="actor_admin" target="uc_export">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_seller_request" style="endArrow=classic;html=1;strokeColor=#82b366;" edge="1" parent="1" source="actor_seller" target="uc_request">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_seller_notify" style="endArrow=classic;html=1;strokeColor=#82b366;" edge="1" parent="1" source="actor_seller" target="uc_notify">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_alert_queue" style="endArrow=classic;html=1;strokeColor=#b85450;" edge="1" parent="1" source="actor_alert" target="uc_queue">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_alert_stats" style="endArrow=classic;html=1;strokeColor=#d79b00;" edge="1" parent="1" source="actor_alert" target="uc_stats">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow_queue_filter" style="endArrow=classic;html=1;dashed=1;strokeColor=#6c8ebf;" edge="1" parent="boundary" source="uc_queue" target="uc_filter">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow_filter_detail" style="endArrow=classic;html=1;dashed=1;strokeColor=#82b366;" edge="1" parent="boundary" source="uc_filter" target="uc_detail">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow_detail_docs" style="endArrow=classic;html=1;dashed=1;strokeColor=#82b366;" edge="1" parent="boundary" source="uc_detail" target="uc_docs">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow_detail_assign" style="endArrow=classic;html=1;dashed=1;strokeColor=#9673a6;" edge="1" parent="boundary" source="uc_detail" target="uc_assign">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow_assign_request" style="endArrow=classic;html=1;dashed=1;strokeColor=#d79b00;" edge="1" parent="boundary" source="uc_assign" target="uc_request">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow_detail_decision" style="endArrow=classic;html=1;dashed=1;strokeColor=#82b366;" edge="1" parent="boundary" source="uc_detail" target="uc_decision">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow_detail_reject" style="endArrow=classic;html=1;dashed=1;strokeColor=#b85450;" edge="1" parent="boundary" source="uc_detail" target="uc_reject">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow_decision_notify" style="endArrow=classic;html=1;dashed=1;strokeColor=#6c8ebf;" edge="1" parent="boundary" source="uc_decision" target="uc_notify">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow_reject_notify" style="endArrow=classic;html=1;dashed=1;strokeColor=#6c8ebf;" edge="1" parent="boundary" source="uc_reject" target="uc_notify">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow_notify_history" style="endArrow=classic;html=1;dashed=1;strokeColor=#666666;" edge="1" parent="boundary" source="uc_notify" target="uc_history">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow_history_stats" style="endArrow=classic;html=1;dashed=1;strokeColor=#9673a6;" edge="1" parent="boundary" source="uc_history" target="uc_stats">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow_stats_export" style="endArrow=classic;html=1;dashed=1;strokeColor=#666666;" edge="1" parent="boundary" source="uc_stats" target="uc_export">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

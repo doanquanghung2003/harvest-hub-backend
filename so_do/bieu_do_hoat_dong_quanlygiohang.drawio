@@ -1,0 +1,139 @@
+<mxfile host="65bd71144e">
+    <diagram id="activityCart" name="Hoạt động - Quản lý giỏ hàng Harvest Hub">
+        <mxGraphModel dx="1525" dy="1215" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="boundary" value="Luồng quản lý giỏ hàng" style="swimlane;horizontal=0;rounded=1;whiteSpace=wrap;html=1;fontSize=16;strokeColor=#9673a6;fillColor=#ffffff;" parent="1" vertex="1">
+                    <mxGeometry x="200" y="60" width="1400" height="840" as="geometry"/>
+                </mxCell>
+                <mxCell id="swim_customer" value="Khách hàng" style="swimlane;horizontal=0;startSize=40;childLayout=stackLayout;strokeColor=#6c8ebf;fillColor=#f5f5f5;fontSize=14;" parent="boundary" vertex="1">
+                    <mxGeometry x="100" y="90" width="330" height="700" as="geometry"/>
+                </mxCell>
+                <mxCell id="cust_start" value="Bắt đầu" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="swim_customer" vertex="1">
+                    <mxGeometry x="110" y="20" width="120" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="cust_browse" value="Duyệt sản phẩm / tìm kiếm" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;" parent="swim_customer" vertex="1">
+                    <mxGeometry x="50" y="80" width="230" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="cust_select" value="Chọn biến thể, số lượng" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#82b366;fillColor=#d5e8d4;" parent="swim_customer" vertex="1">
+                    <mxGeometry x="50" y="160" width="230" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="cust_add" value="Thêm vào giỏ" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#9673a6;fillColor=#e1d5e7;" parent="swim_customer" vertex="1">
+                    <mxGeometry x="80" y="240" width="170" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="cust_viewCart" value="Xem giỏ hàng" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#d79b00;fillColor=#ffe6cc;" parent="swim_customer" vertex="1">
+                    <mxGeometry x="80" y="320" width="170" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="cust_updateQty" value="Tăng/giảm số lượng" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#82b366;fillColor=#ffffff;" parent="swim_customer" vertex="1">
+                    <mxGeometry x="60" y="400" width="210" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="cust_remove" value="Xóa sản phẩm" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#b85450;fillColor=#f8cecc;" parent="swim_customer" vertex="1">
+                    <mxGeometry x="80" y="480" width="170" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="cust_applyVoucher" value="Áp mã giảm giá" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#9673a6;fillColor=#e1d5e7;" parent="swim_customer" vertex="1">
+                    <mxGeometry x="70" y="560" width="190" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="cust_checkout" value="Chuyển sang thanh toán" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;" parent="swim_customer" vertex="1">
+                    <mxGeometry x="60" y="640" width="210" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_custStart_browse" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="swim_customer" source="cust_start" target="cust_browse" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_browse_select" style="endArrow=classic;html=1;strokeColor=#82b366;" parent="swim_customer" source="cust_browse" target="cust_select" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_select_add" style="endArrow=classic;html=1;strokeColor=#9673a6;" parent="swim_customer" source="cust_select" target="cust_add" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_add_view" style="endArrow=classic;html=1;strokeColor=#d79b00;" parent="swim_customer" source="cust_add" target="cust_viewCart" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_view_update" style="endArrow=classic;html=1;strokeColor=#82b366;" parent="swim_customer" source="cust_viewCart" target="cust_updateQty" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_update_remove" style="endArrow=classic;html=1;strokeColor=#b85450;" parent="swim_customer" source="cust_updateQty" target="cust_remove" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_remove_view" value="Giỏ trống?" style="endArrow=classic;html=1;strokeColor=#666666;dashed=1;" parent="swim_customer" source="cust_remove" target="cust_viewCart" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_view_voucher" style="endArrow=classic;html=1;strokeColor=#9673a6;" parent="swim_customer" source="cust_viewCart" target="cust_applyVoucher" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_voucher_checkout" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="swim_customer" source="cust_applyVoucher" target="cust_checkout" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="swim_system" value="Hệ thống Harvest Hub" style="swimlane;horizontal=0;startSize=40;childLayout=stackLayout;strokeColor=#82b366;fillColor=#ffffff;fontSize=14;" parent="boundary" vertex="1">
+                    <mxGeometry x="520" y="90" width="380" height="700" as="geometry"/>
+                </mxCell>
+                <mxCell id="sys_validate" value="Kiểm tra tồn kho &amp; trạng thái" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#82b366;fillColor=#d5e8d4;" parent="swim_system" vertex="1">
+                    <mxGeometry x="60" y="80" width="250" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="sys_reserve" value="Giữ chỗ số lượng (lock)" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;" parent="swim_system" vertex="1">
+                    <mxGeometry x="60" y="160" width="250" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="sys_calcPrice" value="Tính tổng tiền, phí ship" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#d79b00;fillColor=#ffe6cc;" parent="swim_system" vertex="1">
+                    <mxGeometry x="60" y="240" width="250" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="sys_applyPromo" value="Xác minh mã giảm giá/coin" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#9673a6;fillColor=#e1d5e7;" parent="swim_system" vertex="1">
+                    <mxGeometry x="60" y="320" width="250" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="sys_sync" value="Đồng bộ giỏ nhiều thiết bị" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#6c8ebf;fillColor=#ffffff;" parent="swim_system" vertex="1">
+                    <mxGeometry x="60" y="400" width="250" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="sys_recommend" value="Gợi ý sản phẩm tương tự" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#82b366;fillColor=#d5e8d4;" parent="swim_system" vertex="1">
+                    <mxGeometry x="60" y="480" width="250" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="sys_cleanup" value="Tự động làm sạch item hết hạn" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#666666;fillColor=#f5f5f5;" parent="swim_system" vertex="1">
+                    <mxGeometry x="60" y="560" width="250" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="sys_pushCheckout" value="Chuẩn bị dữ liệu cho checkout" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;" parent="swim_system" vertex="1">
+                    <mxGeometry x="60" y="640" width="250" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="swim_support" value="Nhà bán hàng / CSKH" style="swimlane;horizontal=0;startSize=40;childLayout=stackLayout;strokeColor=#d6b656;fillColor=#fffbe6;fontSize=14;" parent="boundary" vertex="1">
+                    <mxGeometry x="960" y="90" width="340" height="700" as="geometry"/>
+                </mxCell>
+                <mxCell id="support_monitor" value="Theo dõi cảnh báo tồn kho" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#d6b656;fillColor=#fff2cc;" parent="swim_support" vertex="1">
+                    <mxGeometry x="40" y="100" width="260" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="support_adjust" value="Điều chỉnh giá/khuyến mãi" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#d79b00;fillColor=#ffe6cc;" parent="swim_support" vertex="1">
+                    <mxGeometry x="40" y="200" width="260" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="support_notify" value="Thông báo khi sản phẩm hết hàng" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#b85450;fillColor=#f8cecc;" parent="swim_support" vertex="1">
+                    <mxGeometry x="40" y="300" width="260" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="support_assist" value="Hỗ trợ khách sửa giỏ" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;" parent="swim_support" vertex="1">
+                    <mxGeometry x="40" y="400" width="260" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_customer_to_system" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="boundary" source="cust_select" target="sys_validate" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_customer_update_system" style="endArrow=classic;html=1;strokeColor=#82b366;" parent="boundary" source="cust_updateQty" target="sys_calcPrice" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_customer_remove_system" style="endArrow=classic;html=1;strokeColor=#b85450;" parent="boundary" source="cust_remove" target="sys_cleanup" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_customer_voucher_system" style="endArrow=classic;html=1;strokeColor=#9673a6;" parent="boundary" source="cust_applyVoucher" target="sys_applyPromo" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_system_to_support" style="endArrow=classic;html=1;strokeColor=#d6b656;" parent="boundary" source="sys_validate" target="support_monitor" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_support_adjust_system" style="endArrow=classic;html=1;strokeColor=#d79b00;" parent="boundary" source="support_adjust" target="sys_calcPrice" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_support_notify_customer" style="endArrow=classic;html=1;strokeColor=#b85450;" parent="boundary" source="support_notify" target="cust_viewCart" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_support_assist_customer" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="boundary" source="support_assist" target="cust_updateQty" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_system_checkout_customer" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="boundary" source="sys_pushCheckout" target="cust_checkout" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

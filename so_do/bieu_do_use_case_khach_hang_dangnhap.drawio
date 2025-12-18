@@ -1,0 +1,118 @@
+<mxfile host="65bd71144e">
+    <diagram id="customerLogin" name="Use case - Khách hàng đăng nhập">
+        <mxGraphModel dx="1783" dy="804" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="boundary" value="Quy trình đăng nhập khách hàng" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#6c8ebf;dashed=1;fontSize=16;fontStyle=1;fillColor=#ffffff;" parent="1" vertex="1">
+                    <mxGeometry x="360" y="120" width="900" height="600" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_open" value="1. Mở màn hình đăng nhập" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="120" y="60" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_input" value="2. Nhập username + mật khẩu" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="400" y="60" width="260" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_validate" value="3. Xác thực thông tin đăng nhập" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#6c8ebf;fillColor=#ffffff;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="30" y="200" width="260" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_check_lock" value="4. Kiểm tra khoá tài khoản" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#f8cecc;fillColor=#fbe5d6;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="310" y="160" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_check_password_age" value="5. Kiểm tra hạn mật khẩu" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#f8cecc;fillColor=#fbe5d6;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="610" y="160" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_mfa" value="6. Xác thực đa yếu tố (tùy chọn)" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#82b366;fillColor=#d5e8d4;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="620" y="280" width="260" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_issue_token" value="7. Phát hành JWT + tạo session" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#9673a6;fillColor=#e1d5e7;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="50" y="300" width="280" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_update_attempt" value="8. Ghi nhận lần đăng nhập" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#9673a6;fillColor=#e1d5e7;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="630" y="400" width="260" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_notify_devices" value="9. Thông báo thiết bị lạ" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#9673a6;fillColor=#e1d5e7;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="360" y="400" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_failed" value="10. Xử lý đăng nhập thất bại" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#b85450;fillColor=#f8cecc;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="60" y="400" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_lockout" value="11. Khoá tạm thời sau nhiều lần sai" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#b85450;fillColor=#f8cecc;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="60" y="490" width="260" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_forgot" value="12. Chuyển tới quên mật khẩu" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#d79b00;fillColor=#ffe6cc;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="360" y="490" width="260" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_support" value="13. Yêu cầu hỗ trợ" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#d79b00;fillColor=#ffe6cc;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="640" y="490" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_flow_input_validate" style="endArrow=classic;html=1;dashed=1;strokeColor=#6c8ebf;" parent="boundary" source="uc_input" target="uc_validate" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_flow_validate_lock" style="endArrow=classic;html=1;dashed=1;strokeColor=#f8cecc;" parent="boundary" source="uc_validate" target="uc_check_lock" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_flow_validate_passwordAge" style="endArrow=classic;html=1;dashed=1;strokeColor=#f8cecc;" parent="boundary" source="uc_validate" target="uc_check_password_age" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_flow_validate_mfa" style="endArrow=classic;html=1;dashed=1;strokeColor=#82b366;" parent="boundary" source="uc_validate" target="uc_mfa" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_flow_mfa_token" style="endArrow=classic;html=1;dashed=1;strokeColor=#9673a6;" parent="boundary" source="uc_mfa" target="uc_issue_token" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_flow_token_attempt" style="endArrow=classic;html=1;dashed=1;strokeColor=#9673a6;" parent="boundary" source="uc_issue_token" target="uc_update_attempt" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_flow_attempt_notify" style="endArrow=classic;html=1;dashed=1;strokeColor=#9673a6;" parent="boundary" source="uc_update_attempt" target="uc_notify_devices" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_flow_validate_failed" style="endArrow=classic;html=1;dashed=1;strokeColor=#b85450;" parent="boundary" source="uc_validate" target="uc_failed" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_flow_failed_lockout" style="endArrow=classic;html=1;dashed=1;strokeColor=#b85450;" parent="boundary" source="uc_failed" target="uc_lockout" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_flow_lockout_support" style="endArrow=classic;html=1;dashed=1;strokeColor=#b85450;" parent="boundary" source="uc_lockout" target="uc_support" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_flow_failed_forgot" style="endArrow=classic;html=1;dashed=1;strokeColor=#d79b00;" parent="boundary" source="uc_failed" target="uc_forgot" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="actor_customer" value="Khách hàng" style="shape=actor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fontSize=14;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="320" width="60" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="actor_support" value="CSKH" style="shape=actor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fontSize=14;" parent="1" vertex="1">
+                    <mxGeometry x="1390" y="520" width="60" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="actor_mfa" value="Dịch vụ OTP/Email" style="shape=actor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fontSize=14;" parent="1" vertex="1">
+                    <mxGeometry x="1390" y="200" width="60" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_customer_open" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="1" source="actor_customer" target="uc_open" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_customer_input" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="1" source="actor_customer" target="uc_input" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_customer_failed" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="1" source="actor_customer" target="uc_failed" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_customer_forgot" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="1" source="actor_customer" target="uc_forgot" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_customer_support" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="1" source="actor_customer" target="uc_support" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_support_manual" style="endArrow=classic;html=1;strokeColor=#d79b00;" parent="1" source="actor_support" target="uc_support" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_mfa_service" style="endArrow=classic;html=1;strokeColor=#82b366;" parent="1" source="actor_mfa" target="uc_mfa" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_mfa_notify" style="endArrow=classic;html=1;strokeColor=#82b366;" parent="1" source="actor_mfa" target="uc_notify_devices" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

@@ -1,0 +1,145 @@
+<mxfile host="app.diagrams.net" modified="2025-11-21T04:12:00.000Z" agent="cascade" version="24.7.8" editor="desktop">
+  <diagram id="adminUserMgmtV2" name="Use case - Quản trị quản lý người dùng">
+    <mxGraphModel dx="1428" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="boundary" value="Module quản lý người dùng Harvest Hub" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#6c8ebf;dashed=1;fontSize=16;fontStyle=1;fillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="360" y="120" width="960" height="640" as="geometry" />
+        </mxCell>
+        <mxCell id="actor_admin" value="Quản trị viên" style="shape=actor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="140" y="360" width="60" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="actor_support" value="CSKH" style="shape=actor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="1340" y="260" width="60" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="actor_security" value="Hệ thống giám sát" style="shape=actor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="1340" y="460" width="60" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_list" value="1. Xem danh sách người dùng" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="100" y="60" width="260" height="60" />
+        </mxCell>
+        <mxCell id="uc_filter" value="1.1 Lọc/Tìm kiếm nâng cao" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#6c8ebf;fillColor=#ffffff;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="380" y="60" width="260" height="60" />
+        </mxCell>
+        <mxCell id="uc_profile" value="2. Xem hồ sơ chi tiết" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#82b366;fillColor=#d5e8d4;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="660" y="60" width="240" height="60" />
+        </mxCell>
+        <mxCell id="uc_history" value="2.1 Nhật ký đăng nhập/HĐ" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#82b366;fillColor=#ffffff;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="920" y="60" width="260" height="60" />
+        </mxCell>
+        <mxCell id="uc_edit" value="3. Chỉnh sửa thông tin tài khoản" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#9673a6;fillColor=#e1d5e7;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="100" y="150" width="300" height="60" />
+        </mxCell>
+        <mxCell id="uc_reset" value="3.1 Đặt lại mật khẩu" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#9673a6;fillColor=#ffffff;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="440" y="150" width="240" height="60" />
+        </mxCell>
+        <mxCell id="uc_status" value="4. Khoá/Mở khoá tài khoản" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#b85450;fillColor=#f8cecc;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="700" y="150" width="260" height="60" />
+        </mxCell>
+        <mxCell id="uc_verify" value="5. Xác minh KYC/định danh" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#d79b00;fillColor=#ffe6cc;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="980" y="150" width="260" height="60" />
+        </mxCell>
+        <mxCell id="uc_roles" value="6. Gán vai trò &amp; quyền" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="100" y="240" width="240" height="60" />
+        </mxCell>
+        <mxCell id="uc_devices" value="7. Quản lý thiết bị đăng nhập" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#d6b656;fillColor=#fff2cc;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="360" y="240" width="260" height="60" />
+        </mxCell>
+        <mxCell id="uc_alert" value="8. Thiết lập cảnh báo bảo mật" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#d79b00;fillColor=#ffe6cc;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="640" y="240" width="260" height="60" />
+        </mxCell>
+        <mxCell id="uc_merge" value="9. Gộp tài khoản trùng" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#9673a6;fillColor=#e1d5e7;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="920" y="240" width="240" height="60" />
+        </mxCell>
+        <mxCell id="uc_report" value="10. Xuất danh sách &amp; báo cáo" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#666666;fillColor=#f5f5f5;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="100" y="330" width="260" height="60" />
+        </mxCell>
+        <mxCell id="uc_case" value="11. Ghi nhận case hỗ trợ" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#9673a6;fillColor=#ffffff;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="380" y="330" width="260" height="60" />
+        </mxCell>
+        <mxCell id="edge_admin_list" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" edge="1" parent="1" source="actor_admin" target="uc_list">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_admin_profile" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" edge="1" parent="1" source="actor_admin" target="uc_profile">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_admin_edit" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" edge="1" parent="1" source="actor_admin" target="uc_edit">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_admin_reset" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" edge="1" parent="1" source="actor_admin" target="uc_reset">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_admin_status" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" edge="1" parent="1" source="actor_admin" target="uc_status">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_admin_verify" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" edge="1" parent="1" source="actor_admin" target="uc_verify">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_admin_roles" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" edge="1" parent="1" source="actor_admin" target="uc_roles">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_admin_devices" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" edge="1" parent="1" source="actor_admin" target="uc_devices">
+          <mxGeometry.relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_admin_alert" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" edge="1" parent="1" source="actor_admin" target="uc_alert">
+          <mxGeometry.relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_admin_merge" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" edge="1" parent="1" source="actor_admin" target="uc_merge">
+          <mxGeometry.relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_admin_report" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" edge="1" parent="1" source="actor_admin" target="uc_report">
+          <mxGeometry.relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_admin_case" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" edge="1" parent="1" source="actor_admin" target="uc_case">
+          <mxGeometry.relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_support_case" style="endArrow=classic;html=1;strokeColor=#9673a6;" edge="1" parent="1" source="actor_support" target="uc_case">
+          <mxGeometry.relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_support_edit" style="endArrow=classic;html=1;strokeColor=#9673a6;" edge="1" parent="1" source="actor_support" target="uc_edit">
+          <mxGeometry.relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_security_alert" style="endArrow=classic;html=1;strokeColor=#d79b00;" edge="1" parent="1" source="actor_security" target="uc_alert">
+          <mxGeometry.relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_security_history" style="endArrow=classic;html=1;strokeColor=#666666;" edge="1" parent="1" source="actor_security" target="uc_history">
+          <mxGeometry.relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow_list_filter" style="endArrow=classic;html=1;dashed=1;strokeColor=#6c8ebf;" edge="1" parent="boundary" source="uc_list" target="uc_filter">
+          <mxGeometry.relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow_filter_profile" style="endArrow=classic;html=1;dashed=1;strokeColor=#82b366;" edge="1" parent="boundary" source="uc_filter" target="uc_profile">
+          <mxGeometry.relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow_profile_history" style="endArrow=classic;html=1;dashed=1;strokeColor=#82b366;" edge="1" parent="boundary" source="uc_profile" target="uc_history">
+          <mxGeometry.relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow_profile_edit" style="endArrow=classic;html=1;dashed=1;strokeColor=#9673a6;" edge="1" parent="boundary" source="uc_profile" target="uc_edit">
+          <mxGeometry.relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow_edit_reset" style="endArrow=classic;html=1;dashed=1;strokeColor=#9673a6;" edge="1" parent="boundary" source="uc_edit" target="uc_reset">
+          <mxGeometry.relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow_status_roles" style="endArrow=classic;html=1;dashed=1;strokeColor=#6c8ebf;" edge="1" parent="boundary" source="uc_status" target="uc_roles">
+          <mxGeometry.relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow_roles_devices" style="endArrow=classic;html=1;dashed=1;strokeColor=#d6b656;" edge="1" parent="boundary" source="uc_roles" target="uc_devices">
+          <mxGeometry.relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow_devices_alert" style="endArrow=classic;html=1;dashed=1;strokeColor=#d79b00;" edge="1" parent="boundary" source="uc_devices" target="uc_alert">
+          <mxGeometry.relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow_alert_merge" style="endArrow=classic;html=1;dashed=1;strokeColor=#9673a6;" edge="1" parent="boundary" source="uc_alert" target="uc_merge">
+          <mxGeometry.relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow_merge_report" style="endArrow=classic;html=1;dashed=1;strokeColor=#666666;" edge="1" parent="boundary" source="uc_merge" target="uc_report">
+          <mxGeometry.relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow_history_case" style="endArrow=classic;html=1;dashed=1;strokeColor=#9673a6;" edge="1" parent="boundary" source="uc_history" target="uc_case">
+          <mxGeometry.relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

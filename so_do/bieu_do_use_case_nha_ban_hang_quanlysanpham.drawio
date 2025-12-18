@@ -1,0 +1,151 @@
+<mxfile host="65bd71144e">
+    <diagram id="sellerProduct" name="Use case - Nhà bán hàng quản lý sản phẩm">
+        <mxGraphModel dx="1783" dy="804" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="boundary" value="Module quản lý sản phẩm" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#82b366;dashed=1;fontSize=16;fontStyle=1;fillColor=#ffffff;" parent="1" vertex="1">
+                    <mxGeometry x="320" y="120" width="980" height="640" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_catalog" value="1. Xem danh sách sản phẩm" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="40" y="40" width="260" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_filter" value="1.1 Lọc theo trạng thái/Kho" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#6c8ebf;fillColor=#ffffff;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="360" y="30" width="260" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_bulk" value="1.2 Chỉnh sửa hàng loạt" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#6c8ebf;fillColor=#ffffff;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="660" y="40" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_create" value="2. Tạo sản phẩm mới" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#82b366;fillColor=#d5e8d4;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="60" y="150" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_import" value="2.1 Import từ file CSV/API" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#82b366;fillColor=#ffffff;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="360" y="140" width="260" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_media" value="3. Quản lý hình ảnh/video" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#9673a6;fillColor=#e1d5e7;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="660" y="150" width="260" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_variants" value="4. Thiết lập biến thể" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#d6b656;fillColor=#fff2cc;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="140" y="230" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_cert" value="5.1 Đính kèm giấy tờ chứng nhận" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#b85450;fillColor=#ffffff;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="380" y="340" width="280" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_price" value="6. Thiết lập giá &amp; khuyến mãi" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#d79b00;fillColor=#ffe6cc;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="690" y="330" width="260" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_publish" value="8. Đăng sản phẩm/lên lịch" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="370" y="430" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_sync" value="9. Đồng bộ đa kênh (Omni-channel)" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="670" y="410" width="260" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_suspend" value="10. Khoá/tạm ẩn sản phẩm" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#666666;fillColor=#f5f5f5;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="70" y="530" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_audit" value="11. Theo dõi lịch sử chỉnh sửa" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#666666;fillColor=#f5f5f5;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="370" y="530" width="260" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_role" value="12. Phân quyền nhân viên phụ trách" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#9673a6;fillColor=#ffffff;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="680" y="520" width="260" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_flow_catalog_filter" style="endArrow=classic;html=1;dashed=1;strokeColor=#6c8ebf;" parent="boundary" source="uc_catalog" target="uc_filter" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_flow_catalog_bulk" style="endArrow=classic;html=1;dashed=1;strokeColor=#6c8ebf;" parent="boundary" source="uc_catalog" target="uc_bulk" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_flow_create_import" style="endArrow=classic;html=1;dashed=1;strokeColor=#82b366;" parent="boundary" source="uc_create" target="uc_import" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_flow_import_media" style="endArrow=classic;html=1;dashed=1;strokeColor=#9673a6;" parent="boundary" source="uc_import" target="uc_media" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_flow_media_variants" style="endArrow=classic;html=1;dashed=1;strokeColor=#d6b656;" parent="boundary" source="uc_media" target="uc_variants" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_flow_variants_price" style="endArrow=classic;html=1;dashed=1;strokeColor=#d79b00;" parent="boundary" source="uc_variants" target="uc_price" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_flow_price_publish" style="endArrow=classic;html=1;dashed=1;strokeColor=#6c8ebf;" parent="boundary" source="uc_price" target="uc_publish" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_flow_publish_sync" style="endArrow=classic;html=1;dashed=1;strokeColor=#6c8ebf;" parent="boundary" source="uc_publish" target="uc_sync" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_flow_sync_suspend" style="endArrow=classic;html=1;dashed=1;strokeColor=#666666;" parent="boundary" source="uc_sync" target="uc_suspend" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_flow_suspend_audit" style="endArrow=classic;html=1;dashed=1;strokeColor=#666666;" parent="boundary" source="uc_suspend" target="uc_audit" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="actor_seller" value="Nhà bán hàng" style="shape=actor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fontSize=14;" parent="1" vertex="1">
+                    <mxGeometry x="100" y="360" width="60" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="actor_admin" value="Quản trị" style="shape=actor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fontSize=14;" parent="1" vertex="1">
+                    <mxGeometry x="1430" y="360" width="60" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_seller_catalog" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="1" source="actor_seller" target="uc_catalog" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_seller_create" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="1" source="actor_seller" target="uc_create" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_seller_media" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="1" source="actor_seller" target="uc_media" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_seller_variants" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="1" source="actor_seller" target="uc_variants" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_seller_quality" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="1" source="actor_seller" target="uc_quality" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_seller_price" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="1" source="actor_seller" target="uc_price" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_seller_seo" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="1" source="actor_seller" target="uc_seo" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_seller_publish" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="1" source="actor_seller" target="uc_publish" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_seller_sync" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="1" source="uc_quality" target="uc_sync" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_seller_suspend" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="1" source="actor_seller" target="uc_suspend" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_seller_audit" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="1" source="uc_seo" target="uc_audit" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_admin_quality" style="endArrow=classic;html=1;strokeColor=#b85450;" parent="1" source="actor_admin" target="uc_quality" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_admin_suspend" style="endArrow=classic;html=1;strokeColor=#666666;" parent="1" source="actor_admin" target="uc_suspend" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_admin_audit" style="endArrow=classic;html=1;strokeColor=#666666;" parent="1" source="actor_admin" target="uc_audit" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="2" value="" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" edge="1" parent="1" source="actor_seller" target="uc_seo">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="160" y="431" as="sourcePoint"/>
+                        <mxPoint x="750" y="645" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="uc_seo" value="7. Tối ưu SEO &amp; mô tả" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#9673a6;fillColor=#e1d5e7;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="380" y="540" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="3" value="" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" edge="1" parent="1" source="actor_seller" target="uc_quality">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="160" y="424" as="sourcePoint"/>
+                        <mxPoint x="1009" y="544" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="uc_quality" value="5. Kiểm tra tiêu chuẩn chất lượng" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#b85450;fillColor=#f8cecc;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="350" y="430" width="280" height="60" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

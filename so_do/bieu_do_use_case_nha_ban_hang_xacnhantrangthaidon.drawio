@@ -1,0 +1,148 @@
+<mxfile host="65bd71144e">
+    <diagram id="sellerOrderStatus" name="Use case - Nhà bán hàng xác nhận trạng thái đơn">
+        <mxGraphModel dx="1632" dy="779" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="boundary" value="Module xác nhận &amp; cập nhật trạng thái đơn" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#d6b656;dashed=1;fontSize=16;fontStyle=1;fillColor=#ffffff;" parent="1" vertex="1">
+                    <mxGeometry x="320" y="120" width="960" height="620" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_inbox" value="1. Nhận thông báo đơn mới" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="40" y="30" width="260" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_review" value="2. Kiểm tra thanh toán &amp; tồn kho" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#d6b656;fillColor=#fff2cc;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="330" y="30" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_confirm" value="3. Xác nhận/ từ chối đơn" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#82b366;fillColor=#d5e8d4;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="640" y="30" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_auto_rule" value="3.1 Quy tắc xác nhận tự động" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#82b366;fillColor=#ffffff;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="660" y="150" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_label" value="4.1 In phiếu đóng gói/tem" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#d79b00;fillColor=#ffffff;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="380" y="150" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_assign_shipper" value="5. Giao việc cho đối tác vận chuyển" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#9673a6;fillColor=#e1d5e7;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="40" y="280" width="210" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_tracking" value="6. Cập nhật mã vận đơn" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="700" y="280" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_status" value="7. Cập nhật trạng thái giao hàng" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#82b366;fillColor=#d5e8d4;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="40" y="400" width="250" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_notify" value="8. Gửi thông báo cho khách" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="365" y="400" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_delay" value="9. Báo trễ hàng/ thiếu hàng" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#b85450;fillColor=#f8cecc;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="670" y="400" width="260" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_cancel" value="10. Xử lý yêu cầu huỷ/đổi" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#b85450;fillColor=#f8cecc;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="40" y="510" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_escalate" value="11. Chuyển CSKH khi phát sinh tranh chấp" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#b85450;fillColor=#ffffff;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="360" y="510" width="250" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_metrics" value="12. Theo dõi KPI xác nhận đơn" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#666666;fillColor=#f5f5f5;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="670" y="510" width="260" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_flow_inbox_review" style="endArrow=classic;html=1;dashed=1;strokeColor=#d6b656;" parent="boundary" source="uc_inbox" target="uc_review" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_flow_review_confirm" style="endArrow=classic;html=1;dashed=1;strokeColor=#82b366;" parent="boundary" source="uc_review" target="uc_confirm" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_flow_label_assign" style="endArrow=classic;html=1;dashed=1;strokeColor=#9673a6;" parent="boundary" source="uc_label" target="uc_assign_shipper" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_flow_assign_tracking" style="endArrow=classic;html=1;dashed=1;strokeColor=#6c8ebf;" parent="boundary" source="uc_assign_shipper" target="uc_tracking" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_flow_tracking_status" style="endArrow=classic;html=1;dashed=1;strokeColor=#82b366;" parent="boundary" source="uc_tracking" target="uc_status" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_flow_status_notify" style="endArrow=classic;html=1;dashed=1;strokeColor=#6c8ebf;" parent="boundary" source="uc_status" target="uc_notify" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_flow_delay_escalate" style="endArrow=classic;html=1;dashed=1;strokeColor=#b85450;" parent="boundary" source="uc_delay" target="uc_escalate" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_flow_cancel_escalate" style="endArrow=classic;html=1;dashed=1;strokeColor=#b85450;" parent="boundary" source="uc_cancel" target="uc_escalate" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="actor_seller" value="Nhà bán hàng" style="shape=actor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fontSize=14;" parent="1" vertex="1">
+                    <mxGeometry x="110" y="320" width="60" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="actor_shipper" value="Đối tác vận chuyển" style="shape=actor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fontSize=14;" parent="1" vertex="1">
+                    <mxGeometry x="1350" y="240" width="60" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="actor_customer" value="Khách hàng" style="shape=actor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fontSize=14;" parent="1" vertex="1">
+                    <mxGeometry x="1350" y="440" width="60" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_seller_inbox" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="1" source="actor_seller" target="uc_inbox" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_seller_review" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="1" source="uc_pick" target="uc_review" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_seller_confirm" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="1" source="actor_seller" target="uc_confirm" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_seller_pick" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="1" source="actor_seller" target="uc_pick" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_seller_assign" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="1" source="actor_seller" target="uc_assign_shipper" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_seller_tracking" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="1" source="actor_seller" target="uc_tracking" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_seller_status" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="1" source="actor_seller" target="uc_status" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_seller_notify" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="1" source="actor_seller" target="uc_notify" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_seller_delay" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="1" source="actor_seller" target="uc_delay" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_seller_cancel" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="1" source="actor_seller" target="uc_cancel" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_seller_metrics" style="endArrow=classic;html=1;strokeColor=#666666;" parent="1" source="actor_seller" target="uc_metrics" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_shipper_assign" style="endArrow=classic;html=1;strokeColor=#9673a6;" parent="1" source="actor_shipper" target="uc_assign_shipper" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_shipper_tracking" style="endArrow=classic;html=1;strokeColor=#9673a6;" parent="1" source="actor_shipper" target="uc_tracking" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_shipper_status" style="endArrow=classic;html=1;strokeColor=#9673a6;" parent="1" source="actor_shipper" target="uc_status" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_customer_notify" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="1" source="actor_customer" target="uc_notify" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_customer_cancel" style="endArrow=classic;html=1;strokeColor=#b85450;" parent="1" source="actor_customer" target="uc_cancel" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="2" value="" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" edge="1" parent="1" source="actor_seller" target="uc_pick">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="170" y="390" as="sourcePoint"/>
+                        <mxPoint x="700" y="204" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="uc_pick" value="4. Chuẩn bị &amp; đóng gói" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#d79b00;fillColor=#ffe6cc;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="360" y="270" width="260" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_flow_confirm_pick" style="endArrow=classic;html=1;dashed=1;strokeColor=#d79b00;" parent="1" source="uc_confirm" target="uc_pick" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_flow_pick_label" style="endArrow=classic;html=1;dashed=1;strokeColor=#d79b00;" parent="1" source="uc_pick" target="uc_label" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

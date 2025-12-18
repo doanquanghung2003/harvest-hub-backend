@@ -1,0 +1,136 @@
+<mxfile host="65bd71144e">
+    <diagram id="sellerInventoryPricing" name="Use case - Nhà bán hàng quản lý tồn kho &amp; giá">
+        <mxGraphModel dx="1108" dy="978" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="boundary" value="Module quản lý tồn kho &amp; giá" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#d79b00;dashed=1;fontSize=16;fontStyle=1;fillColor=#ffffff;" parent="1" vertex="1">
+                    <mxGeometry x="320" y="120" width="1000" height="640" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_stock_dashboard" value="1. Xem dashboard tồn kho" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="60" y="40" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_stock_filter" value="1.1 Lọc theo kho/kênh" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#6c8ebf;fillColor=#ffffff;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="360" y="30" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_stock_alert" value="1.2 Theo dõi cảnh báo hết hàng" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#f19c99;fillColor=#fbe4d5;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="650" y="40" width="270" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_update_stock" value="2. Cập nhật số lượng tồn" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#82b366;fillColor=#d5e8d4;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="60" y="130" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_bulk_import" value="2.1 Import phiếu nhập/xuất" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#82b366;fillColor=#ffffff;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="360" y="120" width="260" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_transfer" value="3. Điều chuyển giữa kho" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#d6b656;fillColor=#fff2cc;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="660" y="120" width="260" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_inout" value="4. Theo dõi nhập/xuất/bán" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#9673a6;fillColor=#e1d5e7;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="140" y="220" width="260" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_reorder" value="5. Thiết lập ngưỡng đặt lại" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#d79b00;fillColor=#ffe6cc;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="440" y="220" width="260" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_price_manage" value="6. Quản lý giá bán" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="720" y="210" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_price_sim" value="6.1 Mô phỏng kịch bản giá" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#6c8ebf;fillColor=#ffffff;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="720" y="290" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_promo" value="7. Quản lý khuyến mãi &amp; voucher" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#82b366;fillColor=#ffffff;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="120" y="330" width="280" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_price_sync" value="8. Đồng bộ giá đa kênh" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#9673a6;fillColor=#e1d5e7;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="450" y="380" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_margin" value="9. Giám sát biên lợi nhuận" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#b85450;fillColor=#f8cecc;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="720" y="370" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_audit" value="10. Nhật ký chỉnh sửa tồn/giá" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#666666;fillColor=#f5f5f5;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="80" y="470" width="280" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_report" value="11. Báo cáo xu hướng tồn kho &amp; giá" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#6c8ebf;fillColor=#ffffff;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="560" y="500" width="280" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_dashboard_filter" style="endArrow=classic;html=1;dashed=1;strokeColor=#6c8ebf;" parent="boundary" source="uc_stock_dashboard" target="uc_stock_filter" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_dashboard_alert" style="endArrow=classic;html=1;dashed=1;strokeColor=#f19c99;" parent="boundary" source="uc_stock_dashboard" target="uc_stock_alert" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_update_bulk" style="endArrow=classic;html=1;dashed=1;strokeColor=#82b366;" parent="boundary" source="uc_update_stock" target="uc_bulk_import" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_bulk_transfer" style="endArrow=classic;html=1;dashed=1;strokeColor=#d6b656;" parent="boundary" source="uc_bulk_import" target="uc_transfer" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_inout_reorder" style="endArrow=classic;html=1;dashed=1;strokeColor=#d79b00;" parent="boundary" source="uc_inout" target="uc_reorder" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_price_sim" style="endArrow=classic;html=1;dashed=1;strokeColor=#6c8ebf;" parent="boundary" source="uc_price_manage" target="uc_price_sim" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_price_margin" style="endArrow=classic;html=1;dashed=1;strokeColor=#b85450;" parent="boundary" source="uc_price_manage" target="uc_margin" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_promo_sync" style="endArrow=classic;html=1;dashed=1;strokeColor=#9673a6;" parent="boundary" source="uc_promo" target="uc_price_sync" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_sync_report" style="endArrow=classic;html=1;dashed=1;strokeColor=#6c8ebf;" parent="boundary" source="uc_price_sync" target="uc_report" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_audit_report" style="endArrow=classic;html=1;dashed=1;strokeColor=#666666;" parent="boundary" source="uc_audit" target="uc_report" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="actor_seller" value="Nhà bán hàng" style="shape=actor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fontSize=14;" parent="1" vertex="1">
+                    <mxGeometry x="180" y="360" width="60" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="actor_warehouse" value="Nhân viên kho" style="shape=actor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fontSize=14;" parent="1" vertex="1">
+                    <mxGeometry x="1400" y="200" width="70" height="140" as="geometry"/>
+                </mxCell>
+                <mxCell id="actor_pricing" value="Chuyên viên giá" style="shape=actor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fontSize=14;" parent="1" vertex="1">
+                    <mxGeometry x="1400" y="380" width="70" height="140" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_seller_dashboard" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="1" source="actor_seller" target="uc_stock_dashboard" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_seller_update" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="1" source="actor_seller" target="uc_update_stock" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_seller_reorder" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="1" source="actor_seller" target="uc_reorder" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_seller_price" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="1" source="actor_seller" target="uc_price_manage" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_seller_promo" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="1" source="actor_seller" target="uc_promo" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_seller_audit" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="1" source="actor_seller" target="uc_audit" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_seller_report" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="1" source="actor_seller" target="uc_report" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_warehouse_update" style="endArrow=classic;html=1;strokeColor=#9673a6;" parent="1" source="actor_warehouse" target="uc_update_stock" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_warehouse_transfer" style="endArrow=classic;html=1;strokeColor=#9673a6;" parent="1" source="actor_warehouse" target="uc_transfer" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_warehouse_inout" style="endArrow=classic;html=1;strokeColor=#9673a6;" parent="1" source="actor_warehouse" target="uc_inout" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_pricing_price" style="endArrow=classic;html=1;strokeColor=#b85450;" parent="1" source="actor_pricing" target="uc_price_manage" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_pricing_sim" style="endArrow=classic;html=1;strokeColor=#b85450;" parent="1" source="actor_pricing" target="uc_price_sim" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_pricing_margin" style="endArrow=classic;html=1;strokeColor=#b85450;" parent="1" source="actor_pricing" target="uc_margin" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

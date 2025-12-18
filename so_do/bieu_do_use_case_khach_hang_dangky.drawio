@@ -1,0 +1,112 @@
+<mxfile host="65bd71144e">
+    <diagram id="customerRegister" name="Use case - Khách hàng đăng ký">
+        <mxGraphModel dx="1560" dy="704" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="boundary" value="Quy trình đăng ký khách hàng Harvest Hub" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#6c8ebf;dashed=1;fontSize=16;fontStyle=1;fillColor=#ffffff;" parent="1" vertex="1">
+                    <mxGeometry x="380" y="120" width="900" height="600" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_start" value="1. Mở form đăng ký" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="80" y="60" width="220" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_input" value="2. Nhập thông tin tài khoản" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="340" y="60" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_validate_password" value="2.1 Kiểm tra độ mạnh mật khẩu" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#6c8ebf;fillColor=#ffffff;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="620" y="60" width="260" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_check_duplicate" value="2.2 Kiểm tra trùng username/email" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#6c8ebf;fillColor=#ffffff;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="620" y="160" width="260" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_terms" value="3. Chấp nhận điều khoản" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#f8cecc;fillColor=#fbe5d6;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="80" y="160" width="220" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_captcha" value="4. Xác thực CAPTCHA" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#f8cecc;fillColor=#fbe5d6;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="340" y="160" width="220" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_send_otp" value="5. Gửi OTP xác thực email" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#82b366;fillColor=#d5e8d4;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="630" y="350" width="260" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_verify_otp" value="6. Nhập &amp; xác minh OTP" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#82b366;fillColor=#d5e8d4;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="350" y="350" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_store" value="7. Tạo tài khoản + mã hóa mật khẩu" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#9673a6;fillColor=#e1d5e7;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="30" y="350" width="280" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_welcome" value="8. Gửi email chào mừng / token JWT" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#9673a6;fillColor=#e1d5e7;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="30" y="450" width="280" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_error" value="9. Xử lý lỗi đăng ký" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#b85450;fillColor=#f8cecc;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="360" y="450" width="220" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc_support" value="10. Hỗ trợ thủ công" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#d79b00;fillColor=#ffe6cc;fontSize=12;" parent="boundary" vertex="1">
+                    <mxGeometry x="640" y="450" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_flow_input_validate" style="endArrow=classic;html=1;dashed=1;strokeColor=#6c8ebf;" parent="boundary" source="uc_input" target="uc_validate_password" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_flow_validate_duplicate" style="endArrow=classic;html=1;dashed=1;strokeColor=#6c8ebf;" parent="boundary" source="uc_validate_password" target="uc_check_duplicate" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_flow_terms_captcha" style="endArrow=classic;html=1;dashed=1;strokeColor=#f8cecc;" parent="boundary" source="uc_terms" target="uc_captcha" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_flow_captcha_send" style="endArrow=classic;html=1;dashed=1;strokeColor=#f8cecc;" parent="boundary" source="uc_captcha" target="uc_send_otp" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_flow_send_verify" style="endArrow=classic;html=1;dashed=1;strokeColor=#82b366;" parent="boundary" source="uc_send_otp" target="uc_verify_otp" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_flow_verify_store" style="endArrow=classic;html=1;dashed=1;strokeColor=#9673a6;" parent="boundary" source="uc_verify_otp" target="uc_store" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_flow_store_welcome" style="endArrow=classic;html=1;dashed=1;strokeColor=#9673a6;" parent="boundary" source="uc_store" target="uc_welcome" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_flow_error_support" style="endArrow=classic;html=1;dashed=1;strokeColor=#b85450;" parent="boundary" source="uc_error" target="uc_support" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_flow_check_error" style="endArrow=classic;html=1;dashed=1;strokeColor=#6c8ebf;" parent="boundary" source="uc_check_duplicate" target="uc_error" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="actor_customer" value="Khách hàng" style="shape=actor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fontSize=14;" parent="1" vertex="1">
+                    <mxGeometry x="190" y="320" width="60" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="actor_email" value="Dịch vụ Email / OTP" style="shape=actor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fontSize=14;" parent="1" vertex="1">
+                    <mxGeometry x="1350" y="240" width="60" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="actor_admin" value="Quản trị hỗ trợ" style="shape=actor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fontSize=14;" parent="1" vertex="1">
+                    <mxGeometry x="1350" y="480" width="60" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_customer_start" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="1" source="actor_customer" target="uc_start" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_customer_input" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="1" source="actor_customer" target="uc_input" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_customer_terms" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="1" source="actor_customer" target="uc_terms" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_customer_captcha" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="1" source="actor_customer" target="uc_captcha" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_customer_verifyOtp" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="1" source="actor_customer" target="uc_verify_otp" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_customer_support" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="1" source="actor_customer" target="uc_support" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_email_send" style="endArrow=classic;html=1;strokeColor=#82b366;" parent="1" source="actor_email" target="uc_send_otp" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_email_welcome" style="endArrow=classic;html=1;strokeColor=#82b366;" parent="1" source="actor_email" target="uc_welcome" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_admin_support" style="endArrow=classic;html=1;strokeColor=#d79b00;" parent="1" source="actor_admin" target="uc_support" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

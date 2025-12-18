@@ -1,0 +1,157 @@
+<mxfile host="app.diagrams.net" modified="2025-11-21T04:16:00.000Z" agent="cascade" version="24.7.8" editor="desktop">
+  <diagram id="adminEnforcement" name="Use case - Quản trị xử lý vi phạm">
+    <mxGraphModel dx="1428" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="boundary" value="Module xử lý vi phạm hệ sinh thái" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#b85450;dashed=1;fontSize=16;fontStyle=1;fillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="360" y="120" width="980" height="640" as="geometry" />
+        </mxCell>
+        <mxCell id="actor_admin" value="Quản trị viên" style="shape=actor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="140" y="360" width="60" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="actor_seller" value="Nhà bán hàng" style="shape=actor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="1350" y="240" width="60" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="actor_customer" value="Khách hàng" style="shape=actor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="1350" y="420" width="60" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="actor_bot" value="Hệ thống giám sát" style="shape=actor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="1350" y="600" width="60" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_intake" value="1. Tiếp nhận tố cáo/alert" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#b85450;fillColor=#f8cecc;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="100" y="60" width="260" height="60" />
+        </mxCell>
+        <mxCell id="uc_classify" value="2. Phân loại mức độ vi phạm" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#d79b00;fillColor=#ffe6cc;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="380" y="60" width="280" height="60" />
+        </mxCell>
+        <mxCell id="uc_investigate" value="3. Điều tra &amp; thu thập chứng cứ" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="700" y="60" width="260" height="60" />
+        </mxCell>
+        <mxCell id="uc_freeze" value="4. Tạm khoá sản phẩm/dịch vụ" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#b85450;fillColor=#f8cecc;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="100" y="150" width="280" height="60" />
+        </mxCell>
+        <mxCell id="uc_contact" value="5. Liên hệ bên bị tố cáo" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#9673a6;fillColor=#e1d5e7;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="400" y="150" width="240" height="60" />
+        </mxCell>
+        <mxCell id="uc_response" value="6. Thu thập phản hồi/bằng chứng" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#9673a6;fillColor=#ffffff;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="660" y="150" width="260" height="60" />
+        </mxCell>
+        <mxCell id="uc_decision" value="7. Hội đồng ra quyết định" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#d6b656;fillColor=#fff2cc;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="940" y="150" width="240" height="60" />
+        </mxCell>
+        <mxCell id="uc_penalty" value="8. Áp dụng chế tài" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#b85450;fillColor=#f8cecc;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="100" y="240" width="240" height="60" />
+        </mxCell>
+        <mxCell id="uc_compensation" value="9. Điều phối bồi hoàn" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#82b366;fillColor=#d5e8d4;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="360" y="240" width="240" height="60" />
+        </mxCell>
+        <mxCell id="uc_escalate" value="10. Chuyển cơ quan chức năng" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#666666;fillColor=#f5f5f5;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="620" y="240" width="280" height="60" />
+        </mxCell>
+        <mxCell id="uc_close" value="11. Đóng case &amp; lưu hồ sơ" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#6c8ebf;fillColor=#ffffff;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="920" y="240" width="240" height="60" />
+        </mxCell>
+        <mxCell id="uc_report" value="12. Báo cáo xu hướng vi phạm" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#d79b00;fillColor=#ffe6cc;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="100" y="330" width="260" height="60" />
+        </mxCell>
+        <mxCell id="uc_prevent" value="13. Đề xuất biện pháp phòng ngừa" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#82b366;fillColor=#d5e8d4;fontSize=12;" vertex="1" parent="boundary">
+          <mxGeometry x="380" y="330" width="280" height="60" />
+        </mxCell>
+        <mxCell id="edge_admin_intake" style="endArrow=classic;html=1;strokeColor=#b85450;" edge="1" parent="1" source="actor_admin" target="uc_intake">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_admin_classify" style="endArrow=classic;html=1;strokeColor=#d79b00;" edge="1" parent="1" source="actor_admin" target="uc_classify">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_admin_investigate" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" edge="1" parent="1" source="actor_admin" target="uc_investigate">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_admin_freeze" style="endArrow=classic;html=1;strokeColor=#b85450;" edge="1" parent="1" source="actor_admin" target="uc_freeze">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_admin_contact" style="endArrow=classic;html=1;strokeColor=#9673a6;" edge="1" parent="1" source="actor_admin" target="uc_contact">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_admin_response" style="endArrow=classic;html=1;strokeColor=#9673a6;" edge="1" parent="1" source="actor_admin" target="uc_response">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_admin_decision" style="endArrow=classic;html=1;strokeColor=#d6b656;" edge="1" parent="1" source="actor_admin" target="uc_decision">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_admin_penalty" style="endArrow=classic;html=1;strokeColor=#b85450;" edge="1" parent="1" source="actor_admin" target="uc_penalty">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_admin_compensation" style="endArrow=classic;html=1;strokeColor=#82b366;" edge="1" parent="1" source="actor_admin" target="uc_compensation">
+          <mxGeometry.relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_admin_escalate" style="endArrow=classic;html=1;strokeColor=#666666;" edge="1" parent="1" source="actor_admin" target="uc_escalate">
+          <mxGeometry.relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_admin_close" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" edge="1" parent="1" source="actor_admin" target="uc_close">
+          <mxGeometry.relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_admin_report" style="endArrow=classic;html=1;strokeColor=#d79b00;" edge="1" parent="1" source="actor_admin" target="uc_report">
+          <mxGeometry.relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_admin_prevent" style="endArrow=classic;html=1;strokeColor=#82b366;" edge="1" parent="1" source="actor_admin" target="uc_prevent">
+          <mxGeometry.relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_seller_response" style="endArrow=classic;html=1;strokeColor=#9673a6;" edge="1" parent="1" source="actor_seller" target="uc_response">
+          <mxGeometry.relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_seller_penalty" style="endArrow=classic;html=1;strokeColor=#b85450;" edge="1" parent="1" source="actor_seller" target="uc_penalty">
+          <mxGeometry.relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_customer_intake" style="endArrow=classic;html=1;strokeColor=#f8cecc;" edge="1" parent="1" source="actor_customer" target="uc_intake">
+          <mxGeometry.relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_customer_compensation" style="endArrow=classic;html=1;strokeColor=#82b366;" edge="1" parent="1" source="actor_customer" target="uc_compensation">
+          <mxGeometry.relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_bot_intake" style="endArrow=classic;html=1;strokeColor=#b85450;" edge="1" parent="1" source="actor_bot" target="uc_intake">
+          <mxGeometry.relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_bot_classify" style="endArrow=classic;html=1;strokeColor=#d79b00;" edge="1" parent="1" source="actor_bot" target="uc_classify">
+          <mxGeometry.relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow_intake_classify" style="endArrow=classic;html=1;dashed=1;strokeColor=#d79b00;" edge="1" parent="boundary" source="uc_intake" target="uc_classify">
+          <mxGeometry.relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow_classify_investigate" style="endArrow=classic;html=1;dashed=1;strokeColor=#6c8ebf;" edge="1" parent="boundary" source="uc_classify" target="uc_investigate">
+          <mxGeometry.relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow_investigate_freeze" style="endArrow=classic;html=1;dashed=1;strokeColor=#b85450;" edge="1" parent="boundary" source="uc_investigate" target="uc_freeze">
+          <mxGeometry.relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow_freeze_contact" style="endArrow=classic;html=1;dashed=1;strokeColor=#9673a6;" edge="1" parent="boundary" source="uc_freeze" target="uc_contact">
+          <mxGeometry.relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow_contact_response" style="endArrow=classic;html=1;dashed=1;strokeColor=#9673a6;" edge="1" parent="boundary" source="uc_contact" target="uc_response">
+          <mxGeometry.relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow_response_decision" style="endArrow=classic;html=1;dashed=1;strokeColor=#d6b656;" edge="1" parent="boundary" source="uc_response" target="uc_decision">
+          <mxGeometry.relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow_decision_penalty" style="endArrow=classic;html=1;dashed=1;strokeColor=#b85450;" edge="1" parent="boundary" source="uc_decision" target="uc_penalty">
+          <mxGeometry.relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow_decision_compensation" style="endArrow=classic;html=1;dashed=1;strokeColor=#82b366;" edge="1" parent="boundary" source="uc_decision" target="uc_compensation">
+          <mxGeometry.relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow_penalty_escalate" style="endArrow=classic;html=1;dashed=1;strokeColor=#666666;" edge="1" parent="boundary" source="uc_penalty" target="uc_escalate">
+          <mxGeometry.relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow_escalate_close" style="endArrow=classic;html=1;dashed=1;strokeColor=#6c8ebf;" edge="1" parent="boundary" source="uc_escalate" target="uc_close">
+          <mxGeometry.relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow_close_report" style="endArrow=classic;html=1;dashed=1;strokeColor=#d79b00;" edge="1" parent="boundary" source="uc_close" target="uc_report">
+          <mxGeometry.relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow_report_prevent" style="endArrow=classic;html=1;dashed=1;strokeColor=#82b366;" edge="1" parent="boundary" source="uc_report" target="uc_prevent">
+          <mxGeometry.relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

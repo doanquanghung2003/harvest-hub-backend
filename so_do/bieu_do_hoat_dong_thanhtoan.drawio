@@ -1,0 +1,139 @@
+<mxfile host="65bd71144e">
+    <diagram id="activityPayment" name="Hoạt động - Thanh toán Harvest Hub">
+        <mxGraphModel dx="1296" dy="1033" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="boundary" value="Luồng hoạt động thanh toán" style="swimlane;horizontal=0;rounded=1;whiteSpace=wrap;html=1;fontSize=16;strokeColor=#6c8ebf;fillColor=#ffffff;" parent="1" vertex="1">
+                    <mxGeometry x="200" y="60" width="1200" height="880" as="geometry"/>
+                </mxCell>
+                <mxCell id="swim_customer" value="Khách hàng" style="swimlane;horizontal=0;startSize=40;childLayout=stackLayout;strokeColor=#6c8ebf;fillColor=#f5f5f5;fontSize=14;" parent="boundary" vertex="1">
+                    <mxGeometry x="60" y="80" width="330" height="760" as="geometry"/>
+                </mxCell>
+                <mxCell id="cust_start" value="Bắt đầu" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="swim_customer" vertex="1">
+                    <mxGeometry x="100" y="20" width="120" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="cust_review" value="Xem chi tiết đơn &amp; phí" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;" parent="swim_customer" vertex="1">
+                    <mxGeometry x="50" y="80" width="230" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="cust_selectMethod" value="Chọn phương thức thanh toán" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#d79b00;fillColor=#ffe6cc;" parent="swim_customer" vertex="1">
+                    <mxGeometry x="40" y="160" width="250" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="cust_applyVoucher" value="Nhập mã giảm giá/coin" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#82b366;fillColor=#d5e8d4;" parent="swim_customer" vertex="1">
+                    <mxGeometry x="60" y="240" width="220" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="cust_confirm" value="Xác nhận thanh toán" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#9673a6;fillColor=#e1d5e7;" parent="swim_customer" vertex="1">
+                    <mxGeometry x="70" y="320" width="200" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="cust_auth" value="Thực hiện OTP / xác thực" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#b85450;fillColor=#f8cecc;" parent="swim_customer" vertex="1">
+                    <mxGeometry x="70" y="420" width="200" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="cust_wait" value="Chờ kết quả" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#666666;fillColor=#f5f5f5;" parent="swim_customer" vertex="1">
+                    <mxGeometry x="90" y="510" width="160" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="cust_success" value="Xem kết quả &amp; nhận thông báo" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;" parent="swim_customer" vertex="1">
+                    <mxGeometry x="50" y="590" width="230" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="cust_end" value="Kết thúc" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;" parent="swim_customer" vertex="1">
+                    <mxGeometry x="100" y="670" width="120" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_custStart_review" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="swim_customer" source="cust_start" target="cust_review" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_cust_review_select" style="endArrow=classic;html=1;strokeColor=#d79b00;" parent="swim_customer" source="cust_review" target="cust_selectMethod" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_cust_select_voucher" style="endArrow=classic;html=1;strokeColor=#82b366;" parent="swim_customer" source="cust_selectMethod" target="cust_applyVoucher" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_cust_voucher_confirm" style="endArrow=classic;html=1;strokeColor=#9673a6;" parent="swim_customer" source="cust_applyVoucher" target="cust_confirm" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_cust_confirm_auth" style="endArrow=classic;html=1;strokeColor=#b85450;" parent="swim_customer" source="cust_confirm" target="cust_auth" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_cust_auth_wait" style="endArrow=classic;html=1;strokeColor=#666666;" parent="swim_customer" source="cust_auth" target="cust_wait" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_cust_wait_success" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="swim_customer" source="cust_wait" target="cust_success" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_cust_success_end" style="endArrow=classic;html=1;strokeColor=#666666;" parent="swim_customer" source="cust_success" target="cust_end" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="swim_system" value="Hệ thống Harvest Hub" style="swimlane;horizontal=0;startSize=40;childLayout=stackLayout;strokeColor=#82b366;fillColor=#ffffff;fontSize=14;" parent="boundary" vertex="1">
+                    <mxGeometry x="420" y="80" width="340" height="760" as="geometry"/>
+                </mxCell>
+                <mxCell id="sys_validateCart" value="Kiểm tra giỏ, tồn kho" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#82b366;fillColor=#d5e8d4;" parent="swim_system" vertex="1">
+                    <mxGeometry x="60" y="70" width="250" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="sys_calcFee" value="Tính phí vận chuyển / thuế" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#d79b00;fillColor=#ffe6cc;" parent="swim_system" vertex="1">
+                    <mxGeometry x="60" y="150" width="250" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="sys_generateOrder" value="Tạo đơn nháp &amp; khóa tồn" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;" parent="swim_system" vertex="1">
+                    <mxGeometry x="60" y="230" width="250" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="sys_applyVoucher" value="Xác thực voucher / coin" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#82b366;fillColor=#ffffff;" parent="swim_system" vertex="1">
+                    <mxGeometry x="60" y="310" width="250" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="sys_sendRequest" value="Gửi yêu cầu sang cổng thanh toán" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#b85450;fillColor=#f8cecc;" parent="swim_system" vertex="1">
+                    <mxGeometry x="60" y="390" width="250" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="sys_waitCallback" value="Nhận callback &amp; xác nhận" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#82b366;fillColor=#d5e8d4;" parent="swim_system" vertex="1">
+                    <mxGeometry x="60" y="470" width="250" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="sys_updateOrder" value="Cập nhật trạng thái đơn, gửi thông báo" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#9673a6;fillColor=#e1d5e7;" parent="swim_system" vertex="1">
+                    <mxGeometry x="40" y="550" width="290" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="sys_handleError" value="Xử lý lỗi/hoàn tiền" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#666666;fillColor=#f5f5f5;" parent="swim_system" vertex="1">
+                    <mxGeometry x="70" y="630" width="230" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="swim_partner" value="Đối tác thanh toán" style="swimlane;horizontal=0;startSize=40;childLayout=stackLayout;strokeColor=#b85450;fillColor=#fff2f2;fontSize=14;" parent="boundary" vertex="1">
+                    <mxGeometry x="800" y="80" width="320" height="760" as="geometry"/>
+                </mxCell>
+                <mxCell id="partner_receive" value="Gateway nhận yêu cầu, định tuyến" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#b85450;fillColor=#ffffff;" parent="swim_partner" vertex="1">
+                    <mxGeometry x="40" y="100" width="260" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="partner_auth" value="Xác thực ngân hàng/ ví" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#d79b00;fillColor=#ffe6cc;" parent="swim_partner" vertex="1">
+                    <mxGeometry x="40" y="200" width="260" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="partner_capture" value="Ghi nhận giao dịch (capture)" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#82b366;fillColor=#d5e8d4;" parent="swim_partner" vertex="1">
+                    <mxGeometry x="40" y="300" width="260" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="partner_notify" value="Trả kết quả về hệ thống" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;" parent="swim_partner" vertex="1">
+                    <mxGeometry x="40" y="400" width="260" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="partner_refund" value="Gửi tín hiệu hoàn tiền (nếu lỗi)" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#666666;fillColor=#f5f5f5;" parent="swim_partner" vertex="1">
+                    <mxGeometry x="40" y="500" width="260" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_customer_to_system" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="boundary" source="cust_selectMethod" target="sys_validateCart" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_cust_voucher_system" style="endArrow=classic;html=1;strokeColor=#82b366;" parent="boundary" source="cust_applyVoucher" target="sys_applyVoucher" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_cust_confirm_system" style="endArrow=classic;html=1;strokeColor=#b85450;" parent="boundary" source="cust_confirm" target="sys_sendRequest" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_cust_auth_partner" style="endArrow=classic;html=1;strokeColor=#b85450;" parent="boundary" source="cust_auth" target="partner_auth" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_system_to_partner" style="endArrow=classic;html=1;strokeColor=#b85450;" parent="boundary" source="sys_sendRequest" target="partner_receive" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_partner_to_system" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="boundary" source="partner_notify" target="sys_waitCallback" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_system_update_customer" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="boundary" source="sys_updateOrder" target="cust_success" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_partner_refund_system" style="endArrow=classic;html=1;strokeColor=#666666;" parent="boundary" source="partner_refund" target="sys_handleError" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_system_error_customer" value="Thanh toán thất bại" style="endArrow=classic;html=1;strokeColor=#666666;dashed=1;" parent="boundary" source="sys_handleError" target="cust_success" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
