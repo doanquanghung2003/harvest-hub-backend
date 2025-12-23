@@ -149,19 +149,19 @@ public class CategoryService {
         
         if (id == null || id.trim().isEmpty()) {
             System.err.println("ERROR: Category ID is null or empty");
-            throw new IllegalArgumentException("Category ID is required");
+            throw new IllegalArgumentException("ID danh mục là bắt buộc");
         }
 
         if (categoryRepository == null) {
             System.err.println("ERROR: CategoryRepository is null");
-            throw new IllegalStateException("CategoryRepository is not initialized");
+            throw new IllegalStateException("CategoryRepository chưa được khởi tạo");
         }
 
         // Check if category exists
         Optional<Category> categoryOpt = categoryRepository.findById(id);
         if (!categoryOpt.isPresent()) {
             System.err.println("ERROR: Category with ID " + id + " not found");
-            throw new IllegalArgumentException("Category not found with ID: " + id);
+            throw new IllegalArgumentException("Không tìm thấy danh mục với ID: " + id);
         }
 
         Category category = categoryOpt.get();

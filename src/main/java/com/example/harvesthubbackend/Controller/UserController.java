@@ -288,9 +288,17 @@ public class UserController {
             }
 
             // Tên file an toàn
-            String originalFilename = StringUtils.cleanPath(file.getOriginalFilename());
+            String originalFilename = file.getOriginalFilename();
+            if (originalFilename == null || originalFilename.isEmpty()) {
+                throw new RuntimeException("Tên file không hợp lệ");
+            }
+            originalFilename = StringUtils.cleanPath(originalFilename);
             String fileExtension = originalFilename.contains(".") ? originalFilename.substring(originalFilename.lastIndexOf('.')) : "";
-            String safeFilename = user.getId() + "_" + System.currentTimeMillis() + fileExtension;
+            String userId = user.getId();
+            if (userId == null) {
+                throw new RuntimeException("User ID không hợp lệ");
+            }
+            String safeFilename = userId + "_" + System.currentTimeMillis() + fileExtension;
 
             Path targetPath = uploadDir.resolve(safeFilename);
             Files.copy(file.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
@@ -305,7 +313,7 @@ public class UserController {
 
             return ResponseEntity.ok(Map.of("url", relativeUrl));
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(Map.of("error", "Failed to upload avatar: " + e.getMessage()));
+            return ResponseEntity.internalServerError().body(Map.of("error", "Không thể tải lên ảnh đại diện: " + e.getMessage()));
         }
     }
 }

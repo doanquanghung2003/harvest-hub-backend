@@ -21,6 +21,12 @@ import io.swagger.v3.oas.annotations.Parameter;
 import com.example.harvesthubbackend.Utils.PageResponse;
 import com.example.harvesthubbackend.Utils.PaginationUtils;
 import com.example.harvesthubbackend.Utils.ImageUrlUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.example.harvesthubbackend.Service.SellerService;
+import com.example.harvesthubbackend.Service.UserService;
+import com.example.harvesthubbackend.Models.Seller;
+import com.example.harvesthubbackend.Models.User;
 
 @RestController
 @RequestMapping({"/api/products", "/api/v1/products"})
@@ -29,6 +35,12 @@ import com.example.harvesthubbackend.Utils.ImageUrlUtils;
 public class ProductController {
     @Autowired
     private ProductService productService;
+    
+    @Autowired
+    private SellerService sellerService;
+    
+    @Autowired
+    private UserService userService;
 
     // Giới hạn tối đa số ảnh cho mỗi request
     private static final int MAX_IMAGES = 10;
@@ -75,7 +87,7 @@ public class ProductController {
     public PageResponse<Product> getProductsBySeller(
         @Parameter(description = "Seller ID") @PathVariable String sellerId,
         @Parameter(description = "Page number (0-based)", example = "0") @RequestParam(defaultValue = "0") String page,
-        @Parameter(description = "Page size", example = "20") @RequestParam(defaultValue = "20") String size) {
+        @Parameter(description = "Page size", example = "10") @RequestParam(defaultValue = "10") String size) {
         List<Product> sellerProducts = productService.getBySellerId(sellerId);
         // Normalize URL ảnh để hoạt động với mọi IP/hostname
         ImageUrlUtils.normalizeProducts(sellerProducts);
@@ -99,9 +111,13 @@ public class ProductController {
                                    @RequestParam(value = "stock", required = false) Integer stock,
                                    @RequestParam(value = "status", required = false) String status,
                                    @RequestParam(value = "tags", required = false) String tags,
-                                   @RequestParam(value = "weight", required = false) Double weight,
+                                   @RequestParam(value = "weight", required = false) String weight,
                                    @RequestParam(value = "dimensions", required = false) String dimensions,
                                    @RequestParam(value = "specifications", required = false) String specifications,
+                                   @RequestParam(value = "origin", required = false) String origin,
+                                   @RequestParam(value = "unit", required = false) String unit,
+                                   @RequestParam(value = "expiryDate", required = false) String expiryDate,
+                                   @RequestParam(value = "storageInstructions", required = false) String storageInstructions,
                                    @RequestParam(value = "sellerId", required = false) String sellerId,
                                    @RequestParam(value = "images", required = false) MultipartFile[] images,
                                    @RequestParam(value = "detailImages", required = false) MultipartFile[] detailImages) {
@@ -195,9 +211,49 @@ public class ProductController {
                 System.out.println("⚠️ sellerId không được cung cấp hoặc rỗng");
             }
             
-            // Xử lý weight
-            if (weight != null) {
-                product.setWeight(weight.toString());
+            // Xử lý weight (String)
+            if (weight != null && !weight.trim().isEmpty()) {
+                product.setWeight(weight.trim());
+                System.out.println("✅ Đã set weight: " + weight);
+            }
+            
+            // Xử lý origin
+            if (origin != null && !origin.trim().isEmpty()) {
+                product.setOrigin(origin.trim());
+                System.out.println("✅ Đã set origin: " + origin);
+            }
+            
+            // Xử lý unit
+            if (unit != null && !unit.trim().isEmpty()) {
+                product.setUnit(unit.trim());
+                System.out.println("✅ Đã set unit: " + unit);
+            }
+            
+            // Xử lý expiryDate
+            if (expiryDate != null && !expiryDate.trim().isEmpty()) {
+                product.setExpiryDate(expiryDate.trim());
+                System.out.println("✅ Đã set expiryDate: " + expiryDate);
+            }
+            
+            // Xử lý storageInstructions
+            if (storageInstructions != null && !storageInstructions.trim().isEmpty()) {
+                product.setStorageInstructions(storageInstructions.trim());
+                System.out.println("✅ Đã set storageInstructions: " + storageInstructions);
+            }
+            
+            // Xử lý specifications (parse từ JSON string)
+            if (specifications != null && !specifications.trim().isEmpty()) {
+                try {
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    Map<String, String> specsMap = objectMapper.readValue(specifications, 
+                        new TypeReference<Map<String, String>>() {});
+                    product.setSpecifications(specsMap);
+                    System.out.println("✅ Đã set specifications: " + specsMap);
+                } catch (Exception e) {
+                    System.err.println("⚠️ Lỗi khi parse specifications JSON: " + e.getMessage());
+                    e.printStackTrace();
+                    // Nếu parse lỗi, vẫn tiếp tục (không bắt buộc)
+                }
             }
             
             // Xử lý ảnh nếu có
@@ -1019,6 +1075,875 @@ public class ProductController {
     @GetMapping("/health")
     public ResponseEntity<?> health() {
         return ResponseEntity.ok(Map.of("status", "OK", "timestamp", java.time.LocalDateTime.now().toString()));
+    }
+
+    // Endpoint test để thêm sản phẩm mẫu (chỉ dùng cho development)
+    @PostMapping("/test-add-sample")
+    public ResponseEntity<?> addSampleProduct(@RequestParam(value = "username", required = false) String username) {
+        try {
+            System.out.println("=== TẠO SẢN PHẨM MẪU ===");
+            
+            // Lấy sellerId từ username
+            String sellerId = null;
+            if (username != null && !username.trim().isEmpty()) {
+                User user = userService.getByUsername(username.trim());
+                if (user != null) {
+                    Seller seller = sellerService.getSellerByUserId(user.getId());
+                    if (seller != null) {
+                        sellerId = seller.getId();
+                        System.out.println("✅ Tìm thấy sellerId: " + sellerId + " cho username: " + username);
+                    } else {
+                        System.out.println("⚠️ Không tìm thấy seller cho username: " + username);
+                    }
+                } else {
+                    System.out.println("⚠️ Không tìm thấy user với username: " + username);
+                }
+            }
+            
+            if (sellerId == null) {
+                return ResponseEntity.badRequest().body(Map.of(
+                    "error", "Không tìm thấy seller",
+                    "message", "Vui lòng cung cấp username hợp lệ hoặc đảm bảo user đã đăng ký làm seller"
+                ));
+            }
+            
+            Product product = new Product();
+            product.setName("Bông cải xanh tươi");
+            product.setShortDescription("Súp lơ xanh tươi ngon");
+            product.setDescription("Bông cải xanh là một loại rau thuộc họ cải, được sử dụng làm thực phẩm, thường được luộc hoặc hấp, nhưng cũng có thể ăn sống trong salad.");
+            product.setCategory("Rau Củ");
+            product.setPrice(20000.0);
+            product.setStock(123);
+            product.setWeight("1");
+            product.setUnit("kg");
+            product.setOrigin("VN");
+            product.setExpiryDate("1 tháng");
+            product.setStorageInstructions("Bảo quản nơi khô ráo và thoáng mát");
+            product.setStatus("active");
+            
+            // Tạo specifications
+            Map<String, String> specs = new java.util.HashMap<>();
+            specs.put("Kích thước", "10x10");
+            specs.put("Thành phần", "Rau xanh");
+            specs.put("Thương hiệu", "Việt Grap");
+            product.setSpecifications(specs);
+            
+            // Set sellerId đúng
+            product.setSellerId(sellerId);
+            
+            // Set thời gian
+            product.setCreatedAt(java.time.LocalDateTime.now());
+            product.setUpdatedAt(java.time.LocalDateTime.now());
+            
+            // Lưu sản phẩm
+            Product savedProduct = productService.create(product);
+            
+            System.out.println("✅ Sản phẩm mẫu đã được tạo với ID: " + savedProduct.getId() + " cho sellerId: " + sellerId);
+            
+            Map<String, Object> response = new java.util.HashMap<>();
+            response.put("message", "Sản phẩm mẫu đã được tạo thành công");
+            response.put("product", savedProduct);
+            response.put("sellerId", sellerId);
+            response.put("timestamp", java.time.LocalDateTime.now().toString());
+            
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            System.err.println("❌ Lỗi khi tạo sản phẩm mẫu: " + e.getMessage());
+            e.printStackTrace();
+            
+            Map<String, Object> errorResponse = new java.util.HashMap<>();
+            errorResponse.put("error", "Lỗi khi tạo sản phẩm mẫu");
+            errorResponse.put("message", e.getMessage());
+            errorResponse.put("timestamp", java.time.LocalDateTime.now().toString());
+            
+            return ResponseEntity.status(500).body(errorResponse);
+        }
+    }
+
+    // Endpoint để thêm nhiều sản phẩm rau củ Việt Nam
+    @PostMapping("/test-add-vietnam-vegetables")
+    public ResponseEntity<?> addVietnamVegetables(@RequestParam(value = "username", required = false) String username) {
+        try {
+            System.out.println("=== TẠO NHIỀU SẢN PHẨM RAU CỦ VIỆT NAM ===");
+            
+            // Lấy sellerId từ username
+            String sellerId = null;
+            if (username != null && !username.trim().isEmpty()) {
+                User user = userService.getByUsername(username.trim());
+                if (user != null) {
+                    Seller seller = sellerService.getSellerByUserId(user.getId());
+                    if (seller != null) {
+                        sellerId = seller.getId();
+                        System.out.println("✅ Tìm thấy sellerId: " + sellerId + " cho username: " + username);
+                    } else {
+                        System.out.println("⚠️ Không tìm thấy seller cho username: " + username);
+                    }
+                } else {
+                    System.out.println("⚠️ Không tìm thấy user với username: " + username);
+                }
+            }
+            
+            if (sellerId == null) {
+                return ResponseEntity.badRequest().body(Map.of(
+                    "error", "Không tìm thấy seller",
+                    "message", "Vui lòng cung cấp username hợp lệ (ví dụ: ?username=hungbanhang)"
+                ));
+            }
+            
+            // Danh sách 50 loại rau củ phổ biến ở Việt Nam
+            List<Map<String, Object>> vegetables = new ArrayList<>();
+            
+            // Rau lá
+            vegetables.add(Map.of("name", "Rau muống", "shortDescription", "Rau muống tươi xanh", "description", "Rau muống là loại rau phổ biến ở Việt Nam, thường được luộc, xào tỏi hoặc nấu canh chua.", "price", 10000.0, "stock", 300, "weight", "0.5", "unit", "kg"));
+            vegetables.add(Map.of("name", "Rau cải ngọt", "shortDescription", "Rau cải ngọt tươi xanh", "description", "Rau cải ngọt có vị ngọt tự nhiên, thường được luộc, xào hoặc nấu canh. Giàu vitamin và khoáng chất.", "price", 12000.0, "stock", 250, "weight", "0.5", "unit", "kg"));
+            vegetables.add(Map.of("name", "Rau cải xanh", "shortDescription", "Rau cải xanh tươi", "description", "Rau cải xanh giàu vitamin K, thường được xào hoặc nấu canh.", "price", 11000.0, "stock", 280, "weight", "0.5", "unit", "kg"));
+            vegetables.add(Map.of("name", "Rau cải thìa", "shortDescription", "Rau cải thìa tươi", "description", "Rau cải thìa có vị ngọt, giòn, thường được xào hoặc luộc.", "price", 13000.0, "stock", 200, "weight", "0.5", "unit", "kg"));
+            vegetables.add(Map.of("name", "Rau mồng tơi", "shortDescription", "Rau mồng tơi tươi", "description", "Rau mồng tơi có tính mát, thường được nấu canh với cua hoặc tôm.", "price", 12000.0, "stock", 150, "weight", "0.5", "unit", "kg"));
+            vegetables.add(Map.of("name", "Rau dền", "shortDescription", "Rau dền tươi", "description", "Rau dền giàu sắt và canxi, thường được nấu canh.", "price", 10000.0, "stock", 180, "weight", "0.5", "unit", "kg"));
+            vegetables.add(Map.of("name", "Rau lang", "shortDescription", "Rau lang tươi", "description", "Lá khoai lang non, thường được xào hoặc luộc.", "price", 8000.0, "stock", 200, "weight", "0.5", "unit", "kg"));
+            vegetables.add(Map.of("name", "Rau đay", "shortDescription", "Rau đay tươi", "description", "Rau đay có tính mát, thường nấu canh cua.", "price", 10000.0, "stock", 120, "weight", "0.5", "unit", "kg"));
+            vegetables.add(Map.of("name", "Rau ngót", "shortDescription", "Rau ngót tươi", "description", "Rau ngót giàu protein, thường nấu canh với thịt băm.", "price", 15000.0, "stock", 100, "weight", "0.5", "unit", "kg"));
+            vegetables.add(Map.of("name", "Rau má", "shortDescription", "Rau má tươi", "description", "Rau má có tính mát, thường làm nước ép hoặc nấu canh.", "price", 20000.0, "stock", 80, "weight", "0.5", "unit", "kg"));
+            
+            // Cải bắp và họ cải
+            vegetables.add(Map.of("name", "Cải bắp", "shortDescription", "Bắp cải tươi giòn", "description", "Bắp cải là loại rau giàu vitamin K và C. Có thể làm salad, nấu canh, xào hoặc muối chua.", "price", 15000.0, "stock", 120, "weight", "1", "unit", "kg"));
+            vegetables.add(Map.of("name", "Bông cải xanh", "shortDescription", "Súp lơ xanh tươi ngon", "description", "Bông cải xanh là một loại rau thuộc họ cải, được sử dụng làm thực phẩm, thường được luộc hoặc hấp.", "price", 20000.0, "stock", 123, "weight", "1", "unit", "kg"));
+            vegetables.add(Map.of("name", "Súp lơ trắng", "shortDescription", "Súp lơ trắng tươi", "description", "Súp lơ trắng giàu vitamin C, thường được luộc hoặc xào.", "price", 18000.0, "stock", 100, "weight", "1", "unit", "kg"));
+            vegetables.add(Map.of("name", "Cải thảo", "shortDescription", "Cải thảo tươi", "description", "Cải thảo giòn ngọt, thường được nấu canh hoặc muối chua.", "price", 16000.0, "stock", 90, "weight", "1", "unit", "kg"));
+            
+            // Cà và ớt
+            vegetables.add(Map.of("name", "Cà chua", "shortDescription", "Cà chua chín đỏ, tươi ngon", "description", "Cà chua là loại quả giàu lycopene và vitamin C. Dùng để nấu canh, làm salad, hoặc ăn sống.", "price", 18000.0, "stock", 150, "weight", "1", "unit", "kg"));
+            vegetables.add(Map.of("name", "Cà tím", "shortDescription", "Cà tím tươi ngon", "description", "Cà tím giàu chất xơ và chất chống oxy hóa. Thường được nướng, xào hoặc nấu canh.", "price", 20000.0, "stock", 80, "weight", "1", "unit", "kg"));
+            vegetables.add(Map.of("name", "Cà pháo", "shortDescription", "Cà pháo tươi", "description", "Cà pháo thường được muối chua hoặc nấu canh.", "price", 15000.0, "stock", 100, "weight", "1", "unit", "kg"));
+            vegetables.add(Map.of("name", "Ớt chuông", "shortDescription", "Ớt chuông đỏ, vàng, xanh", "description", "Ớt chuông giàu vitamin C và chất chống oxy hóa. Có thể xào, nướng hoặc ăn sống trong salad.", "price", 35000.0, "stock", 60, "weight", "0.5", "unit", "kg"));
+            vegetables.add(Map.of("name", "Ớt chỉ thiên", "shortDescription", "Ớt chỉ thiên cay", "description", "Ớt chỉ thiên cay nồng, dùng làm gia vị.", "price", 40000.0, "stock", 50, "weight", "0.2", "unit", "kg"));
+            vegetables.add(Map.of("name", "Ớt sừng", "shortDescription", "Ớt sừng tươi", "description", "Ớt sừng vừa cay, thường dùng xào hoặc làm gia vị.", "price", 30000.0, "stock", 70, "weight", "0.3", "unit", "kg"));
+            
+            // Củ và rễ
+            vegetables.add(Map.of("name", "Cà rốt", "shortDescription", "Cà rốt tươi ngon, giàu vitamin A", "description", "Cà rốt là loại củ giàu beta-carotene, tốt cho mắt và sức khỏe. Có thể ăn sống, luộc, xào hoặc làm nước ép.", "price", 15000.0, "stock", 200, "weight", "1", "unit", "kg"));
+            vegetables.add(Map.of("name", "Củ cải trắng", "shortDescription", "Củ cải trắng tươi", "description", "Củ cải trắng có vị ngọt, thường nấu canh hoặc muối chua.", "price", 12000.0, "stock", 150, "weight", "1", "unit", "kg"));
+            vegetables.add(Map.of("name", "Củ cải đỏ", "shortDescription", "Củ cải đỏ tươi", "description", "Củ cải đỏ giàu chất chống oxy hóa, có thể ăn sống hoặc nấu.", "price", 18000.0, "stock", 100, "weight", "1", "unit", "kg"));
+            vegetables.add(Map.of("name", "Củ đậu", "shortDescription", "Củ đậu tươi giòn", "description", "Củ đậu mát ngọt, có thể ăn sống hoặc nấu canh.", "price", 10000.0, "stock", 120, "weight", "1", "unit", "kg"));
+            vegetables.add(Map.of("name", "Củ hành tây", "shortDescription", "Hành tây tươi", "description", "Hành tây là gia vị quan trọng trong nấu ăn, có thể xào, nướng hoặc ăn sống. Giàu chất chống oxy hóa.", "price", 18000.0, "stock", 200, "weight", "1", "unit", "kg"));
+            vegetables.add(Map.of("name", "Củ tỏi", "shortDescription", "Tỏi tươi, thơm", "description", "Tỏi là gia vị không thể thiếu trong ẩm thực Việt Nam. Có tác dụng kháng khuẩn và tăng cường miễn dịch.", "price", 40000.0, "stock", 150, "weight", "0.5", "unit", "kg"));
+            vegetables.add(Map.of("name", "Củ gừng", "shortDescription", "Gừng tươi", "description", "Gừng có tính ấm, dùng làm gia vị và thuốc.", "price", 50000.0, "stock", 100, "weight", "0.5", "unit", "kg"));
+            vegetables.add(Map.of("name", "Củ nghệ", "shortDescription", "Nghệ tươi", "description", "Nghệ giàu curcumin, có tác dụng chống viêm.", "price", 60000.0, "stock", 80, "weight", "0.5", "unit", "kg"));
+            vegetables.add(Map.of("name", "Củ riềng", "shortDescription", "Riềng tươi", "description", "Riềng có mùi thơm đặc trưng, dùng làm gia vị.", "price", 45000.0, "stock", 90, "weight", "0.5", "unit", "kg"));
+            
+            // Khoai và bí
+            vegetables.add(Map.of("name", "Khoai tây", "shortDescription", "Khoai tây tươi", "description", "Khoai tây giàu tinh bột và kali. Có thể luộc, chiên, nướng hoặc làm khoai tây nghiền.", "price", 22000.0, "stock", 100, "weight", "1", "unit", "kg"));
+            vegetables.add(Map.of("name", "Khoai lang", "shortDescription", "Khoai lang tươi ngon", "description", "Khoai lang giàu beta-carotene và chất xơ. Có thể luộc, nướng hoặc làm chè.", "price", 15000.0, "stock", 120, "weight", "1", "unit", "kg"));
+            vegetables.add(Map.of("name", "Khoai môn", "shortDescription", "Khoai môn tươi", "description", "Khoai môn béo ngậy, thường nấu canh hoặc làm chè.", "price", 20000.0, "stock", 80, "weight", "1", "unit", "kg"));
+            vegetables.add(Map.of("name", "Khoai sọ", "shortDescription", "Khoai sọ tươi", "description", "Khoai sọ mềm dẻo, thường nấu canh.", "price", 18000.0, "stock", 70, "weight", "1", "unit", "kg"));
+            vegetables.add(Map.of("name", "Bí đỏ", "shortDescription", "Bí đỏ tươi ngon", "description", "Bí đỏ giàu beta-carotene và vitamin A. Thường được nấu canh, hầm hoặc làm chè.", "price", 18000.0, "stock", 90, "weight", "1", "unit", "kg"));
+            vegetables.add(Map.of("name", "Bí xanh", "shortDescription", "Bí xanh tươi", "description", "Bí xanh mát lành, thường nấu canh hoặc xào.", "price", 12000.0, "stock", 110, "weight", "1", "unit", "kg"));
+            vegetables.add(Map.of("name", "Bí đao", "shortDescription", "Bí đao tươi", "description", "Bí đao có tính mát, thường nấu canh.", "price", 10000.0, "stock", 130, "weight", "1", "unit", "kg"));
+            vegetables.add(Map.of("name", "Mướp", "shortDescription", "Mướp tươi", "description", "Mướp non thường nấu canh hoặc xào.", "price", 15000.0, "stock", 100, "weight", "1", "unit", "kg"));
+            vegetables.add(Map.of("name", "Bầu", "shortDescription", "Bầu tươi", "description", "Bầu non thường nấu canh.", "price", 12000.0, "stock", 90, "weight", "1", "unit", "kg"));
+            
+            // Đậu và đỗ
+            vegetables.add(Map.of("name", "Đậu cô ve", "shortDescription", "Đậu cô ve tươi xanh", "description", "Đậu cô ve là loại đậu non, mềm, thường được xào hoặc luộc. Giàu protein và chất xơ.", "price", 25000.0, "stock", 100, "weight", "0.5", "unit", "kg"));
+            vegetables.add(Map.of("name", "Đậu đũa", "shortDescription", "Đậu đũa tươi", "description", "Đậu đũa dài, thường xào hoặc luộc.", "price", 20000.0, "stock", 120, "weight", "0.5", "unit", "kg"));
+            vegetables.add(Map.of("name", "Đậu bắp", "shortDescription", "Đậu bắp tươi", "description", "Đậu bắp có chất nhầy, thường luộc hoặc nấu canh chua.", "price", 18000.0, "stock", 80, "weight", "0.5", "unit", "kg"));
+            vegetables.add(Map.of("name", "Đậu rồng", "shortDescription", "Đậu rồng tươi", "description", "Đậu rồng có hình dạng đặc biệt, thường xào hoặc luộc.", "price", 30000.0, "stock", 60, "weight", "0.5", "unit", "kg"));
+            vegetables.add(Map.of("name", "Đậu Hà Lan", "shortDescription", "Đậu Hà Lan tươi", "description", "Đậu Hà Lan ngọt, thường xào hoặc nấu canh.", "price", 35000.0, "stock", 70, "weight", "0.5", "unit", "kg"));
+            
+            // Rau gia vị và thảo mộc
+            vegetables.add(Map.of("name", "Hành lá", "shortDescription", "Hành lá tươi", "description", "Hành lá dùng làm gia vị, trang trí món ăn.", "price", 15000.0, "stock", 200, "weight", "0.2", "unit", "bó"));
+            vegetables.add(Map.of("name", "Ngò rí", "shortDescription", "Ngò rí tươi", "description", "Ngò rí thơm, dùng làm gia vị.", "price", 12000.0, "stock", 150, "weight", "0.2", "unit", "bó"));
+            vegetables.add(Map.of("name", "Rau mùi", "shortDescription", "Rau mùi tươi", "description", "Rau mùi thơm đặc trưng, dùng làm gia vị.", "price", 10000.0, "stock", 180, "weight", "0.2", "unit", "bó"));
+            vegetables.add(Map.of("name", "Rau thơm", "shortDescription", "Rau thơm tươi", "description", "Hỗn hợp các loại rau thơm, dùng ăn kèm.", "price", 15000.0, "stock", 100, "weight", "0.2", "unit", "bó"));
+            vegetables.add(Map.of("name", "Tía tô", "shortDescription", "Tía tô tươi", "description", "Lá tía tô có mùi thơm, dùng ăn kèm hoặc nấu canh.", "price", 18000.0, "stock", 90, "weight", "0.2", "unit", "bó"));
+            
+            // Các loại khác
+            vegetables.add(Map.of("name", "Dưa chuột", "shortDescription", "Dưa chuột tươi giòn, mát lạnh", "description", "Dưa chuột có tính mát, giàu nước và vitamin. Thường dùng để ăn sống, làm salad hoặc muối chua.", "price", 12000.0, "stock", 180, "weight", "1", "unit", "kg"));
+            vegetables.add(Map.of("name", "Khổ qua", "shortDescription", "Khổ qua tươi", "description", "Khổ qua có vị đắng, thường xào hoặc nấu canh.", "price", 20000.0, "stock", 80, "weight", "1", "unit", "kg"));
+            vegetables.add(Map.of("name", "Su su", "shortDescription", "Su su tươi", "description", "Su su giòn ngọt, thường xào hoặc nấu canh.", "price", 15000.0, "stock", 100, "weight", "1", "unit", "kg"));
+            vegetables.add(Map.of("name", "Cà pháo muối", "shortDescription", "Cà pháo muối chua", "description", "Cà pháo đã được muối chua, ăn kèm với các món ăn.", "price", 25000.0, "stock", 50, "weight", "0.5", "unit", "kg"));
+            
+            // Thêm các loại rau củ khác để đủ 50 sản phẩm
+            vegetables.add(Map.of("name", "Rau cần", "shortDescription", "Rau cần tươi", "description", "Rau cần giòn ngọt, thường xào hoặc nấu canh.", "price", 14000.0, "stock", 110, "weight", "0.5", "unit", "kg"));
+            vegetables.add(Map.of("name", "Rau diếp cá", "shortDescription", "Rau diếp cá tươi", "description", "Rau diếp cá có mùi đặc trưng, dùng ăn kèm.", "price", 16000.0, "stock", 95, "weight", "0.2", "unit", "bó"));
+            vegetables.add(Map.of("name", "Rau răm", "shortDescription", "Rau răm tươi", "description", "Rau răm thơm, dùng ăn kèm với các món ăn.", "price", 12000.0, "stock", 85, "weight", "0.2", "unit", "bó"));
+            vegetables.add(Map.of("name", "Rau kinh giới", "shortDescription", "Rau kinh giới tươi", "description", "Rau kinh giới thơm, dùng ăn kèm.", "price", 13000.0, "stock", 75, "weight", "0.2", "unit", "bó"));
+            vegetables.add(Map.of("name", "Rau húng quế", "shortDescription", "Rau húng quế tươi", "description", "Rau húng quế thơm, dùng làm gia vị.", "price", 11000.0, "stock", 90, "weight", "0.2", "unit", "bó"));
+            vegetables.add(Map.of("name", "Rau húng lủi", "shortDescription", "Rau húng lủi tươi", "description", "Rau húng lủi thơm mát, dùng ăn kèm.", "price", 14000.0, "stock", 80, "weight", "0.2", "unit", "bó"));
+            vegetables.add(Map.of("name", "Rau đắng", "shortDescription", "Rau đắng tươi", "description", "Rau đắng có vị đắng, thường nấu canh.", "price", 15000.0, "stock", 70, "weight", "0.5", "unit", "kg"));
+            vegetables.add(Map.of("name", "Rau sam", "shortDescription", "Rau sam tươi", "description", "Rau sam mát, có thể xào hoặc nấu canh.", "price", 12000.0, "stock", 60, "weight", "0.5", "unit", "kg"));
+            vegetables.add(Map.of("name", "Rau mầm", "shortDescription", "Rau mầm tươi", "description", "Rau mầm non, giàu dinh dưỡng, thường ăn sống.", "price", 30000.0, "stock", 40, "weight", "0.2", "unit", "kg"));
+            vegetables.add(Map.of("name", "Rau chân vịt", "shortDescription", "Rau chân vịt tươi", "description", "Rau chân vịt giàu sắt, thường xào hoặc nấu canh.", "price", 20000.0, "stock", 85, "weight", "0.5", "unit", "kg"));
+            vegetables.add(Map.of("name", "Rau xà lách", "shortDescription", "Rau xà lách tươi", "description", "Rau xà lách giòn, thường làm salad.", "price", 18000.0, "stock", 95, "weight", "0.5", "unit", "kg"));
+            vegetables.add(Map.of("name", "Rau cải xoong", "shortDescription", "Rau cải xoong tươi", "description", "Rau cải xoong cay nhẹ, thường ăn sống hoặc nấu canh.", "price", 22000.0, "stock", 75, "weight", "0.5", "unit", "kg"));
+            vegetables.add(Map.of("name", "Rau cải cúc", "shortDescription", "Rau cải cúc tươi", "description", "Rau cải cúc thơm, thường nấu canh.", "price", 16000.0, "stock", 80, "weight", "0.5", "unit", "kg"));
+            vegetables.add(Map.of("name", "Rau tần ô", "shortDescription", "Rau tần ô tươi", "description", "Rau tần ô thơm, thường nấu canh.", "price", 17000.0, "stock", 70, "weight", "0.5", "unit", "kg"));
+            vegetables.add(Map.of("name", "Cải bó xôi", "shortDescription", "Cải bó xôi tươi", "description", "Cải bó xôi giàu sắt, thường xào hoặc nấu canh.", "price", 25000.0, "stock", 65, "weight", "0.5", "unit", "kg"));
+            vegetables.add(Map.of("name", "Cải thìa", "shortDescription", "Cải thìa tươi", "description", "Cải thìa giòn ngọt, thường xào hoặc luộc.", "price", 14000.0, "stock", 100, "weight", "0.5", "unit", "kg"));
+            vegetables.add(Map.of("name", "Cải xoăn", "shortDescription", "Cải xoăn tươi", "description", "Cải xoăn giàu vitamin, thường xào hoặc nấu canh.", "price", 20000.0, "stock", 75, "weight", "0.5", "unit", "kg"));
+            vegetables.add(Map.of("name", "Cải chip", "shortDescription", "Cải chip tươi", "description", "Cải chip giòn, thường xào hoặc luộc.", "price", 18000.0, "stock", 85, "weight", "0.5", "unit", "kg"));
+            vegetables.add(Map.of("name", "Cải bẹ xanh", "shortDescription", "Cải bẹ xanh tươi", "description", "Cải bẹ xanh cay nhẹ, thường nấu canh.", "price", 12000.0, "stock", 90, "weight", "0.5", "unit", "kg"));
+            vegetables.add(Map.of("name", "Cải bẹ trắng", "shortDescription", "Cải bẹ trắng tươi", "description", "Cải bẹ trắng thường muối chua hoặc nấu canh.", "price", 11000.0, "stock", 95, "weight", "0.5", "unit", "kg"));
+            vegetables.add(Map.of("name", "Cải bẹ đỏ", "shortDescription", "Cải bẹ đỏ tươi", "description", "Cải bẹ đỏ có màu đỏ đẹp, thường nấu canh.", "price", 13000.0, "stock", 88, "weight", "0.5", "unit", "kg"));
+            vegetables.add(Map.of("name", "Cải rổ", "shortDescription", "Cải rổ tươi", "description", "Cải rổ giòn, thường xào hoặc luộc.", "price", 15000.0, "stock", 82, "weight", "0.5", "unit", "kg"));
+            vegetables.add(Map.of("name", "Cải bẹ dưa", "shortDescription", "Cải bẹ dưa tươi", "description", "Cải bẹ dưa thường muối chua.", "price", 10000.0, "stock", 100, "weight", "0.5", "unit", "kg"));
+            vegetables.add(Map.of("name", "Cải cầu vồng", "shortDescription", "Cải cầu vồng tươi", "description", "Cải cầu vồng có nhiều màu sắc, thường xào hoặc nấu canh.", "price", 22000.0, "stock", 68, "weight", "0.5", "unit", "kg"));
+            vegetables.add(Map.of("name", "Cải bẹ mèo", "shortDescription", "Cải bẹ mèo tươi", "description", "Cải bẹ mèo thơm, thường nấu canh.", "price", 14000.0, "stock", 78, "weight", "0.5", "unit", "kg"));
+            vegetables.add(Map.of("name", "Cải bẹ xôi", "shortDescription", "Cải bẹ xôi tươi", "description", "Cải bẹ xôi thường nấu canh hoặc xào.", "price", 13000.0, "stock", 85, "weight", "0.5", "unit", "kg"));
+            vegetables.add(Map.of("name", "Cải bẹ vàng", "shortDescription", "Cải bẹ vàng tươi", "description", "Cải bẹ vàng có màu vàng, thường nấu canh.", "price", 15000.0, "stock", 72, "weight", "0.5", "unit", "kg"));
+            vegetables.add(Map.of("name", "Cải bẹ tím", "shortDescription", "Cải bẹ tím tươi", "description", "Cải bẹ tím có màu tím, thường nấu canh.", "price", 16000.0, "stock", 70, "weight", "0.5", "unit", "kg"));
+            vegetables.add(Map.of("name", "Cải bẹ xanh lá", "shortDescription", "Cải bẹ xanh lá tươi", "description", "Cải bẹ xanh lá thường nấu canh.", "price", 12000.0, "stock", 88, "weight", "0.5", "unit", "kg"));
+            vegetables.add(Map.of("name", "Cải bẹ xanh thân", "shortDescription", "Cải bẹ xanh thân tươi", "description", "Cải bẹ xanh thân thường nấu canh hoặc xào.", "price", 11000.0, "stock", 92, "weight", "0.5", "unit", "kg"));
+            
+            List<Product> createdProducts = new ArrayList<>();
+            int successCount = 0;
+            int failCount = 0;
+            
+            for (Map<String, Object> veg : vegetables) {
+                try {
+                    String productName = (String) veg.get("name");
+                    
+                    // Kiểm tra xem sản phẩm đã tồn tại chưa (theo tên và sellerId)
+                    List<Product> existingProducts = productService.getBySellerId(sellerId);
+                    boolean exists = false;
+                    for (Product existing : existingProducts) {
+                        if (existing.getName() != null && existing.getName().equals(productName)) {
+                            exists = true;
+                            System.out.println("⚠️ Sản phẩm '" + productName + "' đã tồn tại, bỏ qua...");
+                            break;
+                        }
+                    }
+                    
+                    if (exists) {
+                        failCount++;
+                        continue;
+                    }
+                    
+                    Product product = new Product();
+                    product.setName(productName);
+                    product.setShortDescription((String) veg.get("shortDescription"));
+                    product.setDescription((String) veg.get("description"));
+                    product.setCategory("Rau Củ");
+                    product.setPrice(((Number) veg.get("price")).doubleValue());
+                    product.setStock(((Number) veg.get("stock")).intValue());
+                    product.setWeight((String) veg.get("weight"));
+                    product.setUnit((String) veg.get("unit"));
+                    product.setOrigin("VN");
+                    product.setExpiryDate("3-7 ngày");
+                    product.setStorageInstructions("Bảo quản nơi khô ráo và thoáng mát, tránh ánh nắng trực tiếp");
+                    product.setStatus("active");
+                    
+                    // Tạo specifications
+                    Map<String, String> specs = new java.util.HashMap<>();
+                    specs.put("Xuất xứ", "Việt Nam");
+                    specs.put("Loại", "Rau củ tươi");
+                    product.setSpecifications(specs);
+                    
+                    // Set sellerId
+                    product.setSellerId(sellerId);
+                    
+                    // Set thời gian
+                    product.setCreatedAt(java.time.LocalDateTime.now());
+                    product.setUpdatedAt(java.time.LocalDateTime.now());
+                    
+                    // Lưu sản phẩm
+                    Product savedProduct = productService.create(product);
+                    createdProducts.add(savedProduct);
+                    successCount++;
+                    System.out.println("✅ Đã tạo: " + product.getName() + " (ID: " + savedProduct.getId() + ")");
+                } catch (Exception e) {
+                    failCount++;
+                    System.err.println("❌ Lỗi khi tạo " + veg.get("name") + ": " + e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+            
+            Map<String, Object> response = new java.util.HashMap<>();
+            response.put("message", "Đã tạo " + successCount + " sản phẩm thành công");
+            response.put("total", vegetables.size());
+            response.put("success", successCount);
+            response.put("failed", failCount);
+            response.put("sellerId", sellerId);
+            response.put("products", createdProducts);
+            response.put("timestamp", java.time.LocalDateTime.now().toString());
+            
+            System.out.println("✅ Hoàn thành! Đã tạo " + successCount + "/" + vegetables.size() + " sản phẩm");
+            
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            System.err.println("❌ Lỗi khi tạo sản phẩm: " + e.getMessage());
+            e.printStackTrace();
+            
+            Map<String, Object> errorResponse = new java.util.HashMap<>();
+            errorResponse.put("error", "Lỗi khi tạo sản phẩm");
+            errorResponse.put("message", e.getMessage());
+            errorResponse.put("timestamp", java.time.LocalDateTime.now().toString());
+            
+            return ResponseEntity.status(500).body(errorResponse);
+        }
+    }
+
+    // Endpoint để thêm nhiều sản phẩm trái cây Việt Nam
+    @PostMapping("/test-add-vietnam-fruits")
+    public ResponseEntity<?> addVietnamFruits(@RequestParam(value = "username", required = false) String username) {
+        try {
+            System.out.println("=== TẠO NHIỀU SẢN PHẨM TRÁI CÂY VIỆT NAM ===");
+            
+            // Lấy sellerId từ username
+            String sellerId = null;
+            if (username != null && !username.trim().isEmpty()) {
+                User user = userService.getByUsername(username.trim());
+                if (user != null) {
+                    Seller seller = sellerService.getSellerByUserId(user.getId());
+                    if (seller != null) {
+                        sellerId = seller.getId();
+                        System.out.println("✅ Tìm thấy sellerId: " + sellerId + " cho username: " + username);
+                    } else {
+                        System.out.println("⚠️ Không tìm thấy seller cho username: " + username);
+                    }
+                } else {
+                    System.out.println("⚠️ Không tìm thấy user với username: " + username);
+                }
+            }
+            
+            if (sellerId == null) {
+                return ResponseEntity.badRequest().body(Map.of(
+                    "error", "Không tìm thấy seller",
+                    "message", "Vui lòng cung cấp username hợp lệ (ví dụ: ?username=hungbanhang)"
+                ));
+            }
+            
+            // Danh sách 50 loại trái cây phổ biến ở Việt Nam
+            List<Map<String, Object>> fruits = new ArrayList<>();
+            
+            // Trái cây nhiệt đới phổ biến
+            fruits.add(Map.of("name", "Chuối", "shortDescription", "Chuối tươi ngon", "description", "Chuối là loại trái cây giàu kali và vitamin B6, rất tốt cho sức khỏe tim mạch và tiêu hóa.", "price", 15000.0, "stock", 200, "weight", "1", "unit", "kg"));
+            fruits.add(Map.of("name", "Xoài", "shortDescription", "Xoài chín vàng", "description", "Xoài giàu vitamin C và A, có vị ngọt thơm đặc trưng. Có thể ăn chín hoặc làm sinh tố.", "price", 25000.0, "stock", 150, "weight", "1", "unit", "kg"));
+            fruits.add(Map.of("name", "Cam", "shortDescription", "Cam tươi ngọt", "description", "Cam giàu vitamin C, tăng cường miễn dịch. Có thể ăn trực tiếp hoặc vắt nước.", "price", 20000.0, "stock", 180, "weight", "1", "unit", "kg"));
+            fruits.add(Map.of("name", "Bưởi", "shortDescription", "Bưởi tươi ngon", "description", "Bưởi giàu vitamin C và chất xơ, giúp giảm cân và tốt cho tim mạch.", "price", 30000.0, "stock", 100, "weight", "1", "unit", "kg"));
+            fruits.add(Map.of("name", "Ổi", "shortDescription", "Ổi tươi giòn", "description", "Ổi giàu vitamin C gấp 4 lần cam, có vị ngọt giòn, tốt cho tiêu hóa.", "price", 18000.0, "stock", 160, "weight", "1", "unit", "kg"));
+            fruits.add(Map.of("name", "Dứa", "shortDescription", "Dứa tươi ngọt", "description", "Dứa giàu bromelain, giúp tiêu hóa và chống viêm. Có thể ăn trực tiếp hoặc làm nước ép.", "price", 22000.0, "stock", 120, "weight", "1", "unit", "kg"));
+            fruits.add(Map.of("name", "Đu đủ", "shortDescription", "Đu đủ chín vàng", "description", "Đu đủ giàu papain, tốt cho tiêu hóa. Có thể ăn chín hoặc làm sinh tố.", "price", 20000.0, "stock", 140, "weight", "1", "unit", "kg"));
+            fruits.add(Map.of("name", "Thanh long", "shortDescription", "Thanh long tươi", "description", "Thanh long giàu chất chống oxy hóa và chất xơ, có vị ngọt nhẹ.", "price", 35000.0, "stock", 80, "weight", "1", "unit", "kg"));
+            fruits.add(Map.of("name", "Dưa hấu", "shortDescription", "Dưa hấu tươi mát", "description", "Dưa hấu giàu nước và lycopene, giải nhiệt tốt trong mùa hè.", "price", 15000.0, "stock", 200, "weight", "1", "unit", "kg"));
+            fruits.add(Map.of("name", "Mít", "shortDescription", "Mít chín thơm", "description", "Mít có mùi thơm đặc trưng, giàu vitamin C và chất xơ.", "price", 30000.0, "stock", 60, "weight", "1", "unit", "kg"));
+            
+            // Trái cây có múi
+            fruits.add(Map.of("name", "Quýt", "shortDescription", "Quýt tươi ngọt", "description", "Quýt nhỏ gọn, dễ bóc, giàu vitamin C và chất chống oxy hóa.", "price", 25000.0, "stock", 130, "weight", "1", "unit", "kg"));
+            fruits.add(Map.of("name", "Chanh", "shortDescription", "Chanh tươi", "description", "Chanh giàu vitamin C, dùng làm gia vị, nước chấm hoặc nước giải khát.", "price", 20000.0, "stock", 150, "weight", "1", "unit", "kg"));
+            fruits.add(Map.of("name", "Chanh dây", "shortDescription", "Chanh dây tươi", "description", "Chanh dây có vị chua ngọt, giàu vitamin C và chất chống oxy hóa.", "price", 40000.0, "stock", 70, "weight", "1", "unit", "kg"));
+            fruits.add(Map.of("name", "Bưởi da xanh", "shortDescription", "Bưởi da xanh tươi", "description", "Bưởi da xanh ngọt, ít hạt, giàu vitamin C.", "price", 35000.0, "stock", 90, "weight", "1", "unit", "kg"));
+            fruits.add(Map.of("name", "Bưởi năm roi", "shortDescription", "Bưởi năm roi tươi", "description", "Bưởi năm roi ngọt, mọng nước, thơm.", "price", 32000.0, "stock", 85, "weight", "1", "unit", "kg"));
+            
+            // Trái cây nhiệt đới đặc sản
+            fruits.add(Map.of("name", "Sầu riêng", "shortDescription", "Sầu riêng chín thơm", "description", "Sầu riêng có mùi thơm đặc trưng, giàu chất béo và năng lượng.", "price", 120000.0, "stock", 30, "weight", "1", "unit", "kg"));
+            fruits.add(Map.of("name", "Măng cụt", "shortDescription", "Măng cụt tươi", "description", "Măng cụt có vị ngọt thanh, giàu chất chống oxy hóa.", "price", 80000.0, "stock", 40, "weight", "1", "unit", "kg"));
+            fruits.add(Map.of("name", "Nhãn", "shortDescription", "Nhãn tươi ngọt", "description", "Nhãn có vị ngọt, mọng nước, giàu vitamin C và khoáng chất.", "price", 40000.0, "stock", 100, "weight", "1", "unit", "kg"));
+            fruits.add(Map.of("name", "Vải thiều", "shortDescription", "Vải thiều tươi", "description", "Vải thiều ngọt, thơm, giàu vitamin C và chất chống oxy hóa.", "price", 45000.0, "stock", 90, "weight", "1", "unit", "kg"));
+            fruits.add(Map.of("name", "Chôm chôm", "shortDescription", "Chôm chôm tươi", "description", "Chôm chôm có vị ngọt, mọng nước, giàu vitamin C.", "price", 35000.0, "stock", 80, "weight", "1", "unit", "kg"));
+            fruits.add(Map.of("name", "Rambutan", "shortDescription", "Rambutan tươi", "description", "Rambutan (chôm chôm) có vị ngọt, mọng nước.", "price", 40000.0, "stock", 75, "weight", "1", "unit", "kg"));
+            fruits.add(Map.of("name", "Mận", "shortDescription", "Mận tươi", "description", "Mận có vị chua ngọt, giàu vitamin C và chất xơ.", "price", 30000.0, "stock", 110, "weight", "1", "unit", "kg"));
+            fruits.add(Map.of("name", "Mơ", "shortDescription", "Mơ tươi", "description", "Mơ có vị chua ngọt, thường dùng làm mứt hoặc ăn tươi.", "price", 50000.0, "stock", 60, "weight", "1", "unit", "kg"));
+            fruits.add(Map.of("name", "Mận hậu", "shortDescription", "Mận hậu tươi", "description", "Mận hậu có vị chua ngọt đặc trưng, giàu vitamin.", "price", 35000.0, "stock", 95, "weight", "1", "unit", "kg"));
+            
+            // Trái cây dân dã
+            fruits.add(Map.of("name", "Cóc", "shortDescription", "Cóc tươi", "description", "Cóc có vị chua, thường chấm muối ớt, giàu vitamin C.", "price", 20000.0, "stock", 120, "weight", "1", "unit", "kg"));
+            fruits.add(Map.of("name", "Có múi", "shortDescription", "Có múi tươi", "description", "Có múi có vị chua ngọt, thường dùng làm nước giải khát.", "price", 18000.0, "stock", 130, "weight", "1", "unit", "kg"));
+            fruits.add(Map.of("name", "Me", "shortDescription", "Me tươi", "description", "Me có vị chua, dùng làm nước giải khát hoặc gia vị.", "price", 25000.0, "stock", 100, "weight", "1", "unit", "kg"));
+            fruits.add(Map.of("name", "Táo", "shortDescription", "Táo tươi giòn", "description", "Táo giàu chất xơ và vitamin C, tốt cho tiêu hóa.", "price", 40000.0, "stock", 90, "weight", "1", "unit", "kg"));
+            fruits.add(Map.of("name", "Lê", "shortDescription", "Lê tươi ngọt", "description", "Lê có vị ngọt thanh, mọng nước, giàu chất xơ.", "price", 35000.0, "stock", 85, "weight", "1", "unit", "kg"));
+            fruits.add(Map.of("name", "Nho", "shortDescription", "Nho tươi ngọt", "description", "Nho giàu chất chống oxy hóa và resveratrol, tốt cho tim mạch.", "price", 60000.0, "stock", 70, "weight", "1", "unit", "kg"));
+            fruits.add(Map.of("name", "Dâu tây", "shortDescription", "Dâu tây tươi", "description", "Dâu tây giàu vitamin C và chất chống oxy hóa, có vị ngọt chua.", "price", 80000.0, "stock", 50, "weight", "0.5", "unit", "kg"));
+            fruits.add(Map.of("name", "Dâu tằm", "shortDescription", "Dâu tằm tươi", "description", "Dâu tằm có vị chua ngọt, giàu vitamin C và chất chống oxy hóa.", "price", 70000.0, "stock", 55, "weight", "0.5", "unit", "kg"));
+            fruits.add(Map.of("name", "Dâu da", "shortDescription", "Dâu da tươi", "description", "Dâu da có vị chua ngọt, thường dùng làm nước giải khát.", "price", 30000.0, "stock", 100, "weight", "1", "unit", "kg"));
+            fruits.add(Map.of("name", "Dâu tây Đà Lạt", "shortDescription", "Dâu tây Đà Lạt tươi", "description", "Dâu tây Đà Lạt ngọt, thơm, giàu vitamin C.", "price", 90000.0, "stock", 45, "weight", "0.5", "unit", "kg"));
+            
+            // Trái cây miền Nam
+            fruits.add(Map.of("name", "Sapoche", "shortDescription", "Sapoche tươi", "description", "Sapoche (hồng xiêm) có vị ngọt, mềm, giàu chất xơ.", "price", 30000.0, "stock", 80, "weight", "1", "unit", "kg"));
+            fruits.add(Map.of("name", "Mãng cầu", "shortDescription", "Mãng cầu tươi", "description", "Mãng cầu có vị ngọt, thơm, giàu vitamin C.", "price", 40000.0, "stock", 70, "weight", "1", "unit", "kg"));
+            fruits.add(Map.of("name", "Mãng cầu xiêm", "shortDescription", "Mãng cầu xiêm tươi", "description", "Mãng cầu xiêm có vị chua ngọt, thường làm sinh tố.", "price", 35000.0, "stock", 75, "weight", "1", "unit", "kg"));
+            fruits.add(Map.of("name", "Trái cóc", "shortDescription", "Trái cóc tươi", "description", "Trái cóc có vị chua, thường chấm muối ớt.", "price", 18000.0, "stock", 110, "weight", "1", "unit", "kg"));
+            fruits.add(Map.of("name", "Trái thơm", "shortDescription", "Trái thơm tươi", "description", "Trái thơm (dứa) ngọt, thơm, giàu bromelain.", "price", 22000.0, "stock", 120, "weight", "1", "unit", "kg"));
+            fruits.add(Map.of("name", "Trái bơ", "shortDescription", "Bơ tươi", "description", "Bơ giàu chất béo tốt, vitamin E, tốt cho tim mạch và da.", "price", 50000.0, "stock", 65, "weight", "1", "unit", "kg"));
+            fruits.add(Map.of("name", "Trái ổi", "shortDescription", "Ổi tươi", "description", "Ổi giàu vitamin C, có vị ngọt giòn.", "price", 18000.0, "stock", 160, "weight", "1", "unit", "kg"));
+            fruits.add(Map.of("name", "Trái dừa", "shortDescription", "Dừa tươi", "description", "Dừa có nước ngọt mát, cơm dừa béo ngậy, giàu chất điện giải.", "price", 15000.0, "stock", 200, "weight", "1", "unit", "quả"));
+            fruits.add(Map.of("name", "Trái dừa xiêm", "shortDescription", "Dừa xiêm tươi", "description", "Dừa xiêm nhỏ, nhiều nước, ngọt mát.", "price", 12000.0, "stock", 180, "weight", "1", "unit", "quả"));
+            fruits.add(Map.of("name", "Trái dừa dứa", "shortDescription", "Dừa dứa tươi", "description", "Dừa dứa có mùi thơm đặc trưng, nước ngọt.", "price", 18000.0, "stock", 150, "weight", "1", "unit", "quả"));
+            
+            // Trái cây miền Bắc
+            fruits.add(Map.of("name", "Hồng", "shortDescription", "Hồng tươi", "description", "Hồng có vị ngọt, mềm, giàu vitamin A và C.", "price", 40000.0, "stock", 80, "weight", "1", "unit", "kg"));
+            fruits.add(Map.of("name", "Na", "shortDescription", "Na tươi", "description", "Na (mãng cầu ta) có vị ngọt, thơm, mềm.", "price", 35000.0, "stock", 90, "weight", "1", "unit", "kg"));
+            fruits.add(Map.of("name", "Vú sữa", "shortDescription", "Vú sữa tươi", "description", "Vú sữa có vị ngọt, mọng nước, thơm.", "price", 45000.0, "stock", 70, "weight", "1", "unit", "kg"));
+            fruits.add(Map.of("name", "Mít tố nữ", "shortDescription", "Mít tố nữ tươi", "description", "Mít tố nữ nhỏ, thơm, ngọt.", "price", 50000.0, "stock", 60, "weight", "1", "unit", "kg"));
+            fruits.add(Map.of("name", "Chuối sứ", "shortDescription", "Chuối sứ tươi", "description", "Chuối sứ to, ngọt, thơm.", "price", 20000.0, "stock", 170, "weight", "1", "unit", "kg"));
+            fruits.add(Map.of("name", "Chuối cau", "shortDescription", "Chuối cau tươi", "description", "Chuối cau nhỏ, ngọt, thơm.", "price", 18000.0, "stock", 180, "weight", "1", "unit", "kg"));
+            fruits.add(Map.of("name", "Chuối tiêu", "shortDescription", "Chuối tiêu tươi", "description", "Chuối tiêu ngọt, mềm, dễ tiêu hóa.", "price", 16000.0, "stock", 190, "weight", "1", "unit", "kg"));
+            fruits.add(Map.of("name", "Chuối già", "shortDescription", "Chuối già tươi", "description", "Chuối già to, ngọt, thơm.", "price", 17000.0, "stock", 185, "weight", "1", "unit", "kg"));
+            fruits.add(Map.of("name", "Chuối laba", "shortDescription", "Chuối laba tươi", "description", "Chuối laba dài, ngọt, thơm.", "price", 19000.0, "stock", 175, "weight", "1", "unit", "kg"));
+            fruits.add(Map.of("name", "Xoài cát", "shortDescription", "Xoài cát tươi", "description", "Xoài cát ngọt, thơm, ít xơ.", "price", 30000.0, "stock", 120, "weight", "1", "unit", "kg"));
+            
+            List<Product> createdProducts = new ArrayList<>();
+            int successCount = 0;
+            int failCount = 0;
+            
+            for (Map<String, Object> fruit : fruits) {
+                try {
+                    String productName = (String) fruit.get("name");
+                    
+                    // Kiểm tra xem sản phẩm đã tồn tại chưa (theo tên và sellerId)
+                    List<Product> existingProducts = productService.getBySellerId(sellerId);
+                    boolean exists = false;
+                    for (Product existing : existingProducts) {
+                        if (existing.getName() != null && existing.getName().equals(productName)) {
+                            exists = true;
+                            System.out.println("⚠️ Sản phẩm '" + productName + "' đã tồn tại, bỏ qua...");
+                            break;
+                        }
+                    }
+                    
+                    if (exists) {
+                        failCount++;
+                        continue;
+                    }
+                    
+                    Product product = new Product();
+                    product.setName(productName);
+                    product.setShortDescription((String) fruit.get("shortDescription"));
+                    product.setDescription((String) fruit.get("description"));
+                    product.setCategory("Trái Cây");
+                    product.setPrice(((Number) fruit.get("price")).doubleValue());
+                    product.setStock(((Number) fruit.get("stock")).intValue());
+                    product.setWeight((String) fruit.get("weight"));
+                    product.setUnit((String) fruit.get("unit"));
+                    product.setOrigin("VN");
+                    product.setExpiryDate("3-7 ngày");
+                    product.setStorageInstructions("Bảo quản nơi khô ráo và thoáng mát, tránh ánh nắng trực tiếp");
+                    product.setStatus("active");
+                    
+                    // Tạo specifications
+                    Map<String, String> specs = new java.util.HashMap<>();
+                    specs.put("Xuất xứ", "Việt Nam");
+                    specs.put("Loại", "Trái cây tươi");
+                    product.setSpecifications(specs);
+                    
+                    // Set sellerId
+                    product.setSellerId(sellerId);
+                    
+                    // Set thời gian
+                    product.setCreatedAt(java.time.LocalDateTime.now());
+                    product.setUpdatedAt(java.time.LocalDateTime.now());
+                    
+                    // Lưu sản phẩm
+                    Product savedProduct = productService.create(product);
+                    createdProducts.add(savedProduct);
+                    successCount++;
+                    System.out.println("✅ Đã tạo: " + product.getName() + " (ID: " + savedProduct.getId() + ")");
+                } catch (Exception e) {
+                    failCount++;
+                    System.err.println("❌ Lỗi khi tạo " + fruit.get("name") + ": " + e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+            
+            Map<String, Object> response = new java.util.HashMap<>();
+            response.put("message", "Đã tạo " + successCount + " sản phẩm trái cây thành công");
+            response.put("total", fruits.size());
+            response.put("success", successCount);
+            response.put("failed", failCount);
+            response.put("sellerId", sellerId);
+            response.put("products", createdProducts);
+            response.put("timestamp", java.time.LocalDateTime.now().toString());
+            
+            System.out.println("✅ Hoàn thành! Đã tạo " + successCount + "/" + fruits.size() + " sản phẩm trái cây");
+            
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            System.err.println("❌ Lỗi khi tạo sản phẩm trái cây: " + e.getMessage());
+            e.printStackTrace();
+            
+            Map<String, Object> errorResponse = new java.util.HashMap<>();
+            errorResponse.put("error", "Lỗi khi tạo sản phẩm trái cây");
+            errorResponse.put("message", e.getMessage());
+            errorResponse.put("timestamp", java.time.LocalDateTime.now().toString());
+            
+            return ResponseEntity.status(500).body(errorResponse);
+        }
+    }
+
+    // Endpoint để thêm nhiều sản phẩm hạt giống Việt Nam
+    @PostMapping("/test-add-vietnam-seeds")
+    public ResponseEntity<?> addVietnamSeeds(@RequestParam(value = "username", required = false) String username) {
+        try {
+            System.out.println("=== TẠO NHIỀU SẢN PHẨM HẠT GIỐNG VIỆT NAM ===");
+            
+            // Lấy sellerId từ username
+            String sellerId = null;
+            if (username != null && !username.trim().isEmpty()) {
+                User user = userService.getByUsername(username.trim());
+                if (user != null) {
+                    Seller seller = sellerService.getSellerByUserId(user.getId());
+                    if (seller != null) {
+                        sellerId = seller.getId();
+                        System.out.println("✅ Tìm thấy sellerId: " + sellerId + " cho username: " + username);
+                    } else {
+                        System.out.println("⚠️ Không tìm thấy seller cho username: " + username);
+                    }
+                } else {
+                    System.out.println("⚠️ Không tìm thấy user với username: " + username);
+                }
+            }
+            
+            if (sellerId == null) {
+                return ResponseEntity.badRequest().body(Map.of(
+                    "error", "Không tìm thấy seller",
+                    "message", "Vui lòng cung cấp username hợp lệ (ví dụ: ?username=hungbanhang)"
+                ));
+            }
+            
+            // Danh sách 50 loại hạt giống phổ biến ở Việt Nam
+            List<Map<String, Object>> seeds = new ArrayList<>();
+            
+            // Hạt giống rau củ
+            seeds.add(Map.of("name", "Hạt giống cà chua", "shortDescription", "Hạt giống cà chua F1", "description", "Hạt giống cà chua F1, năng suất cao, kháng bệnh tốt. Tỷ lệ nảy mầm trên 85%.", "price", 25000.0, "stock", 500, "weight", "0.01", "unit", "gói"));
+            seeds.add(Map.of("name", "Hạt giống dưa chuột", "shortDescription", "Hạt giống dưa chuột F1", "description", "Hạt giống dưa chuột F1, quả dài, giòn ngọt. Tỷ lệ nảy mầm trên 85%.", "price", 20000.0, "stock", 600, "weight", "0.01", "unit", "gói"));
+            seeds.add(Map.of("name", "Hạt giống cà rốt", "shortDescription", "Hạt giống cà rốt", "description", "Hạt giống cà rốt, củ to, màu cam đẹp. Tỷ lệ nảy mầm trên 80%.", "price", 18000.0, "stock", 550, "weight", "0.01", "unit", "gói"));
+            seeds.add(Map.of("name", "Hạt giống bắp cải", "shortDescription", "Hạt giống bắp cải", "description", "Hạt giống bắp cải, bắp to, chắc. Tỷ lệ nảy mầm trên 85%.", "price", 22000.0, "stock", 480, "weight", "0.01", "unit", "gói"));
+            seeds.add(Map.of("name", "Hạt giống cải ngọt", "shortDescription", "Hạt giống cải ngọt", "description", "Hạt giống cải ngọt, lá xanh, vị ngọt. Tỷ lệ nảy mầm trên 90%.", "price", 15000.0, "stock", 700, "weight", "0.01", "unit", "gói"));
+            seeds.add(Map.of("name", "Hạt giống rau muống", "shortDescription", "Hạt giống rau muống", "description", "Hạt giống rau muống, mọc nhanh, năng suất cao. Tỷ lệ nảy mầm trên 85%.", "price", 12000.0, "stock", 800, "weight", "0.01", "unit", "gói"));
+            seeds.add(Map.of("name", "Hạt giống đậu cô ve", "shortDescription", "Hạt giống đậu cô ve", "description", "Hạt giống đậu cô ve, quả dài, mềm. Tỷ lệ nảy mầm trên 85%.", "price", 25000.0, "stock", 450, "weight", "0.01", "unit", "gói"));
+            seeds.add(Map.of("name", "Hạt giống ớt", "shortDescription", "Hạt giống ớt", "description", "Hạt giống ớt, quả to, cay vừa. Tỷ lệ nảy mầm trên 80%.", "price", 20000.0, "stock", 500, "weight", "0.01", "unit", "gói"));
+            seeds.add(Map.of("name", "Hạt giống hành tây", "shortDescription", "Hạt giống hành tây", "description", "Hạt giống hành tây, củ to, thơm. Tỷ lệ nảy mầm trên 75%.", "price", 18000.0, "stock", 520, "weight", "0.01", "unit", "gói"));
+            seeds.add(Map.of("name", "Hạt giống cà tím", "shortDescription", "Hạt giống cà tím", "description", "Hạt giống cà tím, quả dài, tím đẹp. Tỷ lệ nảy mầm trên 80%.", "price", 22000.0, "stock", 480, "weight", "0.01", "unit", "gói"));
+            
+            // Hạt giống rau thơm
+            seeds.add(Map.of("name", "Hạt giống rau mùi", "shortDescription", "Hạt giống rau mùi", "description", "Hạt giống rau mùi, thơm đặc trưng. Tỷ lệ nảy mầm trên 85%.", "price", 15000.0, "stock", 600, "weight", "0.01", "unit", "gói"));
+            seeds.add(Map.of("name", "Hạt giống ngò rí", "shortDescription", "Hạt giống ngò rí", "description", "Hạt giống ngò rí, thơm, dễ trồng. Tỷ lệ nảy mầm trên 90%.", "price", 12000.0, "stock", 650, "weight", "0.01", "unit", "gói"));
+            seeds.add(Map.of("name", "Hạt giống hành lá", "shortDescription", "Hạt giống hành lá", "description", "Hạt giống hành lá, mọc nhanh. Tỷ lệ nảy mầm trên 85%.", "price", 10000.0, "stock", 700, "weight", "0.01", "unit", "gói"));
+            seeds.add(Map.of("name", "Hạt giống tía tô", "shortDescription", "Hạt giống tía tô", "description", "Hạt giống tía tô, lá tím đẹp, thơm. Tỷ lệ nảy mầm trên 80%.", "price", 18000.0, "stock", 550, "weight", "0.01", "unit", "gói"));
+            seeds.add(Map.of("name", "Hạt giống húng quế", "shortDescription", "Hạt giống húng quế", "description", "Hạt giống húng quế, thơm, cay nhẹ. Tỷ lệ nảy mầm trên 85%.", "price", 15000.0, "stock", 580, "weight", "0.01", "unit", "gói"));
+            
+            // Hạt giống trái cây
+            seeds.add(Map.of("name", "Hạt giống dưa hấu", "shortDescription", "Hạt giống dưa hấu F1", "description", "Hạt giống dưa hấu F1, quả to, ngọt. Tỷ lệ nảy mầm trên 85%.", "price", 30000.0, "stock", 400, "weight", "0.01", "unit", "gói"));
+            seeds.add(Map.of("name", "Hạt giống dưa lưới", "shortDescription", "Hạt giống dưa lưới F1", "description", "Hạt giống dưa lưới F1, quả to, ngọt, thơm. Tỷ lệ nảy mầm trên 80%.", "price", 35000.0, "stock", 350, "weight", "0.01", "unit", "gói"));
+            seeds.add(Map.of("name", "Hạt giống bí đỏ", "shortDescription", "Hạt giống bí đỏ", "description", "Hạt giống bí đỏ, quả to, ngọt. Tỷ lệ nảy mầm trên 85%.", "price", 20000.0, "stock", 500, "weight", "0.01", "unit", "gói"));
+            seeds.add(Map.of("name", "Hạt giống bí xanh", "shortDescription", "Hạt giống bí xanh", "description", "Hạt giống bí xanh, quả dài, mọng nước. Tỷ lệ nảy mầm trên 85%.", "price", 18000.0, "stock", 520, "weight", "0.01", "unit", "gói"));
+            seeds.add(Map.of("name", "Hạt giống mướp", "shortDescription", "Hạt giống mướp", "description", "Hạt giống mướp, quả dài, non ngọt. Tỷ lệ nảy mầm trên 85%.", "price", 15000.0, "stock", 600, "weight", "0.01", "unit", "gói"));
+            
+            // Hạt giống đậu
+            seeds.add(Map.of("name", "Hạt giống đậu xanh", "shortDescription", "Hạt giống đậu xanh", "description", "Hạt giống đậu xanh, năng suất cao. Tỷ lệ nảy mầm trên 90%.", "price", 25000.0, "stock", 450, "weight", "0.01", "unit", "gói"));
+            seeds.add(Map.of("name", "Hạt giống đậu đen", "shortDescription", "Hạt giống đậu đen", "description", "Hạt giống đậu đen, hạt to, năng suất cao. Tỷ lệ nảy mầm trên 90%.", "price", 25000.0, "stock", 420, "weight", "0.01", "unit", "gói"));
+            seeds.add(Map.of("name", "Hạt giống đậu đỏ", "shortDescription", "Hạt giống đậu đỏ", "description", "Hạt giống đậu đỏ, hạt to, năng suất cao. Tỷ lệ nảy mầm trên 90%.", "price", 25000.0, "stock", 430, "weight", "0.01", "unit", "gói"));
+            seeds.add(Map.of("name", "Hạt giống đậu nành", "shortDescription", "Hạt giống đậu nành", "description", "Hạt giống đậu nành, hạt to, năng suất cao. Tỷ lệ nảy mầm trên 85%.", "price", 28000.0, "stock", 400, "weight", "0.01", "unit", "gói"));
+            seeds.add(Map.of("name", "Hạt giống đậu phộng", "shortDescription", "Hạt giống đậu phộng", "description", "Hạt giống đậu phộng, hạt to, năng suất cao. Tỷ lệ nảy mầm trên 85%.", "price", 30000.0, "stock", 380, "weight", "0.01", "unit", "gói"));
+            
+            // Hạt giống ngũ cốc
+            seeds.add(Map.of("name", "Hạt giống ngô", "shortDescription", "Hạt giống ngô", "description", "Hạt giống ngô, bắp to, ngọt. Tỷ lệ nảy mầm trên 90%.", "price", 25000.0, "stock", 500, "weight", "0.01", "unit", "gói"));
+            seeds.add(Map.of("name", "Hạt giống lúa", "shortDescription", "Hạt giống lúa", "description", "Hạt giống lúa, năng suất cao, chất lượng tốt. Tỷ lệ nảy mầm trên 95%.", "price", 20000.0, "stock", 600, "weight", "0.01", "unit", "gói"));
+            seeds.add(Map.of("name", "Hạt giống mè", "shortDescription", "Hạt giống mè", "description", "Hạt giống mè, hạt to, năng suất cao. Tỷ lệ nảy mầm trên 85%.", "price", 35000.0, "stock", 350, "weight", "0.01", "unit", "gói"));
+            seeds.add(Map.of("name", "Hạt giống đậu tương", "shortDescription", "Hạt giống đậu tương", "description", "Hạt giống đậu tương, năng suất cao. Tỷ lệ nảy mầm trên 85%.", "price", 28000.0, "stock", 400, "weight", "0.01", "unit", "gói"));
+            seeds.add(Map.of("name", "Hạt giống kê", "shortDescription", "Hạt giống kê", "description", "Hạt giống kê, năng suất cao. Tỷ lệ nảy mầm trên 90%.", "price", 30000.0, "stock", 380, "weight", "0.01", "unit", "gói"));
+            
+            // Hạt giống hoa
+            seeds.add(Map.of("name", "Hạt giống hoa hướng dương", "shortDescription", "Hạt giống hoa hướng dương", "description", "Hạt giống hoa hướng dương, hoa to, đẹp. Tỷ lệ nảy mầm trên 85%.", "price", 25000.0, "stock", 400, "weight", "0.01", "unit", "gói"));
+            seeds.add(Map.of("name", "Hạt giống hoa cúc", "shortDescription", "Hạt giống hoa cúc", "description", "Hạt giống hoa cúc, nhiều màu sắc. Tỷ lệ nảy mầm trên 85%.", "price", 20000.0, "stock", 450, "weight", "0.01", "unit", "gói"));
+            seeds.add(Map.of("name", "Hạt giống hoa mười giờ", "shortDescription", "Hạt giống hoa mười giờ", "description", "Hạt giống hoa mười giờ, dễ trồng, nhiều màu. Tỷ lệ nảy mầm trên 90%.", "price", 15000.0, "stock", 500, "weight", "0.01", "unit", "gói"));
+            seeds.add(Map.of("name", "Hạt giống hoa dừa cạn", "shortDescription", "Hạt giống hoa dừa cạn", "description", "Hạt giống hoa dừa cạn, nhiều màu sắc. Tỷ lệ nảy mầm trên 85%.", "price", 18000.0, "stock", 480, "weight", "0.01", "unit", "gói"));
+            seeds.add(Map.of("name", "Hạt giống hoa cẩm chướng", "shortDescription", "Hạt giống hoa cẩm chướng", "description", "Hạt giống hoa cẩm chướng, hoa đẹp, thơm. Tỷ lệ nảy mầm trên 80%.", "price", 22000.0, "stock", 420, "weight", "0.01", "unit", "gói"));
+            
+            // Hạt giống cây ăn quả
+            seeds.add(Map.of("name", "Hạt giống chanh", "shortDescription", "Hạt giống chanh", "description", "Hạt giống chanh, cây khỏe, nhiều quả. Tỷ lệ nảy mầm trên 75%.", "price", 20000.0, "stock", 500, "weight", "0.01", "unit", "gói"));
+            seeds.add(Map.of("name", "Hạt giống ổi", "shortDescription", "Hạt giống ổi", "description", "Hạt giống ổi, cây nhanh lớn, nhiều quả. Tỷ lệ nảy mầm trên 80%.", "price", 25000.0, "stock", 450, "weight", "0.01", "unit", "gói"));
+            seeds.add(Map.of("name", "Hạt giống xoài", "shortDescription", "Hạt giống xoài", "description", "Hạt giống xoài, cây khỏe, quả ngọt. Tỷ lệ nảy mầm trên 75%.", "price", 30000.0, "stock", 400, "weight", "0.01", "unit", "gói"));
+            seeds.add(Map.of("name", "Hạt giống mít", "shortDescription", "Hạt giống mít", "description", "Hạt giống mít, cây khỏe, quả to. Tỷ lệ nảy mầm trên 70%.", "price", 35000.0, "stock", 350, "weight", "0.01", "unit", "gói"));
+            seeds.add(Map.of("name", "Hạt giống đu đủ", "shortDescription", "Hạt giống đu đủ", "description", "Hạt giống đu đủ, cây nhanh lớn, nhiều quả. Tỷ lệ nảy mầm trên 80%.", "price", 20000.0, "stock", 500, "weight", "0.01", "unit", "gói"));
+            
+            // Hạt giống khác
+            seeds.add(Map.of("name", "Hạt giống cải bẹ xanh", "shortDescription", "Hạt giống cải bẹ xanh", "description", "Hạt giống cải bẹ xanh, lá xanh, vị ngọt. Tỷ lệ nảy mầm trên 90%.", "price", 15000.0, "stock", 650, "weight", "0.01", "unit", "gói"));
+            seeds.add(Map.of("name", "Hạt giống cải thìa", "shortDescription", "Hạt giống cải thìa", "description", "Hạt giống cải thìa, giòn ngọt. Tỷ lệ nảy mầm trên 90%.", "price", 16000.0, "stock", 620, "weight", "0.01", "unit", "gói"));
+            seeds.add(Map.of("name", "Hạt giống cải xoăn", "shortDescription", "Hạt giống cải xoăn", "description", "Hạt giống cải xoăn, lá xoăn đẹp. Tỷ lệ nảy mầm trên 85%.", "price", 20000.0, "stock", 480, "weight", "0.01", "unit", "gói"));
+            seeds.add(Map.of("name", "Hạt giống cải chip", "shortDescription", "Hạt giống cải chip", "description", "Hạt giống cải chip, giòn ngọt. Tỷ lệ nảy mầm trên 90%.", "price", 18000.0, "stock", 550, "weight", "0.01", "unit", "gói"));
+            seeds.add(Map.of("name", "Hạt giống cải thảo", "shortDescription", "Hạt giống cải thảo", "description", "Hạt giống cải thảo, bắp to, giòn. Tỷ lệ nảy mầm trên 85%.", "price", 22000.0, "stock", 500, "weight", "0.01", "unit", "gói"));
+            seeds.add(Map.of("name", "Hạt giống khổ qua", "shortDescription", "Hạt giống khổ qua", "description", "Hạt giống khổ qua, quả dài, đắng. Tỷ lệ nảy mầm trên 80%.", "price", 20000.0, "stock", 520, "weight", "0.01", "unit", "gói"));
+            seeds.add(Map.of("name", "Hạt giống su su", "shortDescription", "Hạt giống su su", "description", "Hạt giống su su, quả giòn ngọt. Tỷ lệ nảy mầm trên 85%.", "price", 18000.0, "stock", 580, "weight", "0.01", "unit", "gói"));
+            seeds.add(Map.of("name", "Hạt giống bầu", "shortDescription", "Hạt giống bầu", "description", "Hạt giống bầu, quả to, mọng nước. Tỷ lệ nảy mầm trên 85%.", "price", 15000.0, "stock", 600, "weight", "0.01", "unit", "gói"));
+            seeds.add(Map.of("name", "Hạt giống khoai lang", "shortDescription", "Hạt giống khoai lang", "description", "Hạt giống khoai lang, củ to, ngọt. Tỷ lệ nảy mầm trên 90%.", "price", 25000.0, "stock", 450, "weight", "0.01", "unit", "gói"));
+            seeds.add(Map.of("name", "Hạt giống khoai tây", "shortDescription", "Hạt giống khoai tây", "description", "Hạt giống khoai tây, củ to, năng suất cao. Tỷ lệ nảy mầm trên 85%.", "price", 28000.0, "stock", 420, "weight", "0.01", "unit", "gói"));
+            
+            List<Product> createdProducts = new ArrayList<>();
+            int successCount = 0;
+            int failCount = 0;
+            
+            for (Map<String, Object> seed : seeds) {
+                try {
+                    String productName = (String) seed.get("name");
+                    
+                    // Kiểm tra xem sản phẩm đã tồn tại chưa
+                    List<Product> existingProducts = productService.getBySellerId(sellerId);
+                    boolean exists = false;
+                    for (Product existing : existingProducts) {
+                        if (existing.getName() != null && existing.getName().equals(productName)) {
+                            exists = true;
+                            System.out.println("⚠️ Sản phẩm '" + productName + "' đã tồn tại, bỏ qua...");
+                            break;
+                        }
+                    }
+                    
+                    if (exists) {
+                        failCount++;
+                        continue;
+                    }
+                    
+                    Product product = new Product();
+                    product.setName(productName);
+                    product.setShortDescription((String) seed.get("shortDescription"));
+                    product.setDescription((String) seed.get("description"));
+                    product.setCategory("Hạt Giống");
+                    product.setPrice(((Number) seed.get("price")).doubleValue());
+                    product.setStock(((Number) seed.get("stock")).intValue());
+                    product.setWeight((String) seed.get("weight"));
+                    product.setUnit((String) seed.get("unit"));
+                    product.setOrigin("VN");
+                    product.setExpiryDate("12-24 tháng");
+                    product.setStorageInstructions("Bảo quản nơi khô ráo, thoáng mát, tránh ánh nắng trực tiếp và độ ẩm cao");
+                    product.setStatus("active");
+                    
+                    // Tạo specifications
+                    Map<String, String> specs = new java.util.HashMap<>();
+                    specs.put("Xuất xứ", "Việt Nam");
+                    specs.put("Loại", "Hạt giống");
+                    product.setSpecifications(specs);
+                    
+                    // Set sellerId
+                    product.setSellerId(sellerId);
+                    
+                    // Set thời gian
+                    product.setCreatedAt(java.time.LocalDateTime.now());
+                    product.setUpdatedAt(java.time.LocalDateTime.now());
+                    
+                    // Lưu sản phẩm
+                    Product savedProduct = productService.create(product);
+                    createdProducts.add(savedProduct);
+                    successCount++;
+                    System.out.println("✅ Đã tạo: " + product.getName() + " (ID: " + savedProduct.getId() + ")");
+                } catch (Exception e) {
+                    failCount++;
+                    System.err.println("❌ Lỗi khi tạo " + seed.get("name") + ": " + e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+            
+            Map<String, Object> response = new java.util.HashMap<>();
+            response.put("message", "Đã tạo " + successCount + " sản phẩm hạt giống thành công");
+            response.put("total", seeds.size());
+            response.put("success", successCount);
+            response.put("failed", failCount);
+            response.put("sellerId", sellerId);
+            response.put("products", createdProducts);
+            response.put("timestamp", java.time.LocalDateTime.now().toString());
+            
+            System.out.println("✅ Hoàn thành! Đã tạo " + successCount + "/" + seeds.size() + " sản phẩm hạt giống");
+            
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            System.err.println("❌ Lỗi khi tạo sản phẩm hạt giống: " + e.getMessage());
+            e.printStackTrace();
+            
+            Map<String, Object> errorResponse = new java.util.HashMap<>();
+            errorResponse.put("error", "Lỗi khi tạo sản phẩm hạt giống");
+            errorResponse.put("message", e.getMessage());
+            errorResponse.put("timestamp", java.time.LocalDateTime.now().toString());
+            
+            return ResponseEntity.status(500).body(errorResponse);
+        }
+    }
+
+    // Endpoint để thêm nhiều sản phẩm dụng cụ nông nghiệp Việt Nam
+    @PostMapping("/test-add-vietnam-tools")
+    public ResponseEntity<?> addVietnamTools(@RequestParam(value = "username", required = false) String username) {
+        try {
+            System.out.println("=== TẠO NHIỀU SẢN PHẨM DỤNG CỤ NÔNG NGHIỆP VIỆT NAM ===");
+            
+            // Lấy sellerId từ username
+            String sellerId = null;
+            if (username != null && !username.trim().isEmpty()) {
+                User user = userService.getByUsername(username.trim());
+                if (user != null) {
+                    Seller seller = sellerService.getSellerByUserId(user.getId());
+                    if (seller != null) {
+                        sellerId = seller.getId();
+                        System.out.println("✅ Tìm thấy sellerId: " + sellerId + " cho username: " + username);
+                    } else {
+                        System.out.println("⚠️ Không tìm thấy seller cho username: " + username);
+                    }
+                } else {
+                    System.out.println("⚠️ Không tìm thấy user với username: " + username);
+                }
+            }
+            
+            if (sellerId == null) {
+                return ResponseEntity.badRequest().body(Map.of(
+                    "error", "Không tìm thấy seller",
+                    "message", "Vui lòng cung cấp username hợp lệ (ví dụ: ?username=hungbanhang)"
+                ));
+            }
+            
+            // Danh sách 50 loại dụng cụ nông nghiệp phổ biến ở Việt Nam
+            List<Map<String, Object>> tools = new ArrayList<>();
+            
+            // Dụng cụ làm đất
+            tools.add(Map.of("name", "Cuốc", "shortDescription", "Cuốc làm đất", "description", "Cuốc làm đất bằng thép, cán gỗ chắc chắn. Dùng để cuốc đất, đào hố trồng cây.", "price", 80000.0, "stock", 100, "weight", "1.5", "unit", "cái"));
+            tools.add(Map.of("name", "Xẻng", "shortDescription", "Xẻng đào đất", "description", "Xẻng đào đất bằng thép, cán dài. Dùng để đào đất, xúc đất.", "price", 70000.0, "stock", 120, "weight", "1.2", "unit", "cái"));
+            tools.add(Map.of("name", "Cào", "shortDescription", "Cào làm đất", "description", "Cào làm đất bằng thép, răng nhọn. Dùng để cào đất, làm phẳng mặt đất.", "price", 60000.0, "stock", 130, "weight", "1.0", "unit", "cái"));
+            tools.add(Map.of("name", "Chĩa ba", "shortDescription", "Chĩa ba làm đất", "description", "Chĩa ba làm đất, 3 răng nhọn. Dùng để xới đất, làm tơi đất.", "price", 65000.0, "stock", 125, "weight", "1.1", "unit", "cái"));
+            tools.add(Map.of("name", "Bừa", "shortDescription", "Bừa làm đất", "description", "Bừa làm đất, răng nhọn. Dùng để bừa đất, làm nhỏ đất.", "price", 75000.0, "stock", 110, "weight", "1.3", "unit", "cái"));
+            
+            // Dụng cụ trồng trọt
+            tools.add(Map.of("name", "Bay làm vườn", "shortDescription", "Bay làm vườn", "description", "Bay làm vườn nhỏ gọn, dùng để trồng cây, xới đất trong chậu.", "price", 35000.0, "stock", 200, "weight", "0.3", "unit", "cái"));
+            tools.add(Map.of("name", "Kéo cắt cành", "shortDescription", "Kéo cắt cành", "description", "Kéo cắt cành sắc bén, dùng để cắt tỉa cành cây, lá cây.", "price", 120000.0, "stock", 80, "weight", "0.4", "unit", "cái"));
+            tools.add(Map.of("name", "Kéo cắt cỏ", "shortDescription", "Kéo cắt cỏ", "description", "Kéo cắt cỏ, lưỡi dài, sắc. Dùng để cắt cỏ, tỉa hàng rào.", "price", 100000.0, "stock", 90, "weight", "0.5", "unit", "cái"));
+            tools.add(Map.of("name", "Cưa cắt cành", "shortDescription", "Cưa cắt cành", "description", "Cưa cắt cành, lưỡi sắc. Dùng để cắt cành cây lớn.", "price", 150000.0, "stock", 70, "weight", "0.6", "unit", "cái"));
+            tools.add(Map.of("name", "Tỉa cây", "shortDescription", "Tỉa cây", "description", "Dụng cụ tỉa cây nhỏ gọn, dùng để tỉa lá, cành nhỏ.", "price", 40000.0, "stock", 180, "weight", "0.2", "unit", "cái"));
+            
+            // Dụng cụ tưới nước
+            tools.add(Map.of("name", "Vòi tưới nước", "shortDescription", "Vòi tưới nước", "description", "Vòi tưới nước dài 20m, có đầu phun. Dùng để tưới cây, vườn.", "price", 80000.0, "stock", 150, "weight", "1.0", "unit", "cuộn"));
+            tools.add(Map.of("name", "Bình tưới nước", "shortDescription", "Bình tưới nước", "description", "Bình tưới nước 5 lít, có vòi phun. Dùng để tưới cây nhỏ, chậu cảnh.", "price", 60000.0, "stock", 200, "weight", "0.5", "unit", "cái"));
+            tools.add(Map.of("name", "Béc phun nước", "shortDescription", "Béc phun nước", "description", "Béc phun nước tự động, phun sương. Dùng cho hệ thống tưới tự động.", "price", 25000.0, "stock", 300, "weight", "0.1", "unit", "cái"));
+            tools.add(Map.of("name", "Ống tưới nhỏ giọt", "shortDescription", "Ống tưới nhỏ giọt", "description", "Ống tưới nhỏ giọt, tiết kiệm nước. Dùng cho hệ thống tưới tự động.", "price", 50000.0, "stock", 250, "weight", "0.8", "unit", "cuộn"));
+            tools.add(Map.of("name", "Bơm nước mini", "shortDescription", "Bơm nước mini", "description", "Bơm nước mini, công suất nhỏ. Dùng để bơm nước từ giếng, ao.", "price", 200000.0, "stock", 50, "weight", "2.0", "unit", "cái"));
+            
+            // Dụng cụ bón phân
+            tools.add(Map.of("name", "Xẻng bón phân", "shortDescription", "Xẻng bón phân", "description", "Xẻng bón phân nhỏ, dùng để bón phân cho cây.", "price", 45000.0, "stock", 180, "weight", "0.4", "unit", "cái"));
+            tools.add(Map.of("name", "Rổ đựng phân", "shortDescription", "Rổ đựng phân", "description", "Rổ đựng phân bằng nhựa, có quai xách. Dùng để đựng phân bón.", "price", 30000.0, "stock", 200, "weight", "0.3", "unit", "cái"));
+            tools.add(Map.of("name", "Cân phân", "shortDescription", "Cân phân", "description", "Cân phân điện tử, độ chính xác cao. Dùng để cân phân bón.", "price", 150000.0, "stock", 60, "weight", "0.5", "unit", "cái"));
+            tools.add(Map.of("name", "Máy trộn phân", "shortDescription", "Máy trộn phân", "description", "Máy trộn phân nhỏ, dùng để trộn phân bón.", "price", 300000.0, "stock", 40, "weight", "3.0", "unit", "cái"));
+            tools.add(Map.of("name", "Bình phun phân", "shortDescription", "Bình phun phân", "description", "Bình phun phân, có bơm tay. Dùng để phun phân bón lá.", "price", 120000.0, "stock", 80, "weight", "1.5", "unit", "cái"));
+            
+            // Dụng cụ thu hoạch
+            tools.add(Map.of("name", "Rổ thu hoạch", "shortDescription", "Rổ thu hoạch", "description", "Rổ thu hoạch bằng nhựa, có quai. Dùng để đựng rau củ khi thu hoạch.", "price", 40000.0, "stock", 150, "weight", "0.3", "unit", "cái"));
+            tools.add(Map.of("name", "Giỏ thu hoạch", "shortDescription", "Giỏ thu hoạch", "description", "Giỏ thu hoạch bằng mây, có quai. Dùng để đựng trái cây khi thu hoạch.", "price", 50000.0, "stock", 120, "weight", "0.5", "unit", "cái"));
+            tools.add(Map.of("name", "Kéo hái quả", "shortDescription", "Kéo hái quả", "description", "Kéo hái quả có lưỡi cong, dùng để hái quả trên cao.", "price", 80000.0, "stock", 100, "weight", "0.3", "unit", "cái"));
+            tools.add(Map.of("name", "Sào hái quả", "shortDescription", "Sào hái quả", "description", "Sào hái quả dài 3m, có túi lưới. Dùng để hái quả trên cao.", "price", 150000.0, "stock", 70, "weight", "1.0", "unit", "cái"));
+            tools.add(Map.of("name", "Thùng đựng rau", "shortDescription", "Thùng đựng rau", "description", "Thùng đựng rau bằng nhựa, có nắp. Dùng để đựng rau củ sau thu hoạch.", "price", 60000.0, "stock", 130, "weight", "0.8", "unit", "cái"));
+            
+            // Dụng cụ bảo vệ
+            tools.add(Map.of("name", "Lưới che nắng", "shortDescription", "Lưới che nắng", "description", "Lưới che nắng 70%, dài 50m, rộng 2m. Dùng để che nắng cho cây trồng.", "price", 200000.0, "stock", 60, "weight", "2.0", "unit", "cuộn"));
+            tools.add(Map.of("name", "Lưới chắn côn trùng", "shortDescription", "Lưới chắn côn trùng", "description", "Lưới chắn côn trùng, mắt lưới nhỏ. Dùng để bảo vệ cây khỏi côn trùng.", "price", 150000.0, "stock", 80, "weight", "1.5", "unit", "cuộn"));
+            tools.add(Map.of("name", "Bẫy côn trùng", "shortDescription", "Bẫy côn trùng", "description", "Bẫy côn trùng bằng keo, màu vàng. Dùng để bẫy ruồi, bọ phấn.", "price", 30000.0, "stock", 200, "weight", "0.2", "unit", "cái"));
+            tools.add(Map.of("name", "Bình xịt thuốc", "shortDescription", "Bình xịt thuốc", "description", "Bình xịt thuốc trừ sâu, có bơm tay. Dùng để phun thuốc bảo vệ thực vật.", "price", 180000.0, "stock", 70, "weight", "2.5", "unit", "cái"));
+            tools.add(Map.of("name", "Máy phun thuốc", "shortDescription", "Máy phun thuốc", "description", "Máy phun thuốc điện, công suất lớn. Dùng để phun thuốc cho cây trồng.", "price", 800000.0, "stock", 30, "weight", "5.0", "unit", "cái"));
+            
+            // Dụng cụ chăm sóc
+            tools.add(Map.of("name", "Găng tay làm vườn", "shortDescription", "Găng tay làm vườn", "description", "Găng tay làm vườn bằng cao su, chống nước. Bảo vệ tay khi làm vườn.", "price", 50000.0, "stock", 250, "weight", "0.2", "unit", "đôi"));
+            tools.add(Map.of("name", "Ủng đi đồng", "shortDescription", "Ủng đi đồng", "description", "Ủng đi đồng bằng cao su, chống nước. Dùng để đi trong ruộng, vườn.", "price", 120000.0, "stock", 100, "weight", "1.0", "unit", "đôi"));
+            tools.add(Map.of("name", "Nón lá", "shortDescription", "Nón lá", "description", "Nón lá che nắng, thông thoáng. Dùng để che nắng khi làm vườn.", "price", 40000.0, "stock", 200, "weight", "0.3", "unit", "cái"));
+            tools.add(Map.of("name", "Áo mưa", "shortDescription", "Áo mưa", "description", "Áo mưa bằng nhựa, chống nước. Dùng để mặc khi làm vườn trời mưa.", "price", 80000.0, "stock", 150, "weight", "0.5", "unit", "cái"));
+            tools.add(Map.of("name", "Băng keo dán cây", "shortDescription", "Băng keo dán cây", "description", "Băng keo dán cây, chống sâu bệnh. Dùng để quấn quanh thân cây.", "price", 25000.0, "stock", 300, "weight", "0.1", "unit", "cuộn"));
+            
+            // Dụng cụ đo lường
+            tools.add(Map.of("name", "Máy đo độ ẩm đất", "shortDescription", "Máy đo độ ẩm đất", "description", "Máy đo độ ẩm đất điện tử, độ chính xác cao. Dùng để đo độ ẩm đất.", "price", 200000.0, "stock", 50, "weight", "0.3", "unit", "cái"));
+            tools.add(Map.of("name", "Máy đo pH đất", "shortDescription", "Máy đo pH đất", "description", "Máy đo pH đất điện tử. Dùng để đo độ pH của đất.", "price", 250000.0, "stock", 40, "weight", "0.3", "unit", "cái"));
+            tools.add(Map.of("name", "Nhiệt kế đất", "shortDescription", "Nhiệt kế đất", "description", "Nhiệt kế đất, đo nhiệt độ đất. Dùng để theo dõi nhiệt độ đất.", "price", 80000.0, "stock", 100, "weight", "0.2", "unit", "cái"));
+            tools.add(Map.of("name", "Thước đo cây", "shortDescription", "Thước đo cây", "description", "Thước đo cây, dài 2m. Dùng để đo chiều cao cây.", "price", 30000.0, "stock", 180, "weight", "0.3", "unit", "cái"));
+            tools.add(Map.of("name", "Cân điện tử", "shortDescription", "Cân điện tử", "description", "Cân điện tử, tải trọng 50kg. Dùng để cân sản phẩm nông nghiệp.", "price", 300000.0, "stock", 35, "weight", "2.0", "unit", "cái"));
+            
+            // Dụng cụ đóng gói
+            tools.add(Map.of("name", "Túi đóng gói rau", "shortDescription", "Túi đóng gói rau", "description", "Túi đóng gói rau bằng nhựa, kích thước 30x40cm. Dùng để đóng gói rau củ.", "price", 20000.0, "stock", 500, "weight", "0.1", "unit", "túi"));
+            tools.add(Map.of("name", "Hộp đựng trái cây", "shortDescription", "Hộp đựng trái cây", "description", "Hộp đựng trái cây bằng nhựa, có nắp. Dùng để đựng trái cây.", "price", 15000.0, "stock", 400, "weight", "0.2", "unit", "hộp"));
+            tools.add(Map.of("name", "Máy đóng gói", "shortDescription", "Máy đóng gói", "description", "Máy đóng gói tự động, dùng để đóng gói sản phẩm nông nghiệp.", "price", 2000000.0, "stock", 10, "weight", "50.0", "unit", "cái"));
+            tools.add(Map.of("name", "Máy dán nhãn", "shortDescription", "Máy dán nhãn", "description", "Máy dán nhãn tự động, dùng để dán nhãn lên sản phẩm.", "price", 1500000.0, "stock", 15, "weight", "30.0", "unit", "cái"));
+            tools.add(Map.of("name", "Băng keo đóng gói", "shortDescription", "Băng keo đóng gói", "description", "Băng keo đóng gói, dài 50m. Dùng để dán thùng, hộp.", "price", 25000.0, "stock", 300, "weight", "0.2", "unit", "cuộn"));
+            
+            // Dụng cụ khác
+            tools.add(Map.of("name", "Xe đẩy nông nghiệp", "shortDescription", "Xe đẩy nông nghiệp", "description", "Xe đẩy nông nghiệp, tải trọng 100kg. Dùng để vận chuyển sản phẩm.", "price", 500000.0, "stock", 25, "weight", "15.0", "unit", "cái"));
+            tools.add(Map.of("name", "Giàn leo", "shortDescription", "Giàn leo", "description", "Giàn leo bằng tre, cao 2m. Dùng để làm giàn cho cây leo.", "price", 100000.0, "stock", 80, "weight", "3.0", "unit", "bộ"));
+            tools.add(Map.of("name", "Cọc tre", "shortDescription", "Cọc tre", "description", "Cọc tre, dài 1.5m. Dùng để làm giàn, cắm cọc cho cây.", "price", 15000.0, "stock", 500, "weight", "0.5", "unit", "cọc"));
+            tools.add(Map.of("name", "Dây buộc cây", "shortDescription", "Dây buộc cây", "description", "Dây buộc cây bằng nhựa, dài 50m. Dùng để buộc cây vào cọc.", "price", 30000.0, "stock", 200, "weight", "0.3", "unit", "cuộn"));
+            tools.add(Map.of("name", "Chậu trồng cây", "shortDescription", "Chậu trồng cây", "description", "Chậu trồng cây bằng nhựa, kích thước 30cm. Dùng để trồng cây trong chậu.", "price", 50000.0, "stock", 150, "weight", "0.5", "unit", "cái"));
+            
+            List<Product> createdProducts = new ArrayList<>();
+            int successCount = 0;
+            int failCount = 0;
+            
+            for (Map<String, Object> tool : tools) {
+                try {
+                    String productName = (String) tool.get("name");
+                    
+                    // Kiểm tra xem sản phẩm đã tồn tại chưa
+                    List<Product> existingProducts = productService.getBySellerId(sellerId);
+                    boolean exists = false;
+                    for (Product existing : existingProducts) {
+                        if (existing.getName() != null && existing.getName().equals(productName)) {
+                            exists = true;
+                            System.out.println("⚠️ Sản phẩm '" + productName + "' đã tồn tại, bỏ qua...");
+                            break;
+                        }
+                    }
+                    
+                    if (exists) {
+                        failCount++;
+                        continue;
+                    }
+                    
+                    Product product = new Product();
+                    product.setName(productName);
+                    product.setShortDescription((String) tool.get("shortDescription"));
+                    product.setDescription((String) tool.get("description"));
+                    product.setCategory("Dụng Cụ Nông Nghiệp");
+                    product.setPrice(((Number) tool.get("price")).doubleValue());
+                    product.setStock(((Number) tool.get("stock")).intValue());
+                    product.setWeight((String) tool.get("weight"));
+                    product.setUnit((String) tool.get("unit"));
+                    product.setOrigin("VN");
+                    product.setExpiryDate("Không có hạn sử dụng");
+                    product.setStorageInstructions("Bảo quản nơi khô ráo, thoáng mát, tránh ẩm ướt và gỉ sét");
+                    product.setStatus("active");
+                    
+                    // Tạo specifications
+                    Map<String, String> specs = new java.util.HashMap<>();
+                    specs.put("Xuất xứ", "Việt Nam");
+                    specs.put("Loại", "Dụng cụ nông nghiệp");
+                    product.setSpecifications(specs);
+                    
+                    // Set sellerId
+                    product.setSellerId(sellerId);
+                    
+                    // Set thời gian
+                    product.setCreatedAt(java.time.LocalDateTime.now());
+                    product.setUpdatedAt(java.time.LocalDateTime.now());
+                    
+                    // Lưu sản phẩm
+                    Product savedProduct = productService.create(product);
+                    createdProducts.add(savedProduct);
+                    successCount++;
+                    System.out.println("✅ Đã tạo: " + product.getName() + " (ID: " + savedProduct.getId() + ")");
+                } catch (Exception e) {
+                    failCount++;
+                    System.err.println("❌ Lỗi khi tạo " + tool.get("name") + ": " + e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+            
+            Map<String, Object> response = new java.util.HashMap<>();
+            response.put("message", "Đã tạo " + successCount + " sản phẩm dụng cụ thành công");
+            response.put("total", tools.size());
+            response.put("success", successCount);
+            response.put("failed", failCount);
+            response.put("sellerId", sellerId);
+            response.put("products", createdProducts);
+            response.put("timestamp", java.time.LocalDateTime.now().toString());
+            
+            System.out.println("✅ Hoàn thành! Đã tạo " + successCount + "/" + tools.size() + " sản phẩm dụng cụ");
+            
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            System.err.println("❌ Lỗi khi tạo sản phẩm dụng cụ: " + e.getMessage());
+            e.printStackTrace();
+            
+            Map<String, Object> errorResponse = new java.util.HashMap<>();
+            errorResponse.put("error", "Lỗi khi tạo sản phẩm dụng cụ");
+            errorResponse.put("message", e.getMessage());
+            errorResponse.put("timestamp", java.time.LocalDateTime.now().toString());
+            
+            return ResponseEntity.status(500).body(errorResponse);
+        }
     }
 
     // ===== ENDPOINTS CHO VIỆC DUYỆT SẢN PHẨM =====

@@ -120,57 +120,96 @@ public class SecurityConfig {
             .cors(Customizer.withDefaults())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                // Public endpoints
+                // Public endpoints - Authentication & Registration
                 .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/api/products/check-product/**").permitAll()
-                .requestMatchers("/api/products/*/json").permitAll()
+                
+                // Public endpoints - AI Chat
+                .requestMatchers("/api/chat/**").permitAll()
+                
+                // Public endpoints - Product browsing (read-only)
+                .requestMatchers(HttpMethod.GET, "/api/products").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/products/{id}").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/products/{id}/json").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/products/check-product/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/products/stats").permitAll()
+                
+                // Public endpoints - Categories (read-only)
+                .requestMatchers(HttpMethod.GET, "/api/categories").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/categories/**").permitAll()
+                
+                // Public endpoints - Static files and uploads
                 .requestMatchers("/uploads/**").permitAll()
                 .requestMatchers("/api/products/uploads/**").permitAll()
-                .requestMatchers("/error").permitAll()
-                .requestMatchers("/ws/**").permitAll()
-                
-                // Static files
                 .requestMatchers("/*.html", "/*.css", "/*.js", "/*.ico", "/*.png", "/*.jpg", "/*.gif").permitAll()
                 
-                // Swagger/OpenAPI
+                // Public endpoints - Error pages
+                .requestMatchers("/error").permitAll()
+                
+                // Public endpoints - WebSocket (may need authentication later)
+                .requestMatchers("/ws/**").permitAll()
+                
+                // Public endpoints - Swagger/OpenAPI (should be restricted in production)
                 .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/api-docs/**", "/v3/api-docs/**").permitAll()
                 
-                // Products endpoints - public read, admin write
-                .requestMatchers("/api/products").permitAll()
-                .requestMatchers("/api/products/{id}").permitAll()
-                .requestMatchers("/api/products/{id}/json").permitAll()
-                .requestMatchers("/api/products/stats").permitAll()
-                // Allow product creation endpoints for now
-                .requestMatchers("/api/products/create").permitAll()
-                .requestMatchers("/api/products/create-json").permitAll()
-                // Seller registration endpoints
-                .requestMatchers("/api/sellers/**").permitAll()
-                // Allow order seller actions for now
-                .requestMatchers("/api/orders/**").permitAll()
+                // Public endpoints - Seller registration (initial registration should be public)
+                .requestMatchers(HttpMethod.POST, "/api/sellers/register", "/api/sellers/register/**").permitAll()
                 
-                // User endpoints (temporarily open for admin UI integration)
-                .requestMatchers(HttpMethod.GET, "/api/user", "/api/user/**").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/user/**").permitAll()
-                .requestMatchers(HttpMethod.PUT, "/api/user/**").permitAll()
-                .requestMatchers(HttpMethod.DELETE, "/api/user/**").permitAll()
+                // Public endpoints - Seller info (read-only for product display)
+                .requestMatchers(HttpMethod.GET, "/api/sellers/{id}").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/sellers/user/{userId}").permitAll()
                 
-                // Notification endpoints (temporarily open for admin UI integration)
-                .requestMatchers("/api/notifications/**").permitAll()
-                
-                // Reviews endpoints - public read, authenticated write
+                // Public endpoints - Reviews (read-only)
                 .requestMatchers(HttpMethod.GET, "/api/reviews/**", "/api/v1/reviews/**").permitAll()
+                
+                // Authenticated endpoints - Product creation (requires authentication)
+                .requestMatchers(HttpMethod.POST, "/api/products/create", "/api/products/create-json").authenticated()
+                .requestMatchers(HttpMethod.PUT, "/api/products/{id}").authenticated()
+                .requestMatchers(HttpMethod.DELETE, "/api/products/{id}").authenticated()
+                
+                // Authenticated endpoints - Orders (all operations require authentication)
+                .requestMatchers("/api/orders/**").authenticated()
+                
+                // Authenticated endpoints - Cart (all operations require authentication)
+                .requestMatchers("/api/cart/**").authenticated()
+                
+                // Authenticated endpoints - User profile (users can only access their own data)
+                .requestMatchers(HttpMethod.GET, "/api/user", "/api/user/{id}").authenticated()
+                .requestMatchers(HttpMethod.PUT, "/api/user/**").authenticated()
+                .requestMatchers(HttpMethod.DELETE, "/api/user/**").authenticated()
+                
+                // Authenticated endpoints - Notifications (users can only access their own)
+                // Cho phép GET notifications cho user cụ thể (có thể public nếu không có thông tin nhạy cảm)
+                .requestMatchers(HttpMethod.GET, "/api/notifications/user/{userId}").permitAll()
+                .requestMatchers("/api/notifications/**").authenticated()
+                
+                // Authenticated endpoints - Reviews (write operations)
                 .requestMatchers(HttpMethod.POST, "/api/reviews/**", "/api/v1/reviews/**").authenticated()
                 .requestMatchers(HttpMethod.PUT, "/api/reviews/**", "/api/v1/reviews/**").authenticated()
                 .requestMatchers(HttpMethod.DELETE, "/api/reviews/**", "/api/v1/reviews/**").authenticated()
                 
-                // Admin endpoints
+                // Authenticated endpoints - Seller operations
+                // GET seller info đã được cho phép public ở trên, chỉ PUT cần authenticated
+                .requestMatchers(HttpMethod.PUT, "/api/sellers/**").authenticated()
+                .requestMatchers(HttpMethod.GET, "/api/sellers/**").permitAll() // Cho phép xem thông tin seller công khai
+                
+                // Admin endpoints - Full access required
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .requestMatchers("/api/users/**").hasRole("ADMIN")
-                .requestMatchers("/api/products/upload").hasRole("ADMIN")
                 .requestMatchers("/api/products/{id}/status").hasRole("ADMIN")
                 
-                // Default: cho phép các route còn lại để người khác truy cập như local
-                .anyRequest().permitAll()
+                // Seller endpoints - Allow authenticated sellers to upload products
+                .requestMatchers("/api/products/upload").authenticated()
+                .requestMatchers("/api/products/create").authenticated()
+                
+                // Test endpoints - Allow public access for development (remove in production)
+                .requestMatchers("/api/products/test-add-sample").permitAll()
+                .requestMatchers("/api/products/test-add-vietnam-vegetables").permitAll()
+                .requestMatchers("/api/products/test-add-vietnam-fruits").permitAll()
+                .requestMatchers("/api/products/test-add-vietnam-seeds").permitAll()
+                .requestMatchers("/api/products/test-add-vietnam-tools").permitAll()
+                
+                // Default: require authentication for all other endpoints
+                .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         

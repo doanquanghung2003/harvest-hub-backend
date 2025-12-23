@@ -22,9 +22,6 @@ public class SellerFinancialService {
     @Autowired
     private WithdrawalRequestRepository withdrawalRepository;
     
-    @Autowired
-    private OrderService orderService;
-    
     // Tạo hoặc lấy financial record cho seller
     public SellerFinancial getOrCreateFinancial(String sellerId, String userId) {
         Optional<SellerFinancial> existing = financialRepository.findBySellerId(sellerId);
@@ -86,16 +83,16 @@ public class SellerFinancialService {
     public WithdrawalRequest requestWithdrawal(String sellerId, double amount, String bankName, 
                                                 String bankAccountNumber, String bankAccountName, String bankBranch) {
         SellerFinancial financial = financialRepository.findBySellerId(sellerId)
-            .orElseThrow(() -> new RuntimeException("Financial record not found"));
+            .orElseThrow(() -> new RuntimeException("Không tìm thấy bản ghi tài chính"));
         
         // Kiểm tra số dư khả dụng
         if (financial.getAvailableBalance() < amount) {
-            throw new RuntimeException("Insufficient balance. Available: " + financial.getAvailableBalance());
+            throw new RuntimeException("Số dư không đủ. Số dư khả dụng: " + financial.getAvailableBalance());
         }
         
         // Kiểm tra số tiền tối thiểu
         if (amount < financial.getMinWithdrawalAmount()) {
-            throw new RuntimeException("Amount must be at least " + financial.getMinWithdrawalAmount());
+            throw new RuntimeException("Số tiền rút tối thiểu là " + financial.getMinWithdrawalAmount());
         }
         
         // Tạo yêu cầu rút tiền
@@ -121,10 +118,10 @@ public class SellerFinancialService {
     public WithdrawalRequest processWithdrawal(String requestId, String status, String adminId, 
                                                 String transactionReference, String rejectionReason) {
         WithdrawalRequest request = withdrawalRepository.findById(requestId)
-            .orElseThrow(() -> new RuntimeException("Withdrawal request not found"));
+            .orElseThrow(() -> new RuntimeException("Không tìm thấy yêu cầu rút tiền"));
         
         SellerFinancial financial = financialRepository.findById(request.getSellerFinancialId())
-            .orElseThrow(() -> new RuntimeException("Financial record not found"));
+            .orElseThrow(() -> new RuntimeException("Không tìm thấy bản ghi tài chính"));
         
         if ("completed".equals(status)) {
             request.setStatus("completed");

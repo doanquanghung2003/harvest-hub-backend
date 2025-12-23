@@ -23,12 +23,6 @@ public class AdminStatisticsService {
     @Autowired
     private SellerService sellerService;
     
-    @Autowired
-    private PaymentService paymentService;
-    
-    @Autowired
-    private ReviewService reviewService;
-    
     // Lấy thống kê tổng quan
     public Map<String, Object> getDashboardStatistics() {
         Map<String, Object> stats = new HashMap<>();

@@ -46,7 +46,7 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+                .orElseThrow(() -> new UsernameNotFoundException("Không tìm thấy người dùng: " + username));
     }
 
     public List<User> getAll() {
@@ -73,19 +73,19 @@ public class UserService implements UserDetailsService {
     public User create(User user) {
         String username = user.getUsername();
         if (username == null || username.trim().isEmpty()) {
-            throw new RuntimeException("Username is required");
+            throw new RuntimeException("Tên đăng nhập là bắt buộc");
         }
         String email = user.getEmail();
         if (email == null || email.trim().isEmpty()) {
-            throw new RuntimeException("Email is required");
+            throw new RuntimeException("Email là bắt buộc");
         }
         
         // Kiểm tra username và email đã tồn tại
         if (userRepository.existsByUsername(username)) {
-            throw new RuntimeException("Username already exists");
+            throw new RuntimeException("Tên đăng nhập đã tồn tại");
         }
         if (userRepository.existsByEmail(email)) {
-            throw new RuntimeException("Email already exists");
+            throw new RuntimeException("Email đã được sử dụng");
         }
         
         // Mã hóa password và set role mặc định
@@ -104,11 +104,11 @@ public class UserService implements UserDetailsService {
 
     public User update(String id, User user) {
         if (id == null || id.trim().isEmpty()) {
-            throw new RuntimeException("User id is required");
+            throw new RuntimeException("ID người dùng là bắt buộc");
         }
         User existingUser = userRepository.findById(id).orElse(null);
         if (existingUser == null) {
-            throw new RuntimeException("User not found");
+            throw new RuntimeException("Không tìm thấy người dùng");
         }
         
         // Cập nhật thông tin cơ bản
@@ -195,7 +195,7 @@ public class UserService implements UserDetailsService {
                 if (history != null) {
                     for (String oldHash : history) {
                         if (passwordEncoder.matches(incomingPassword, oldHash)) {
-                            throw new RuntimeException("New password must not match any previous passwords");
+                            throw new RuntimeException("Mật khẩu mới không được trùng với các mật khẩu trước đó");
                         }
                     }
                 }
@@ -222,7 +222,7 @@ public class UserService implements UserDetailsService {
 
     public void delete(String id) {
         if (id == null || id.trim().isEmpty()) {
-            throw new RuntimeException("User id is required");
+            throw new RuntimeException("ID người dùng là bắt buộc");
         }
         
         System.out.println("🗑️ Starting delete process for id: " + id);
@@ -232,7 +232,7 @@ public class UserService implements UserDetailsService {
         if (id.startsWith("seller_")) {
             String sellerId = id.substring(7); // Bỏ "seller_" prefix (7 ký tự)
             if (sellerId == null || sellerId.trim().isEmpty()) {
-                throw new RuntimeException("Invalid seller ID format: " + id);
+                throw new RuntimeException("Định dạng ID người bán không hợp lệ: " + id);
             }
             System.out.println("🔍 Detected seller ID format. Extracted seller ID: " + sellerId);
             
@@ -251,7 +251,7 @@ public class UserService implements UserDetailsService {
                 }
             } else {
                 System.out.println("⚠️ Seller " + sellerId + " does not exist, skipping delete");
-                throw new RuntimeException("Seller not found: " + sellerId);
+                throw new RuntimeException("Không tìm thấy người bán: " + sellerId);
             }
             return; // Không xóa user nếu đây là seller
         }

@@ -2,6 +2,8 @@ package com.example.harvesthubbackend.Service;
 
 import com.example.harvesthubbackend.Models.Cart;
 import com.example.harvesthubbackend.Models.Product;
+import com.example.harvesthubbackend.Exception.ApiException;
+import com.example.harvesthubbackend.Exception.ErrorCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
@@ -32,16 +34,25 @@ public class CartService {
     
     @Autowired
     private FlashSaleService flashSaleService;
+    
+    @Autowired
+    private InventoryService inventoryService;
 
     public List<Cart> getAll() {
         return cartRepository.findAll();
     }
 
     public Cart getById(String id) {
+        if (id == null || id.trim().isEmpty()) {
+            return null;
+        }
         return cartRepository.findById(id).orElse(null);
     }
 
     public List<Cart> getByUserId(String userId) {
+        if (userId == null || userId.trim().isEmpty()) {
+            throw new RuntimeException("User ID không được để trống");
+        }
         List<Cart> carts = cartRepository.findByUserId(userId);
         // Refresh flash sale prices for all items in carts
         if (carts != null) {
@@ -127,11 +138,8 @@ public class CartService {
                     cart.getVoucherCode(), cart.getUserId(), subtotal, 
                     null, productIds, categoryIds)) {
                     discountAmount = voucherService.calculateDiscount(cart.getVoucherCode(), subtotal);
-                    // Log for debugging
-                    System.out.println("Voucher " + cart.getVoucherCode() + " applied. Subtotal: " + subtotal + ", Discount: " + discountAmount);
                 } else {
-                    // Voucher invalid, remove it and log reason
-                    System.out.println("Voucher " + cart.getVoucherCode() + " validation failed for user " + cart.getUserId() + " with subtotal " + subtotal);
+                    // Voucher invalid, remove it
                     cart.setVoucherCode(null);
                     cart.setDiscountAmount(0);
                 }
@@ -219,7 +227,55 @@ public class CartService {
 
         // Find price from product
         Product product = productService.getById(productId);
-        double price = (product != null && product.getPrice() != null) ? product.getPrice() : 0.0;
+        if (product == null) {
+            throw new ApiException(ErrorCode.PRODUCT_NOT_FOUND, "Sản phẩm không tồn tại");
+        }
+        
+        // Check stock availability
+        Integer productStock = product.getStock();
+        if (productStock == null || productStock <= 0) {
+            throw new ApiException(ErrorCode.PRODUCT_OUT_OF_STOCK, 
+                "Sản phẩm '" + (product.getName() != null ? product.getName() : productId) + "' đã hết hàng");
+        }
+        
+        // Calculate total quantity after adding
+        int currentQuantityInCart = cart.getItems().stream()
+            .filter(i -> productId.equals(i.getProductId()))
+            .mapToInt(Cart.CartItem::getQuantity)
+            .sum();
+        int totalQuantity = currentQuantityInCart + quantity;
+        
+        // Check if total quantity exceeds stock
+        if (totalQuantity > productStock) {
+            throw new ApiException(ErrorCode.PRODUCT_INSUFFICIENT_STOCK, 
+                String.format("Sản phẩm '%s' không đủ tồn kho. Còn lại: %d, yêu cầu: %d", 
+                    product.getName() != null ? product.getName() : productId,
+                    productStock,
+                    totalQuantity));
+        }
+        
+        // Also check Inventory if available
+        try {
+            Optional<com.example.harvesthubbackend.Models.Inventory> inventoryOpt = 
+                inventoryService.getByProductId(productId);
+            if (inventoryOpt.isPresent()) {
+                com.example.harvesthubbackend.Models.Inventory inventory = inventoryOpt.get();
+                if (inventory.getAvailableStock() < totalQuantity) {
+                    throw new ApiException(ErrorCode.PRODUCT_INSUFFICIENT_STOCK, 
+                        String.format("Sản phẩm '%s' không đủ tồn kho. Có thể bán: %d, yêu cầu: %d", 
+                            product.getName() != null ? product.getName() : productId,
+                            inventory.getAvailableStock(),
+                            totalQuantity));
+                }
+            }
+        } catch (ApiException e) {
+            throw e; // Re-throw ApiException
+        } catch (Exception e) {
+            // If inventory check fails, continue with product stock check
+            // This allows backward compatibility if inventory is not set up
+        }
+        
+        double price = (product.getPrice() != null) ? product.getPrice() : 0.0;
         
         // Check if product is in an active flash sale
         Double flashSalePrice = flashSaleService.getFlashSalePriceForProduct(productId);
@@ -254,6 +310,42 @@ public class CartService {
         if (quantity <= 0) {
             return removeItem(userId, productId);
         }
+        
+        // Check stock availability before updating quantity
+        Product product = productService.getById(productId);
+        if (product == null) {
+            throw new ApiException(ErrorCode.PRODUCT_NOT_FOUND, "Sản phẩm không tồn tại");
+        }
+        
+        Integer productStock = product.getStock();
+        if (productStock == null || productStock < quantity) {
+            throw new ApiException(ErrorCode.PRODUCT_INSUFFICIENT_STOCK, 
+                String.format("Sản phẩm '%s' không đủ tồn kho. Còn lại: %d, yêu cầu: %d", 
+                    product.getName() != null ? product.getName() : productId,
+                    productStock != null ? productStock : 0,
+                    quantity));
+        }
+        
+        // Also check Inventory if available
+        try {
+            Optional<com.example.harvesthubbackend.Models.Inventory> inventoryOpt = 
+                inventoryService.getByProductId(productId);
+            if (inventoryOpt.isPresent()) {
+                com.example.harvesthubbackend.Models.Inventory inventory = inventoryOpt.get();
+                if (inventory.getAvailableStock() < quantity) {
+                    throw new ApiException(ErrorCode.PRODUCT_INSUFFICIENT_STOCK, 
+                        String.format("Sản phẩm '%s' không đủ tồn kho. Có thể bán: %d, yêu cầu: %d", 
+                            product.getName() != null ? product.getName() : productId,
+                            inventory.getAvailableStock(),
+                            quantity));
+                }
+            }
+        } catch (ApiException e) {
+            throw e; // Re-throw ApiException
+        } catch (Exception e) {
+            // If inventory check fails, continue with product stock check
+        }
+        
         for (Cart.CartItem item : cart.getItems()) {
             if (productId.equals(item.getProductId())) {
                 item.setQuantity(quantity);
@@ -263,8 +355,7 @@ public class CartService {
                     item.setPrice(flashSalePrice);
                 } else {
                     // If no flash sale, use product price
-                    Product product = productService.getById(productId);
-                    if (product != null && product.getPrice() != null) {
+                    if (product.getPrice() != null) {
                         item.setPrice(product.getPrice());
                     }
                 }

@@ -7,9 +7,6 @@ import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.util.unit.DataSize;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-// Tomcat imports đã được xóa để tránh lỗi compilation
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
 

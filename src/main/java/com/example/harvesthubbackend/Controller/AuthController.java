@@ -124,7 +124,7 @@ public class AuthController {
             System.err.println("Unexpected error during registration: " + e.getMessage());
             e.printStackTrace();
             Map<String, String> error = new HashMap<>();
-            error.put("error", "Internal server error");
+            error.put("error", "Lỗi máy chủ nội bộ");
             return ResponseEntity.internalServerError().body(error);
         }
     }
@@ -182,7 +182,7 @@ public class AuthController {
                 if (changedAt != null && changedAt.plusMonths(6).isBefore(LocalDateTime.now())) {
                     Map<String, Object> error = new HashMap<>();
                     error.put("error", "PASSWORD_EXPIRED");
-                    error.put("message", "Password expired. Please reset your password.");
+                    error.put("message", "Mật khẩu đã hết hạn. Vui lòng đặt lại mật khẩu.");
                     return ResponseEntity.status(403).body(error);
                 }
                 
@@ -240,7 +240,7 @@ public class AuthController {
             System.err.println("Login error: " + e.getMessage());
             e.printStackTrace();
             Map<String, String> error = new HashMap<>();
-            error.put("error", "Internal server error");
+            error.put("error", "Lỗi máy chủ nội bộ");
             return ResponseEntity.internalServerError().body(error);
         }
     }
@@ -262,7 +262,7 @@ public class AuthController {
     public ResponseEntity<?> getCurrentUser(@RequestHeader("Authorization") String authHeader) {
         try {
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-                return ResponseEntity.badRequest().body(Map.of("error", "No token provided"));
+                return ResponseEntity.badRequest().body(Map.of("error", "Không có token được cung cấp"));
             }
             
             String token = authHeader.substring(7);
@@ -270,7 +270,7 @@ public class AuthController {
             User user = userService.getByUsername(username);
             
             if (user == null) {
-                return ResponseEntity.badRequest().body(Map.of("error", "User not found"));
+                return ResponseEntity.badRequest().body(Map.of("error", "Không tìm thấy người dùng"));
             }
             
             // Normalize URL ảnh để hoạt động với mọi IP/hostname
@@ -284,7 +284,7 @@ public class AuthController {
             
             return ResponseEntity.ok(userInfo);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of("error", "Invalid token"));
+            return ResponseEntity.badRequest().body(Map.of("error", "Token không hợp lệ"));
         }
     }
 
@@ -302,7 +302,7 @@ public class AuthController {
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             Map<String, String> error = new HashMap<>();
-            error.put("error", "Failed to check authentication: " + e.getMessage());
+            error.put("error", "Không thể kiểm tra xác thực: " + e.getMessage());
             return ResponseEntity.internalServerError().body(error);
         }
     }
@@ -313,7 +313,7 @@ public class AuthController {
             String emailOrUsername = request.get("emailOrUsername");
             
             if (emailOrUsername == null || emailOrUsername.trim().isEmpty()) {
-                return ResponseEntity.badRequest().body(Map.of("error", "Email or username is required"));
+                return ResponseEntity.badRequest().body(Map.of("error", "Email hoặc tên đăng nhập là bắt buộc"));
             }
             
             PasswordResetToken resetToken = passwordResetService.createPasswordResetToken(emailOrUsername);
@@ -323,7 +323,7 @@ public class AuthController {
             // Lấy email người dùng từ userId của token
             User targetUser = userService.getById(resetToken.getUserId());
             if (targetUser == null || targetUser.getEmail() == null || targetUser.getEmail().isEmpty()) {
-                return ResponseEntity.badRequest().body(Map.of("error", "User email not found"));
+                return ResponseEntity.badRequest().body(Map.of("error", "Không tìm thấy email người dùng"));
             }
 
             // Gửi email chứa link đặt lại mật khẩu
@@ -342,7 +342,7 @@ public class AuthController {
             System.err.println("Unexpected error during forgot password: " + e.getMessage());
             e.printStackTrace();
             Map<String, String> error = new HashMap<>();
-            error.put("error", "Internal server error");
+            error.put("error", "Lỗi máy chủ nội bộ");
             return ResponseEntity.internalServerError().body(error);
         }
     }
@@ -354,11 +354,11 @@ public class AuthController {
             String newPassword = request.get("newPassword");
             
             if (token == null || token.trim().isEmpty()) {
-                return ResponseEntity.badRequest().body(Map.of("error", "Token is required"));
+                return ResponseEntity.badRequest().body(Map.of("error", "Token là bắt buộc"));
             }
             
             if (newPassword == null || newPassword.trim().isEmpty()) {
-                return ResponseEntity.badRequest().body(Map.of("error", "New password is required"));
+                return ResponseEntity.badRequest().body(Map.of("error", "Mật khẩu mới là bắt buộc"));
             }
             
             // Validate password strength
@@ -386,7 +386,7 @@ public class AuthController {
             System.err.println("Unexpected error during reset password: " + e.getMessage());
             e.printStackTrace();
             Map<String, String> error = new HashMap<>();
-            error.put("error", "Internal server error");
+            error.put("error", "Lỗi máy chủ nội bộ");
             return ResponseEntity.internalServerError().body(error);
         }
     }
@@ -402,13 +402,13 @@ public class AuthController {
             String email = request.get("email");
             
             if (email == null || email.trim().isEmpty()) {
-                return ResponseEntity.badRequest().body(Map.of("error", "Email is required"));
+                return ResponseEntity.badRequest().body(Map.of("error", "Email là bắt buộc"));
             }
             
             // Validate email format
             String emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$";
             if (!email.matches(emailRegex)) {
-                return ResponseEntity.badRequest().body(Map.of("error", "Invalid email format"));
+                return ResponseEntity.badRequest().body(Map.of("error", "Định dạng email không hợp lệ"));
             }
             
             // Generate verification code
@@ -425,7 +425,7 @@ public class AuthController {
             System.err.println("Send verification code error: " + e.getMessage());
             e.printStackTrace();
             Map<String, String> error = new HashMap<>();
-            error.put("error", "Internal server error");
+            error.put("error", "Lỗi máy chủ nội bộ");
             return ResponseEntity.internalServerError().body(error);
         }
     }
@@ -442,11 +442,11 @@ public class AuthController {
             String code = request.get("code");
             
             if (email == null || email.trim().isEmpty()) {
-                return ResponseEntity.badRequest().body(Map.of("error", "Email is required"));
+                return ResponseEntity.badRequest().body(Map.of("error", "Email là bắt buộc"));
             }
             
             if (code == null || code.trim().isEmpty()) {
-                return ResponseEntity.badRequest().body(Map.of("error", "Verification code is required"));
+                return ResponseEntity.badRequest().body(Map.of("error", "Mã xác minh là bắt buộc"));
             }
             
             // Verify code
@@ -459,7 +459,7 @@ public class AuthController {
                 return ResponseEntity.ok(response);
             } else {
                 Map<String, Object> error = new HashMap<>();
-                error.put("error", "Invalid or expired verification code");
+                error.put("error", "Mã xác minh không hợp lệ hoặc đã hết hạn");
                 error.put("verified", false);
                 return ResponseEntity.badRequest().body(error);
             }
@@ -467,7 +467,7 @@ public class AuthController {
             System.err.println("Verify code error: " + e.getMessage());
             e.printStackTrace();
             Map<String, String> error = new HashMap<>();
-            error.put("error", "Internal server error");
+            error.put("error", "Lỗi máy chủ nội bộ");
             return ResponseEntity.internalServerError().body(error);
         }
     }

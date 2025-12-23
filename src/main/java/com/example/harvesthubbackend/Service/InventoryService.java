@@ -30,7 +30,7 @@ public class InventoryService {
         // Kiểm tra xem đã có inventory chưa
         Optional<Inventory> existing = inventoryRepository.findByProductId(productId);
         if (existing.isPresent()) {
-            throw new RuntimeException("Inventory already exists for this product");
+            throw new RuntimeException("Tồn kho cho sản phẩm này đã tồn tại");
         }
         
         Inventory inventory = new Inventory();
@@ -58,7 +58,7 @@ public class InventoryService {
     @Transactional
     public Inventory stockIn(String productId, int quantity, String reason, String notes, String createdBy) {
         Inventory inventory = inventoryRepository.findByProductId(productId)
-            .orElseThrow(() -> new RuntimeException("Inventory not found for product: " + productId));
+            .orElseThrow(() -> new RuntimeException("Không tìm thấy tồn kho cho sản phẩm: " + productId));
         
         int quantityBefore = inventory.getCurrentStock();
         inventory.setCurrentStock(quantityBefore + quantity);
@@ -82,10 +82,10 @@ public class InventoryService {
     @Transactional
     public Inventory stockOut(String productId, int quantity, String orderId, String reason, String createdBy) {
         Inventory inventory = inventoryRepository.findByProductId(productId)
-            .orElseThrow(() -> new RuntimeException("Inventory not found for product: " + productId));
+            .orElseThrow(() -> new RuntimeException("Không tìm thấy tồn kho cho sản phẩm: " + productId));
         
         if (inventory.getAvailableStock() < quantity) {
-            throw new RuntimeException("Insufficient stock. Available: " + inventory.getAvailableStock() + ", Requested: " + quantity);
+            throw new RuntimeException("Không đủ tồn kho. Có thể bán: " + inventory.getAvailableStock() + ", Yêu cầu: " + quantity);
         }
         
         int quantityBefore = inventory.getCurrentStock();
@@ -111,10 +111,10 @@ public class InventoryService {
     @Transactional
     public Inventory reserveStock(String productId, int quantity) {
         Inventory inventory = inventoryRepository.findByProductId(productId)
-            .orElseThrow(() -> new RuntimeException("Inventory not found for product: " + productId));
+            .orElseThrow(() -> new RuntimeException("Không tìm thấy tồn kho cho sản phẩm: " + productId));
         
         if (inventory.getAvailableStock() < quantity) {
-            throw new RuntimeException("Insufficient available stock. Available: " + inventory.getAvailableStock() + ", Requested: " + quantity);
+            throw new RuntimeException("Không đủ tồn kho khả dụng. Có thể bán: " + inventory.getAvailableStock() + ", Yêu cầu: " + quantity);
         }
         
         inventory.setReservedStock(inventory.getReservedStock() + quantity);
@@ -127,7 +127,7 @@ public class InventoryService {
     @Transactional
     public Inventory releaseReservedStock(String productId, int quantity) {
         Inventory inventory = inventoryRepository.findByProductId(productId)
-            .orElseThrow(() -> new RuntimeException("Inventory not found for product: " + productId));
+            .orElseThrow(() -> new RuntimeException("Không tìm thấy tồn kho cho sản phẩm: " + productId));
         
         inventory.setReservedStock(Math.max(0, inventory.getReservedStock() - quantity));
         inventory.calculateAvailableStock();
@@ -139,7 +139,7 @@ public class InventoryService {
     @Transactional
     public Inventory adjustStock(String productId, int newQuantity, String reason, String notes, String createdBy) {
         Inventory inventory = inventoryRepository.findByProductId(productId)
-            .orElseThrow(() -> new RuntimeException("Inventory not found for product: " + productId));
+            .orElseThrow(() -> new RuntimeException("Không tìm thấy tồn kho cho sản phẩm: " + productId));
         
         int quantityBefore = inventory.getCurrentStock();
         int difference = newQuantity - quantityBefore;
@@ -150,7 +150,6 @@ public class InventoryService {
         Inventory saved = inventoryRepository.save(inventory);
         
         // Tạo transaction record
-        String type = difference > 0 ? "in" : "out";
         createTransaction(saved.getId(), productId, inventory.getSellerId(), "adjustment", reason, difference,
             quantityBefore, saved.getCurrentStock(), notes, createdBy);
         

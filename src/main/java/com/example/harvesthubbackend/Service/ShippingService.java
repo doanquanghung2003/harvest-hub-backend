@@ -2,6 +2,7 @@ package com.example.harvesthubbackend.Service;
 
 import com.example.harvesthubbackend.Models.Shipping;
 import com.example.harvesthubbackend.Models.Order;
+import com.example.harvesthubbackend.Models.Product;
 import com.example.harvesthubbackend.Repository.ShippingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,9 @@ public class ShippingService {
     
     @Autowired
     private OrderService orderService;
+    
+    @Autowired
+    private ProductService productService;
     
     // Tính phí vận chuyển dựa trên khoảng cách và trọng lượng
     public double calculateShippingFee(String city, String district, double weight, String shippingMethod) {
@@ -40,7 +44,7 @@ public class ShippingService {
     public Shipping createShipping(String orderId, Shipping shipping) {
         Order order = orderService.getById(orderId);
         if (order == null) {
-            throw new RuntimeException("Order not found");
+            throw new RuntimeException("Không tìm thấy đơn hàng");
         }
         
         shipping.setOrderId(orderId);
@@ -48,8 +52,8 @@ public class ShippingService {
         
         // Tính phí vận chuyển nếu chưa có
         if (shipping.getShippingFee() == 0.0) {
-            // Giả sử trọng lượng 1kg, có thể lấy từ order items
-            double weight = 1.0; // TODO: Tính từ order items
+            // Tính trọng lượng từ order items
+            double weight = calculateOrderWeight(order);
             double fee = calculateShippingFee(
                 shipping.getCity(),
                 shipping.getDistrict(),
@@ -70,7 +74,7 @@ public class ShippingService {
     // Cập nhật trạng thái vận chuyển
     public Shipping updateShippingStatus(String shippingId, String status, String location, String description) {
         Shipping shipping = shippingRepository.findById(shippingId)
-            .orElseThrow(() -> new RuntimeException("Shipping not found"));
+            .orElseThrow(() -> new RuntimeException("Không tìm thấy thông tin vận chuyển"));
         
         shipping.setStatus(status);
         shipping.setUpdatedAt(LocalDateTime.now());
@@ -100,7 +104,7 @@ public class ShippingService {
     // Thêm tracking event
     public Shipping addTrackingEvent(String shippingId, String status, String description, String location) {
         Shipping shipping = shippingRepository.findById(shippingId)
-            .orElseThrow(() -> new RuntimeException("Shipping not found"));
+            .orElseThrow(() -> new RuntimeException("Không tìm thấy thông tin vận chuyển"));
         
         if (shipping.getTrackingHistory() == null) {
             shipping.setTrackingHistory(new ArrayList<>());
@@ -169,6 +173,61 @@ public class ShippingService {
         };
         
         return LocalDateTime.now().plusDays(days);
+    }
+    
+    // Tính trọng lượng từ order items
+    private double calculateOrderWeight(Order order) {
+        if (order == null || order.getItems() == null || order.getItems().isEmpty()) {
+            return 1.0; // Default weight if no items
+        }
+        
+        double totalWeight = 0.0;
+        for (Order.OrderItem item : order.getItems()) {
+            try {
+                Product product = productService.getById(item.getProductId());
+                if (product != null && product.getWeight() != null && !product.getWeight().isEmpty()) {
+                    // Parse weight string (e.g., "1.5kg", "500g", "1.5")
+                    double itemWeight = parseWeight(product.getWeight());
+                    totalWeight += itemWeight * item.getQuantity();
+                } else {
+                    // Default weight per item if not specified
+                    totalWeight += 1.0 * item.getQuantity();
+                }
+            } catch (Exception e) {
+                // If product not found or error parsing, use default weight
+                totalWeight += 1.0 * item.getQuantity();
+            }
+        }
+        
+        // Minimum weight is 0.5kg
+        return Math.max(0.5, totalWeight);
+    }
+    
+    // Parse weight string to double (in kg)
+    private double parseWeight(String weightStr) {
+        if (weightStr == null || weightStr.isEmpty()) {
+            return 1.0; // Default weight
+        }
+        
+        try {
+            // Remove spaces and convert to lowercase
+            String cleaned = weightStr.trim().toLowerCase().replaceAll("\\s+", "");
+            
+            // Check for "kg" or "g" suffix
+            if (cleaned.endsWith("kg")) {
+                String numStr = cleaned.substring(0, cleaned.length() - 2);
+                return Double.parseDouble(numStr);
+            } else if (cleaned.endsWith("g")) {
+                String numStr = cleaned.substring(0, cleaned.length() - 1);
+                return Double.parseDouble(numStr) / 1000.0; // Convert grams to kg
+            } else {
+                // Try to parse as number directly (assume kg)
+                return Double.parseDouble(cleaned);
+            }
+        } catch (NumberFormatException e) {
+            // If parsing fails, return default weight
+            return 1.0;
+        }
     }
 }
 

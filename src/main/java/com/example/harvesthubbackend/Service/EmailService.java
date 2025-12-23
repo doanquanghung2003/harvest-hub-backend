@@ -23,27 +23,67 @@ public class EmailService {
     private String frontendBaseUrl;
 
     public void sendPasswordResetEmail(String toEmail, String resetLink) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(fromEmail);
-        message.setTo(toEmail);
-        message.setSubject("Đặt lại mật khẩu - Harvest Hub");
-        message.setText("Bạn đã yêu cầu đặt lại mật khẩu. Nhấp vào liên kết sau để đặt lại mật khẩu của bạn:\n\n"
-                + resetLink +
-                "\n\nLiên kết này sẽ hết hạn sau 1 giờ. Nếu bạn không yêu cầu đặt lại mật khẩu, vui lòng bỏ qua email này.");
-        mailSender.send(message);
+        try {
+            if (mailSender == null) {
+                System.err.println("WARNING: JavaMailSender is not configured. Cannot send password reset email.");
+                System.err.println("Reset link for " + toEmail + ": " + resetLink);
+                return;
+            }
+            
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(fromEmail);
+            message.setTo(toEmail);
+            message.setSubject("Đặt lại mật khẩu - Harvest Hub");
+            message.setText("Bạn đã yêu cầu đặt lại mật khẩu. Nhấp vào liên kết sau để đặt lại mật khẩu của bạn:\n\n"
+                    + resetLink +
+                    "\n\nLiên kết này sẽ hết hạn sau 1 giờ. Nếu bạn không yêu cầu đặt lại mật khẩu, vui lòng bỏ qua email này.");
+            mailSender.send(message);
+            System.out.println("Password reset email sent successfully to: " + toEmail);
+        } catch (Exception e) {
+            System.err.println("ERROR: Failed to send password reset email to " + toEmail);
+            System.err.println("Error: " + e.getMessage());
+            System.err.println("Reset link for " + toEmail + ": " + resetLink);
+            e.printStackTrace();
+        }
     }
 
     public void sendVerificationCodeEmail(String toEmail, String code) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(fromEmail);
-        message.setTo(toEmail);
-        message.setSubject("Mã xác minh email - Harvest Hub");
-        message.setText("Xin chào,\n\n" +
-                "Mã xác minh email của bạn là: " + code +
-                "\n\nMã này sẽ hết hạn sau 10 phút. " +
-                "Nếu bạn không yêu cầu mã xác minh này, vui lòng bỏ qua email này.\n\n" +
-                "Trân trọng,\nĐội ngũ Harvest Hub");
-        mailSender.send(message);
+        try {
+            // Kiểm tra xem email có được cấu hình không
+            if (mailSender == null) {
+                System.err.println("========================================");
+                System.err.println("WARNING: JavaMailSender is not configured.");
+                System.err.println("Mã xác minh cho " + toEmail + " là: " + code);
+                System.err.println("========================================");
+                return;
+            }
+            
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(fromEmail);
+            message.setTo(toEmail);
+            message.setSubject("Mã xác minh email - Harvest Hub");
+            message.setText("Xin chào,\n\n" +
+                    "Mã xác minh email của bạn là: " + code +
+                    "\n\nMã này sẽ hết hạn sau 10 phút. " +
+                    "Nếu bạn không yêu cầu mã xác minh này, vui lòng bỏ qua email này.\n\n" +
+                    "Trân trọng,\nĐội ngũ Harvest Hub");
+            mailSender.send(message);
+            System.out.println("Verification code email sent successfully to: " + toEmail);
+        } catch (Exception e) {
+            // Log lỗi nhưng không throw exception để tránh 500 error
+            // In mã xác minh ra console để có thể test trong môi trường development
+            System.err.println("========================================");
+            System.err.println("ERROR: Failed to send verification code email to " + toEmail);
+            System.err.println("Error: " + e.getMessage());
+            System.err.println("Nguyên nhân có thể: Chưa cấu hình MAIL_USERNAME và MAIL_PASSWORD trong biến môi trường");
+            System.err.println("Mã xác minh cho " + toEmail + " là: " + code);
+            System.err.println("(Mã đã được in ra console do không thể gửi email)");
+            System.err.println("========================================");
+            e.printStackTrace();
+            
+            // Không throw exception để hệ thống vẫn hoạt động trong môi trường development
+            // Người dùng có thể xem mã trong console/log
+        }
     }
 
     // Gửi email xác nhận đơn hàng

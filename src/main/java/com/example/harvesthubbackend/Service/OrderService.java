@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,29 +49,50 @@ public class OrderService {
     
     @Autowired
     private FlashSaleService flashSaleService;
+    
+    @Autowired
+    private InventoryService inventoryService;
 
     public List<Order> getAll() {
         return orderRepository.findAll();
     }
 
     public Order getById(String id) {
+        if (id == null || id.trim().isEmpty()) {
+            return null;
+        }
         return orderRepository.findById(id).orElse(null);
     }
 
     public Order create(Order order) {
+        if (order == null) {
+            throw new ApiException(ErrorCode.INVALID_REQUEST, "Order không được để trống");
+        }
         return orderRepository.save(order);
     }
 
     public Order update(String id, Order order) {
+        if (id == null || id.trim().isEmpty()) {
+            throw new ApiException(ErrorCode.INVALID_REQUEST, "Order ID không được để trống");
+        }
+        if (order == null) {
+            throw new ApiException(ErrorCode.INVALID_REQUEST, "Order không được để trống");
+        }
         order.setId(id);
         return orderRepository.save(order);
     }
 
     public void delete(String id) {
+        if (id == null || id.trim().isEmpty()) {
+            throw new ApiException(ErrorCode.INVALID_REQUEST, "Order ID không được để trống");
+        }
         orderRepository.deleteById(id);
     }
 
     public List<Order> getByUserId(String userId) {
+        if (userId == null || userId.trim().isEmpty()) {
+            throw new ApiException(ErrorCode.INVALID_REQUEST, "User ID không được để trống");
+        }
         return orderRepository.findByUserId(userId);
     }
 
@@ -95,14 +117,26 @@ public class OrderService {
     }
 
     public Order updateStatus(String orderId, String newStatus) {
+        if (orderId == null || orderId.trim().isEmpty()) {
+            throw new ApiException(ErrorCode.INVALID_REQUEST, "Order ID không được để trống");
+        }
+        if (newStatus == null || newStatus.trim().isEmpty()) {
+            throw new ApiException(ErrorCode.INVALID_REQUEST, "Trạng thái đơn hàng không được để trống");
+        }
+        
         Order order = getById(orderId);
         if (order == null) {
             throw new ApiException(ErrorCode.ORDER_NOT_FOUND);
         }
         
         // Validate status transition
+        String currentStatus = order.getStatus();
+        if (currentStatus == null) {
+            currentStatus = "processing"; // Default status
+        }
+        
         OrderStatusValidator.ValidationResult validation = OrderStatusValidator.validateTransition(
-            order.getStatus(), newStatus
+            currentStatus, newStatus
         );
         
         if (!validation.isValid()) {
@@ -112,16 +146,19 @@ public class OrderService {
         order.setStatus(newStatus);
         order.setUpdatedAt(System.currentTimeMillis());
         Order saved = orderRepository.save(order);
-        notificationService.pushOrderStatusNotification(saved, newStatus);
-        updateUserVipTier(saved);
         
-        // Grant purchase reward voucher when order is delivered
-        if ("delivered".equalsIgnoreCase(newStatus) && saved.getUserId() != null) {
-            try {
-                voucherAutomationService.grantPurchaseRewardVoucher(saved.getUserId(), saved.getId());
-            } catch (Exception e) {
-                // Log but don't fail status update
-                System.err.println("Failed to grant purchase reward voucher: " + e.getMessage());
+        if (saved != null) {
+            notificationService.pushOrderStatusNotification(saved, newStatus);
+            updateUserVipTier(saved);
+            
+            // Grant purchase reward voucher when order is delivered
+            if ("delivered".equalsIgnoreCase(newStatus) && saved.getUserId() != null) {
+                try {
+                    voucherAutomationService.grantPurchaseRewardVoucher(saved.getUserId(), saved.getId());
+                } catch (Exception e) {
+                    // Log but don't fail status update
+                    System.err.println("Failed to grant purchase reward voucher: " + e.getMessage());
+                }
             }
         }
         
@@ -132,23 +169,32 @@ public class OrderService {
      * Update order status with cancellation reason
      */
     public Order cancelWithReason(String orderId, String reason, String cancelledBy) {
+        if (orderId == null || orderId.trim().isEmpty()) {
+            throw new ApiException(ErrorCode.INVALID_REQUEST, "Order ID không được để trống");
+        }
+        
         Order order = getById(orderId);
         if (order == null) {
             throw new ApiException(ErrorCode.ORDER_NOT_FOUND);
         }
         
+        String currentStatus = order.getStatus();
+        if (currentStatus == null) {
+            currentStatus = "processing"; // Default status
+        }
+        
         // Validate that order can be cancelled
-        if (!OrderStatusValidator.canCancel(order.getStatus())) {
+        if (!OrderStatusValidator.canCancel(currentStatus)) {
             throw new ApiException(
                 ErrorCode.ORDER_CANNOT_CANCEL,
                 String.format("Cannot cancel order with status '%s'. Order may have already been delivered or cancelled.", 
-                    order.getStatus())
+                    currentStatus)
             );
         }
         
         // Validate transition
         OrderStatusValidator.ValidationResult validation = OrderStatusValidator.validateTransition(
-            order.getStatus(), OrderStatusValidator.CANCELLED
+            currentStatus, OrderStatusValidator.CANCELLED
         );
         
         if (!validation.isValid()) {
@@ -156,15 +202,20 @@ public class OrderService {
         }
         
         order.setStatus(OrderStatusValidator.CANCELLED);
-        order.setCancellationReason(reason);
-        order.setCancelledBy(cancelledBy);
+        if (reason != null) {
+            order.setCancellationReason(reason);
+        }
+        if (cancelledBy != null) {
+            order.setCancelledBy(cancelledBy);
+        }
         order.setCancelledAt(System.currentTimeMillis());
         order.setUpdatedAt(System.currentTimeMillis());
         
         Order saved = orderRepository.save(order);
         
         // Refund voucher if used
-        if (order.getVoucherCode() != null && !order.getVoucherCode().isEmpty()) {
+        String voucherCode = order.getVoucherCode();
+        if (voucherCode != null && !voucherCode.isEmpty()) {
             try {
                 voucherService.refundVoucher(orderId);
             } catch (Exception e) {
@@ -269,11 +320,50 @@ public class OrderService {
         return checkout(userId, paymentMethod, shippingMethod, shippingAddress, null);
     }
     
+    @Transactional
     public List<Order> checkout(String userId, String paymentMethod, String shippingMethod, 
                                java.util.Map<String, String> shippingAddress, String voucherCode) {
         Cart cart = cartService.getOrCreateCartForUser(userId);
         if (cart.getItems() == null || cart.getItems().isEmpty()) {
             throw new ApiException(ErrorCode.ORDER_EMPTY_CART);
+        }
+
+        // Validate stock availability before creating order
+        for (Cart.CartItem item : cart.getItems()) {
+            Product product = productService.getById(item.getProductId());
+            if (product == null) {
+                throw new ApiException(ErrorCode.PRODUCT_NOT_FOUND, 
+                    "Sản phẩm không tồn tại: " + item.getProductId());
+            }
+            
+            // Check stock from Product model
+            Integer productStock = product.getStock();
+            if (productStock == null || productStock < item.getQuantity()) {
+                throw new ApiException(ErrorCode.PRODUCT_INSUFFICIENT_STOCK, 
+                    String.format("Sản phẩm '%s' không đủ tồn kho. Còn lại: %d, yêu cầu: %d", 
+                        product.getName() != null ? product.getName() : item.getProductId(),
+                        productStock != null ? productStock : 0,
+                        item.getQuantity()));
+            }
+            
+            // Also check Inventory if available
+            try {
+                java.util.Optional<com.example.harvesthubbackend.Models.Inventory> inventoryOpt = 
+                    inventoryService.getByProductId(item.getProductId());
+                if (inventoryOpt.isPresent()) {
+                    com.example.harvesthubbackend.Models.Inventory inventory = inventoryOpt.get();
+                    if (inventory.getAvailableStock() < item.getQuantity()) {
+                        throw new ApiException(ErrorCode.PRODUCT_INSUFFICIENT_STOCK, 
+                            String.format("Sản phẩm '%s' không đủ tồn kho. Có thể bán: %d, yêu cầu: %d", 
+                                product.getName() != null ? product.getName() : item.getProductId(),
+                                inventory.getAvailableStock(),
+                                item.getQuantity()));
+                    }
+                }
+            } catch (Exception e) {
+                // If inventory check fails, continue with product stock check
+                // This allows backward compatibility if inventory is not set up
+            }
         }
 
         Order order = new Order();
@@ -325,39 +415,51 @@ public class OrderService {
         double discountAmount = 0;
         String voucherId = null;
         
-        if (voucherToUse != null && !voucherToUse.isEmpty()) {
+        if (voucherToUse != null && !voucherToUse.trim().isEmpty()) {
             // Get product and category IDs for validation
             List<String> productIds = cart.getItems().stream()
                 .map(Cart.CartItem::getProductId)
                 .collect(Collectors.toList());
             List<String> categoryIds = new ArrayList<>(); // Simplified
             
-            // Validate voucher
-            if (voucherService.validateVoucherForOrder(
-                voucherToUse, userId, subtotal, null, productIds, categoryIds)) {
-                
-                // Get voucher for ID
-                java.util.Optional<com.example.harvesthubbackend.Models.Voucher> voucherOpt = 
-                    voucherService.getVoucherByCode(voucherToUse);
-                if (voucherOpt.isPresent()) {
-                    voucherId = voucherOpt.get().getId();
+            // Validate voucher with better error handling
+            try {
+                if (voucherService.validateVoucherForOrder(
+                    voucherToUse, userId, subtotal, null, productIds, categoryIds)) {
                     
-                    // Calculate discount (including free shipping)
-                    double shippingFee = 0;
-                    if ("express".equals(shippingMethod)) {
-                        shippingFee = 60000;
+                    // Get voucher for ID
+                    java.util.Optional<com.example.harvesthubbackend.Models.Voucher> voucherOpt = 
+                        voucherService.getVoucherByCode(voucherToUse);
+                    if (voucherOpt.isPresent()) {
+                        voucherId = voucherOpt.get().getId();
+                        
+                        // Calculate discount (including free shipping)
+                        double shippingFee = 0;
+                        if ("express".equals(shippingMethod)) {
+                            shippingFee = 60000;
+                        } else {
+                            shippingFee = 30000;
+                        }
+                        
+                        discountAmount = voucherService.calculateDiscount(voucherToUse, subtotal, shippingFee);
+                        
+                        // If free shipping, set shipping fee to 0
+                        if (voucherOpt.get().getType().equals("free_shipping")) {
+                            shippingFee = 0;
+                        }
+                        order.setShippingFee(shippingFee);
                     } else {
-                        shippingFee = 30000;
+                        // Voucher code not found, clear it
+                        voucherToUse = null;
                     }
-                    
-                    discountAmount = voucherService.calculateDiscount(voucherToUse, subtotal, shippingFee);
-                    
-                    // If free shipping, set shipping fee to 0
-                    if (voucherOpt.get().getType().equals("free_shipping")) {
-                        shippingFee = 0;
-                    }
-                    order.setShippingFee(shippingFee);
+                } else {
+                    // Voucher validation failed, clear it
+                    voucherToUse = null;
                 }
+            } catch (Exception e) {
+                // If voucher validation throws exception, clear voucher and continue without it
+                System.err.println("Error validating voucher " + voucherToUse + ": " + e.getMessage());
+                voucherToUse = null;
             }
         } else {
             // Set shipping fee based on method
@@ -374,31 +476,53 @@ public class OrderService {
         order.setVoucherId(voucherId);
         order.setDiscountAmount(discountAmount);
         
-        // Set shipping address
+        // Set shipping address with validation
         if (shippingAddress != null) {
+            // Validate required fields
+            String fullName = shippingAddress.get("fullName");
+            String address = shippingAddress.get("address");
+            String city = shippingAddress.get("city");
+            
+            // Full name and address are required
+            if (fullName == null || fullName.trim().isEmpty()) {
+                throw new ApiException(ErrorCode.VALIDATION_ERROR, "Tên người nhận là bắt buộc");
+            }
+            if (address == null || address.trim().isEmpty()) {
+                throw new ApiException(ErrorCode.VALIDATION_ERROR, "Địa chỉ là bắt buộc");
+            }
+            if (city == null || city.trim().isEmpty()) {
+                throw new ApiException(ErrorCode.VALIDATION_ERROR, "Thành phố/Tỉnh là bắt buộc");
+            }
+            
+            // Validate phone number if provided
+            String phone = shippingAddress.get("phone");
+            if (phone != null && !phone.trim().isEmpty()) {
+                // Basic phone validation (Vietnamese phone format)
+                String phoneRegex = "^(0|\\+84)[3-9]\\d{8}$";
+                if (!phone.replaceAll("\\s", "").matches(phoneRegex)) {
+                    throw new ApiException(ErrorCode.VALIDATION_ERROR, "Số điện thoại không hợp lệ");
+                }
+            }
+            
             StringBuilder addressBuilder = new StringBuilder();
-            if (shippingAddress.get("fullName") != null) {
-                addressBuilder.append(shippingAddress.get("fullName"));
+            addressBuilder.append(fullName.trim());
+            if (address != null && !address.trim().isEmpty()) {
+                addressBuilder.append(", ").append(address.trim());
             }
-            if (shippingAddress.get("address") != null) {
-                if (addressBuilder.length() > 0) addressBuilder.append(", ");
-                addressBuilder.append(shippingAddress.get("address"));
+            if (shippingAddress.get("ward") != null && !shippingAddress.get("ward").trim().isEmpty()) {
+                addressBuilder.append(", Phường/Xã: ").append(shippingAddress.get("ward").trim());
             }
-            if (shippingAddress.get("ward") != null) {
-                if (addressBuilder.length() > 0) addressBuilder.append(", ");
-                addressBuilder.append("Phường/Xã: ").append(shippingAddress.get("ward"));
+            if (shippingAddress.get("district") != null && !shippingAddress.get("district").trim().isEmpty()) {
+                addressBuilder.append(", Quận/Huyện: ").append(shippingAddress.get("district").trim());
             }
-            if (shippingAddress.get("district") != null) {
-                if (addressBuilder.length() > 0) addressBuilder.append(", ");
-                addressBuilder.append("Quận/Huyện: ").append(shippingAddress.get("district"));
+            if (city != null && !city.trim().isEmpty()) {
+                addressBuilder.append(", ").append(city.trim());
             }
-            if (shippingAddress.get("city") != null) {
-                if (addressBuilder.length() > 0) addressBuilder.append(", ");
-                addressBuilder.append(shippingAddress.get("city"));
-            }
-            if (addressBuilder.length() > 0) {
-                order.setShippingAddress(addressBuilder.toString());
-            }
+            
+            order.setShippingAddress(addressBuilder.toString());
+        } else {
+            // Shipping address is required for checkout
+            throw new ApiException(ErrorCode.VALIDATION_ERROR, "Địa chỉ giao hàng là bắt buộc");
         }
 
         // Calculate total price
@@ -407,6 +531,33 @@ public class OrderService {
         order.setUpdatedAt(System.currentTimeMillis());
 
         Order saved = orderRepository.save(order);
+        
+        // Update inventory stock after order is created successfully
+        for (Order.OrderItem item : saved.getItems()) {
+            try {
+                // Try to update inventory first (if inventory system is set up)
+                inventoryService.stockOut(item.getProductId(), item.getQuantity(), 
+                    saved.getId(), "Order created", userId);
+            } catch (Exception e) {
+                // If inventory doesn't exist, update Product stock directly
+                try {
+                    Product product = productService.getById(item.getProductId());
+                    if (product != null) {
+                        Integer currentStock = product.getStock() != null ? product.getStock() : 0;
+                        int newStock = Math.max(0, currentStock - item.getQuantity());
+                        product.setStock(newStock);
+                        product.setInStock(newStock > 0);
+                        if (newStock == 0) {
+                            product.setStatus("out_of_stock");
+                        }
+                        productService.update(item.getProductId(), product);
+                    }
+                } catch (Exception ex) {
+                    // Log error but don't fail order creation
+                    System.err.println("Failed to update stock for product " + item.getProductId() + ": " + ex.getMessage());
+                }
+            }
+        }
         
         // Apply voucher to order (create usage record)
         if (voucherToUse != null && !voucherToUse.isEmpty() && discountAmount > 0) {
@@ -421,12 +572,10 @@ public class OrderService {
         
         // Update flash sale sold count for products in this order
         try {
-            System.out.println("Attempting to update flash sale sold count for order: " + saved.getId());
             updateFlashSaleSoldCount(saved);
         } catch (Exception e) {
             // Log error but don't fail order creation
             System.err.println("Failed to update flash sale sold count: " + e.getMessage());
-            e.printStackTrace();
         }
         
         cartService.clearCart(userId);
@@ -500,17 +649,13 @@ public class OrderService {
                                     productId, 
                                     newSoldCount
                                 );
-                                System.out.println("Updated flash sale sold count for product " + productId + 
-                                                 " in flash sale " + flashSale.getId() + 
-                                                 ": " + currentSoldCount + " -> " + newSoldCount);
+                                // Flash sale sold count updated successfully
                             } catch (Exception e) {
+                                // Log error but don't fail order creation
                                 System.err.println("Failed to update flash sale sold count: " + e.getMessage());
                             }
-                        } else {
-                            System.out.println("Price mismatch for product " + productId + 
-                                             ": order price=" + unitPrice + 
-                                             ", flash sale price=" + flashSalePrice);
                         }
+                        // Price matches flash sale price, count updated
                         break; // Found the product, no need to check other flash sales
                     }
                 }
