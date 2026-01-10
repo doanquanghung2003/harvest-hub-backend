@@ -261,15 +261,23 @@ public class AuthController {
     @GetMapping("/me")
     public ResponseEntity<?> getCurrentUser(@RequestHeader("Authorization") String authHeader) {
         try {
+            System.out.println("=== /api/auth/me called ===");
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                System.out.println("No valid auth header");
                 return ResponseEntity.badRequest().body(Map.of("error", "Không có token được cung cấp"));
             }
             
             String token = authHeader.substring(7);
+            System.out.println("Token received: " + token.substring(0, Math.min(20, token.length())) + "...");
+            
             String username = jwtService.extractUsername(token);
+            System.out.println("Extracted username: " + username);
+            
             User user = userService.getByUsername(username);
+            System.out.println("User found: " + (user != null ? user.getUsername() : "null"));
             
             if (user == null) {
+                System.out.println("User not found for username: " + username);
                 return ResponseEntity.badRequest().body(Map.of("error", "Không tìm thấy người dùng"));
             }
             
@@ -281,10 +289,16 @@ public class AuthController {
             userInfo.put("username", user.getUsername());
             userInfo.put("email", user.getEmail());
             userInfo.put("role", user.getRole());
+            if (user.getAvatar() != null) {
+                userInfo.put("avatar", user.getAvatar());
+            }
             
+            System.out.println("Returning user info for: " + user.getUsername());
             return ResponseEntity.ok(userInfo);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of("error", "Token không hợp lệ"));
+            System.err.println("Error in /api/auth/me: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(Map.of("error", "Token không hợp lệ: " + e.getMessage()));
         }
     }
 
@@ -465,6 +479,23 @@ public class AuthController {
             }
         } catch (Exception e) {
             System.err.println("Verify code error: " + e.getMessage());
+            e.printStackTrace();
+            Map<String, String> error = new HashMap<>();
+            error.put("error", "Lỗi máy chủ nội bộ");
+            return ResponseEntity.internalServerError().body(error);
+        }
+    }
+    
+    @Operation(summary = "Get OAuth2 login URLs", description = "Get the OAuth2 login URLs for Google and Facebook")
+    @GetMapping("/oauth2/urls")
+    public ResponseEntity<?> getOAuth2Urls() {
+        try {
+            Map<String, Object> urls = new HashMap<>();
+            urls.put("google", "/oauth2/authorization/google");
+            urls.put("facebook", "/oauth2/authorization/facebook");
+            return ResponseEntity.ok(urls);
+        } catch (Exception e) {
+            System.err.println("Get OAuth2 URLs error: " + e.getMessage());
             e.printStackTrace();
             Map<String, String> error = new HashMap<>();
             error.put("error", "Lỗi máy chủ nội bộ");

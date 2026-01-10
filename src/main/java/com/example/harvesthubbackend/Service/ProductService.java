@@ -22,7 +22,18 @@ public class ProductService {
     private ProductRepository productRepository;
 
     public List<Product> getAll() {
-        return productRepository.findAll();
+        // Trả về tất cả sản phẩm trong database
+        List<Product> allProducts = productRepository.findAll();
+        System.out.println("=== ProductService.getAll() ===");
+        System.out.println("Total products in database: " + (allProducts != null ? allProducts.size() : 0));
+        if (allProducts != null && !allProducts.isEmpty()) {
+            System.out.println("Sample products:");
+            for (int i = 0; i < Math.min(3, allProducts.size()); i++) {
+                Product p = allProducts.get(i);
+                System.out.println("  - " + p.getName() + " (ID: " + p.getId() + ", Status: " + p.getStatus() + ", SellerId: " + p.getSellerId() + ")");
+            }
+        }
+        return allProducts;
     }
 
     public Product getById(String id) {
@@ -33,6 +44,41 @@ public class ProductService {
         System.out.println("ProductService.getBySellerId() - sellerId = " + sellerId);
         List<Product> products = productRepository.findBySellerId(sellerId);
         System.out.println("ProductService.getBySellerId() - found " + (products != null ? products.size() : 0) + " products");
+        return products;
+    }
+
+    public List<Product> getByCategory(String category) {
+        System.out.println("ProductService.getByCategory() - category = " + category);
+        if (category == null || category.trim().isEmpty()) {
+            return productRepository.findAll();
+        }
+        
+        String normalizedCategory = category.trim();
+        
+        // Try exact match first
+        List<Product> products = productRepository.findByCategory(normalizedCategory);
+        
+        // If no exact match, try case-insensitive search
+        if (products == null || products.isEmpty()) {
+            List<Product> allProducts = productRepository.findAll();
+            products = allProducts.stream()
+                .filter(p -> {
+                    if (p.getCategory() == null) return false;
+                    // Normalize both for comparison (trim and case-insensitive)
+                    String dbCategory = p.getCategory().trim();
+                    String searchCategory = normalizedCategory;
+                    return dbCategory.equalsIgnoreCase(searchCategory);
+                })
+                .collect(java.util.stream.Collectors.toList());
+        }
+        
+        System.out.println("ProductService.getByCategory() - found " + (products != null ? products.size() : 0) + " products");
+        if (products != null && !products.isEmpty()) {
+            System.out.println("Sample categories found: " + products.stream()
+                .limit(3)
+                .map(p -> p.getCategory())
+                .collect(java.util.stream.Collectors.joining(", ")));
+        }
         return products;
     }
 

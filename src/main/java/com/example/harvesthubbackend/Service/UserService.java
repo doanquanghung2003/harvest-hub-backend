@@ -27,6 +27,8 @@ interface UserRepository extends MongoRepository<User, String> {
     List<User> findAllByEmail(String email);
     boolean existsByUsername(String username);
     boolean existsByEmail(String email);
+    Optional<User> findByProviderAndProviderId(String provider, String providerId);
+    Optional<User> findByEmailAndProvider(String email, String provider);
 }
 
 // Service
@@ -324,6 +326,118 @@ public class UserService implements UserDetailsService {
             return false;
         }
         return userRepository.existsByEmail(email);
+    }
+    
+    public User getByProviderAndProviderId(String provider, String providerId) {
+        if (provider == null || providerId == null) {
+            return null;
+        }
+        return userRepository.findByProviderAndProviderId(provider, providerId).orElse(null);
+    }
+    
+    public User getByEmailAndProvider(String email, String provider) {
+        if (email == null || provider == null) {
+            return null;
+        }
+        return userRepository.findByEmailAndProvider(email, provider).orElse(null);
+    }
+    
+    public User createOrUpdateOAuthUser(String provider, String providerId, String email, String name, String avatar) {
+        System.out.println("createOrUpdateOAuthUser - Provider: " + provider + ", ProviderId: " + providerId + ", Email: " + email);
+        
+        // Validate required fields
+        if (provider == null || providerId == null) {
+            throw new RuntimeException("Provider và ProviderId là bắt buộc");
+        }
+        
+        // Tìm user theo provider và providerId
+        User user = getByProviderAndProviderId(provider, providerId);
+        
+        if (user == null) {
+            // Nếu có email, tìm user theo email và provider (trường hợp user đã đăng ký với email này)
+            if (email != null && !email.trim().isEmpty()) {
+                user = getByEmailAndProvider(email, provider);
+            }
+            
+            if (user == null) {
+                // Tạo user mới
+                user = new User();
+                user.setProvider(provider);
+                user.setProviderId(providerId);
+                
+                // Email có thể null với một số provider, tạo email tạm nếu cần
+                if (email == null || email.trim().isEmpty()) {
+                    email = providerId + "@" + provider + ".oauth";
+                }
+                user.setEmail(email);
+                
+                // Tạo username từ email hoặc name hoặc providerId
+                String username;
+                if (email != null && !email.trim().isEmpty()) {
+                    username = generateUsernameFromEmail(email);
+                } else if (name != null && !name.trim().isEmpty()) {
+                    username = name.trim().toLowerCase().replaceAll("[^a-zA-Z0-9]", "");
+                    if (username.isEmpty()) {
+                        username = provider + "_" + providerId;
+                    }
+                } else {
+                    username = provider + "_" + providerId;
+                }
+                
+                int counter = 1;
+                String originalUsername = username;
+                while (userRepository.existsByUsername(username)) {
+                    username = originalUsername + counter;
+                    counter++;
+                }
+                user.setUsername(username);
+                
+                // Set password random (OAuth users không cần password)
+                user.setPassword(passwordEncoder.encode(java.util.UUID.randomUUID().toString()));
+                user.setRole("USER");
+                user.setAccountStatus("ACTIVE");
+                user.setPasswordChangedAt(LocalDateTime.now());
+            } else {
+                // Cập nhật providerId nếu chưa có
+                user.setProvider(provider);
+                user.setProviderId(providerId);
+            }
+        }
+        
+        // Cập nhật thông tin từ OAuth
+        if (name != null && !name.trim().isEmpty()) {
+            String[] nameParts = name.trim().split("\\s+", 2);
+            if (nameParts.length > 0) {
+                user.setFirstName(nameParts[0]);
+            }
+            if (nameParts.length > 1) {
+                user.setLastName(nameParts[1]);
+            }
+        }
+        
+        if (avatar != null && !avatar.trim().isEmpty()) {
+            user.setAvatar(avatar);
+        }
+        
+        if (email != null && !email.trim().isEmpty()) {
+            user.setEmail(email);
+        }
+        
+        System.out.println("Saving user: " + user.getUsername() + ", Email: " + user.getEmail());
+        return userRepository.save(user);
+    }
+    
+    private String generateUsernameFromEmail(String email) {
+        if (email == null || email.trim().isEmpty()) {
+            return "user_" + System.currentTimeMillis();
+        }
+        String username = email.split("@")[0];
+        // Loại bỏ các ký tự đặc biệt
+        username = username.replaceAll("[^a-zA-Z0-9]", "");
+        if (username.isEmpty()) {
+            username = "user_" + System.currentTimeMillis();
+        }
+        return username;
     }
 
     public void updateMembershipType(String userId, String membershipType) {

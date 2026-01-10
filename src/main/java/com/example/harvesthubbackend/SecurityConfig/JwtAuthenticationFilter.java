@@ -32,11 +32,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
+        // Skip JWT filter for OAuth2 endpoints
+        String requestURI = request.getRequestURI();
+        if (requestURI.startsWith("/oauth2/") || requestURI.startsWith("/login/oauth2/")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+        
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
         final String username;
         
-        System.out.println("JWT Filter - Request URI: " + request.getRequestURI());
+        System.out.println("JWT Filter - Request URI: " + requestURI);
         System.out.println("JWT Filter - Auth Header: " + (authHeader != null ? authHeader.substring(0, Math.min(20, authHeader.length())) + "..." : "null"));
         
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {

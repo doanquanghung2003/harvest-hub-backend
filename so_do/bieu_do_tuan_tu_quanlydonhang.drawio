@@ -5,43 +5,43 @@
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
                 <mxCell id="canvas" value="Biểu đồ tuần tự quản lý đơn hàng" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fontSize=16;strokeColor=#6c8ebf;fillColor=#ffffff;rounded=1;" parent="1" vertex="1">
-                    <mxGeometry x="60" y="40" width="1260" height="460" as="geometry"/>
+                    <mxGeometry x="60" y="40" width="1500" height="750" as="geometry"/>
                 </mxCell>
                 <mxCell id="actor_customer" value="Khách hàng" style="shape=rect;rounded=1;whiteSpace=wrap;html=1;strokeColor=#000;fillColor=#dae8fc;fontSize=14;" parent="canvas" vertex="1">
-                    <mxGeometry x="100" y="160" width="150" height="50" as="geometry"/>
+                    <mxGeometry x="50" y="60" width="150" height="50" as="geometry"/>
                 </mxCell>
                 <mxCell id="actor_app" value="Ứng dụng Harvest Hub" style="shape=rect;rounded=1;whiteSpace=wrap;html=1;strokeColor=#000;fillColor=#e1d5e7;fontSize=14;" parent="canvas" vertex="1">
-                    <mxGeometry x="400" y="160" width="190" height="50" as="geometry"/>
+                    <mxGeometry x="250" y="60" width="190" height="50" as="geometry"/>
                 </mxCell>
                 <mxCell id="actor_order" value="Dịch vụ Đơn hàng" style="shape=rect;rounded=1;whiteSpace=wrap;html=1;strokeColor=#000;fillColor=#d5e8d4;fontSize=14;" parent="canvas" vertex="1">
-                    <mxGeometry x="700" y="160" width="190" height="50" as="geometry"/>
+                    <mxGeometry x="490" y="60" width="190" height="50" as="geometry"/>
                 </mxCell>
                 <mxCell id="actor_inventory" value="Kho/Inventory" style="shape=rect;rounded=1;whiteSpace=wrap;html=1;strokeColor=#000;fillColor=#fff2cc;fontSize=14;" parent="canvas" vertex="1">
-                    <mxGeometry x="1020" y="160" width="180" height="50" as="geometry"/>
+                    <mxGeometry x="730" y="60" width="180" height="50" as="geometry"/>
                 </mxCell>
                 <mxCell id="actor_seller" value="Nhà bán hàng/CSKH" style="shape=rect;rounded=1;whiteSpace=wrap;html=1;strokeColor=#000;fillColor=#f8cecc;fontSize=14;" parent="canvas" vertex="1">
-                    <mxGeometry x="380" y="360" width="200" height="50" as="geometry"/>
+                    <mxGeometry x="960" y="60" width="200" height="50" as="geometry"/>
                 </mxCell>
                 <mxCell id="actor_ship" value="Đối tác giao hàng" style="shape=rect;rounded=1;whiteSpace=wrap;html=1;strokeColor=#000;fillColor=#fffbe6;fontSize=14;" parent="canvas" vertex="1">
-                    <mxGeometry x="780" y="360" width="200" height="50" as="geometry"/>
+                    <mxGeometry x="1210" y="60" width="200" height="50" as="geometry"/>
                 </mxCell>
                 <mxCell id="life_customer" style="shape=line;strokeColor=#666;dashed=1;" parent="canvas" vertex="1">
-                    <mxGeometry x="85" y="80" height="660" as="geometry"/>
+                    <mxGeometry x="125" y="130" height="600" as="geometry"/>
                 </mxCell>
                 <mxCell id="life_app" style="shape=line;strokeColor=#666;dashed=1;" parent="canvas" vertex="1">
-                    <mxGeometry x="295" y="80" height="660" as="geometry"/>
+                    <mxGeometry x="345" y="130" height="600" as="geometry"/>
                 </mxCell>
                 <mxCell id="life_order" style="shape=line;strokeColor=#666;dashed=1;" parent="canvas" vertex="1">
-                    <mxGeometry x="515" y="80" height="660" as="geometry"/>
+                    <mxGeometry x="585" y="130" height="600" as="geometry"/>
                 </mxCell>
                 <mxCell id="life_inventory" style="shape=line;strokeColor=#666;dashed=1;" parent="canvas" vertex="1">
-                    <mxGeometry x="730" y="80" height="660" as="geometry"/>
+                    <mxGeometry x="820" y="130" height="600" as="geometry"/>
                 </mxCell>
                 <mxCell id="life_seller" style="shape=line;strokeColor=#666;dashed=1;" parent="canvas" vertex="1">
-                    <mxGeometry x="960" y="80" height="660" as="geometry"/>
+                    <mxGeometry x="1060" y="130" height="600" as="geometry"/>
                 </mxCell>
                 <mxCell id="life_ship" style="shape=line;strokeColor=#666;dashed=1;" parent="canvas" vertex="1">
-                    <mxGeometry x="1200" y="80" height="660" as="geometry"/>
+                    <mxGeometry x="1310" y="130" height="600" as="geometry"/>
                 </mxCell>
                 <mxCell id="msg_view_orders" value="Xem danh sách đơn" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="canvas" source="actor_customer" target="actor_app" edge="1">
                     <mxGeometry relative="1" as="geometry">

@@ -2,7 +2,6 @@ package com.example.harvesthubbackend.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -53,8 +52,23 @@ public class ProductController {
     public Object getAll(
         @Parameter(description = "Page number (0-based)", example = "0") @RequestParam(defaultValue = "0") String page,
         @Parameter(description = "Page size", example = "20") @RequestParam(defaultValue = "20") String size,
-        @Parameter(description = "Return as array (no pagination)", example = "false") @RequestParam(defaultValue = "false") boolean asArray) {
-        List<Product> allProducts = productService.getAll();
+        @Parameter(description = "Return as array (no pagination)", example = "false") @RequestParam(defaultValue = "false") boolean asArray,
+        @Parameter(description = "Filter by category", example = "Trái cây") @RequestParam(required = false) String category) {
+        List<Product> allProducts;
+        if (category != null && !category.trim().isEmpty()) {
+            allProducts = productService.getByCategory(category.trim());
+            System.out.println("=== ProductController.getAll() with category filter ===");
+            System.out.println("Category filter: " + category);
+            System.out.println("Filtered products found: " + (allProducts != null ? allProducts.size() : 0));
+        } else {
+            allProducts = productService.getAll();
+        }
+        
+        System.out.println("=== ProductController.getAll() ===");
+        System.out.println("Total products found: " + (allProducts != null ? allProducts.size() : 0));
+        if (allProducts != null && !allProducts.isEmpty()) {
+            System.out.println("First product: " + allProducts.get(0).getName() + " (ID: " + allProducts.get(0).getId() + ", Status: " + allProducts.get(0).getStatus() + ")");
+        }
         
         // Normalize URL ảnh để hoạt động với mọi IP/hostname
         ImageUrlUtils.normalizeProducts(allProducts);
@@ -67,7 +81,9 @@ public class ProductController {
         // Mặc định trả về PageResponse (có pagination)
         int pageNum = PaginationUtils.parsePage(page);
         int pageSize = PaginationUtils.parseSize(size);
-        return PaginationUtils.paginate(allProducts, pageNum, pageSize);
+        Object result = PaginationUtils.paginate(allProducts, pageNum, pageSize);
+        System.out.println("Returning paginated result with " + (allProducts != null ? allProducts.size() : 0) + " total products");
+        return result;
     }
 
     // Endpoint trả về array trực tiếp (không pagination) cho admin dashboard
@@ -88,7 +104,19 @@ public class ProductController {
         @Parameter(description = "Seller ID") @PathVariable String sellerId,
         @Parameter(description = "Page number (0-based)", example = "0") @RequestParam(defaultValue = "0") String page,
         @Parameter(description = "Page size", example = "10") @RequestParam(defaultValue = "10") String size) {
+        System.out.println("=== ProductController.getProductsBySeller() ===");
+        System.out.println("Request sellerId: " + sellerId);
+        
         List<Product> sellerProducts = productService.getBySellerId(sellerId);
+        
+        System.out.println("Found " + (sellerProducts != null ? sellerProducts.size() : 0) + " products for sellerId: " + sellerId);
+        if (sellerProducts != null && !sellerProducts.isEmpty()) {
+            System.out.println("Sample product sellerIds:");
+            sellerProducts.stream().limit(3).forEach(p -> {
+                System.out.println("  - Product: " + p.getName() + " (sellerId: " + p.getSellerId() + ")");
+            });
+        }
+        
         // Normalize URL ảnh để hoạt động với mọi IP/hostname
         ImageUrlUtils.normalizeProducts(sellerProducts);
         int pageNum = PaginationUtils.parsePage(page);
@@ -457,7 +485,6 @@ public class ProductController {
         org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE,
         org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED_VALUE
     })
-    @PreAuthorize("hasRole('ADMIN')") // Bật lại authentication
     public ResponseEntity<?> updateProductImages(
             @PathVariable String id,
             @RequestParam(value = "images", required = false) MultipartFile[] images,
@@ -479,10 +506,50 @@ public class ProductController {
         }
         
         try {
+            // Kiểm tra authentication
+            org.springframework.security.core.Authentication authentication = 
+                org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+            
+            if (authentication == null || authentication.getName() == null || "anonymousUser".equals(authentication.getName())) {
+                return ResponseEntity.status(401).body(Map.of(
+                    "success", false,
+                    "message", "Bạn cần đăng nhập để thực hiện thao tác này",
+                    "error", Map.of("code", 1001, "message", "Unauthorized")
+                ));
+            }
+            
             // Kiểm tra sản phẩm có tồn tại không
             Product existingProduct = productService.getById(id);
             if (existingProduct == null) {
                 return ResponseEntity.notFound().build();
+            }
+            
+            // Kiểm tra quyền: ADMIN hoặc seller sở hữu sản phẩm
+            String username = authentication.getName();
+            User currentUser = userService.getByUsername(username);
+            
+            if (currentUser == null) {
+                return ResponseEntity.status(401).body(Map.of(
+                    "success", false,
+                    "message", "Không tìm thấy thông tin người dùng",
+                    "error", Map.of("code", 1001, "message", "User not found")
+                ));
+            }
+            
+            // Kiểm tra nếu là ADMIN thì cho phép
+            boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+            
+            if (!isAdmin) {
+                // Kiểm tra nếu user là seller của sản phẩm này
+                Seller seller = sellerService.getSellerByUserId(currentUser.getId());
+                if (seller == null || !seller.getId().equals(existingProduct.getSellerId())) {
+                    return ResponseEntity.status(403).body(Map.of(
+                        "success", false,
+                        "message", "Bạn không có quyền truy cập tài nguyên này",
+                        "error", Map.of("code", 1004, "message", "Bạn không có quyền truy cập tài nguyên này")
+                    ));
+                }
             }
             
                 List<String> newImageUrls = new ArrayList<>();
@@ -550,9 +617,49 @@ public class ProductController {
     @PutMapping(value = "/{id}/json", consumes = org.springframework.http.MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateProductJsonEndpoint(@PathVariable String id, @RequestBody Product patch) {
         try {
+            // Kiểm tra authentication
+            org.springframework.security.core.Authentication authentication = 
+                org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+            
+            if (authentication == null || authentication.getName() == null || "anonymousUser".equals(authentication.getName())) {
+                return ResponseEntity.status(401).body(Map.of(
+                    "success", false,
+                    "message", "Bạn cần đăng nhập để thực hiện thao tác này",
+                    "error", Map.of("code", 1001, "message", "Unauthorized")
+                ));
+            }
+            
             Product existing = productService.getById(id);
             if (existing == null) {
                 return ResponseEntity.notFound().build();
+            }
+            
+            // Kiểm tra quyền: ADMIN hoặc seller sở hữu sản phẩm
+            String username = authentication.getName();
+            User currentUser = userService.getByUsername(username);
+            
+            if (currentUser == null) {
+                return ResponseEntity.status(401).body(Map.of(
+                    "success", false,
+                    "message", "Không tìm thấy thông tin người dùng",
+                    "error", Map.of("code", 1001, "message", "User not found")
+                ));
+            }
+            
+            // Kiểm tra nếu là ADMIN thì cho phép
+            boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+            
+            if (!isAdmin) {
+                // Kiểm tra nếu user là seller của sản phẩm này
+                Seller seller = sellerService.getSellerByUserId(currentUser.getId());
+                if (seller == null || !seller.getId().equals(existing.getSellerId())) {
+                    return ResponseEntity.status(403).body(Map.of(
+                        "success", false,
+                        "message", "Bạn không có quyền truy cập tài nguyên này",
+                        "error", Map.of("code", 1004, "message", "Bạn không có quyền truy cập tài nguyên này")
+                    ));
+                }
             }
 
             // Merge các trường có giá trị

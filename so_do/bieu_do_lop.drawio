@@ -1,0 +1,283 @@
+<mxfile host="65bd71144e">
+    <diagram id="classDiagram" name="Biểu đồ lớp Harvest Hub">
+        <mxGraphModel dx="4571" dy="1709" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2000" pageHeight="1800" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="canvas" value="Biểu đồ lớp - Harvest Hub" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fontSize=16;strokeColor=#000000;fillColor=#ffffff;rounded=1;" parent="1" vertex="1">
+                    <mxGeometry x="-80" y="40" width="1720" height="1200" as="geometry"/>
+                </mxCell>
+                <mxCell id="class_user" value="&lt;&lt;Document&gt;&gt;&#xa;&lt;b&gt;User&lt;/b&gt;&#xa;────────────────&#xa;- id: String&#xa;- username: String&#xa;- password: String&#xa;- email: String&#xa;- role: String&#xa;- firstName: String&#xa;- lastName: String&#xa;- phoneNumber: String&#xa;- addressStreet: String&#xa;- addressCity: String&#xa;- accountStatus: String&#xa;- enabled: boolean&#xa;- provider: String&#xa;────────────────&#xa;+ getAuthorities(): Collection&#xa;+ isAccountNonExpired(): boolean&#xa;+ isEnabled(): boolean" style="shape=umlClass;verticalAlign=top;html=1;pointerEvents=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" parent="canvas" vertex="1">
+                    <mxGeometry x="80" y="80" width="240" height="280" as="geometry"/>
+                </mxCell>
+                <mxCell id="class_seller" value="&lt;&lt;Document&gt;&gt;&#xa;&lt;b&gt;Seller&lt;/b&gt;&#xa;────────────────&#xa;- id: String&#xa;- userId: String&#xa;- businessName: String&#xa;- status: String&#xa;- contactPerson: String&#xa;- certifications: List&#xa;- stats: Map&#xa;────────────────&#xa;+ dangKySeller(): void&#xa;+ capNhatTrangThai(): void" style="shape=umlClass;verticalAlign=top;html=1;pointerEvents=0;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" parent="canvas" vertex="1">
+                    <mxGeometry x="400" y="80" width="240" height="240" as="geometry"/>
+                </mxCell>
+                <mxCell id="class_shop" value="&lt;&lt;Document&gt;&gt;&#xa;&lt;b&gt;Shop&lt;/b&gt;&#xa;────────────────&#xa;- id: String&#xa;- ownerId: String&#xa;- name: String&#xa;- contactInfo: Map&#xa;- address: Map&#xa;- status: String&#xa;────────────────&#xa;+ taoShop(): void&#xa;+ capNhatShop(): void" style="shape=umlClass;verticalAlign=top;html=1;pointerEvents=0;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" parent="canvas" vertex="1">
+                    <mxGeometry x="720" y="80" width="240" height="220" as="geometry"/>
+                </mxCell>
+                <mxCell id="class_product" value="&lt;&lt;Document&gt;&gt;&#xa;&lt;b&gt;Product&lt;/b&gt;&#xa;────────────────&#xa;- id: String&#xa;- sellerId: String&#xa;- category: String&#xa;- name: String&#xa;- description: String&#xa;- price: Double&#xa;- originalPrice: Double&#xa;- images: List&lt;String&gt;&#xa;- stock: Integer&#xa;- status: String&#xa;────────────────&#xa;+ taoSP(): void&#xa;+ duyetSP(): void&#xa;+ capNhatTon(): void" style="shape=umlClass;verticalAlign=top;html=1;pointerEvents=0;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" parent="canvas" vertex="1">
+                    <mxGeometry x="1040" y="80" width="240" height="260" as="geometry"/>
+                </mxCell>
+                <mxCell id="class_category" value="&lt;&lt;Document&gt;&gt;&#xa;&lt;b&gt;Category&lt;/b&gt;&#xa;────────────────&#xa;- id: String&#xa;- name: String&#xa;- parentId: String&#xa;- level: Integer&#xa;- slug: String&#xa;- isActive: boolean&#xa;────────────────&#xa;+ themDanhMuc(): void&#xa;+ sapXep(): void" style="shape=umlClass;verticalAlign=top;html=1;pointerEvents=0;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;" parent="canvas" vertex="1">
+                    <mxGeometry x="1360" y="80" width="240" height="220" as="geometry"/>
+                </mxCell>
+                <mxCell id="class_cart" value="&lt;&lt;Document&gt;&gt;&#xa;&lt;b&gt;Cart&lt;/b&gt;&#xa;────────────────&#xa;- id: String&#xa;- userId: String&#xa;- items: List&lt;CartItem&gt;&#xa;- totalPrice: Double&#xa;- createdAt: Long&#xa;────────────────&#xa;+ themItem(): void&#xa;+ capNhatSL(): void&#xa;+ xoaItem(): void" style="shape=umlClass;verticalAlign=top;html=1;pointerEvents=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" parent="canvas" vertex="1">
+                    <mxGeometry x="80" y="440" width="220" height="220" as="geometry"/>
+                </mxCell>
+                <mxCell id="class_order" value="&lt;&lt;Document&gt;&gt;&#xa;&lt;b&gt;Order&lt;/b&gt;&#xa;────────────────&#xa;- id: String&#xa;- userId: String&#xa;- status: String&#xa;- totalPrice: Double&#xa;- paymentStatus: String&#xa;- shippingFee: Double&#xa;- items: List&lt;OrderItem&gt;&#xa;- voucherCode: String&#xa;────────────────&#xa;+ taoDon(): void&#xa;+ capNhatTrangThai(): void&#xa;+ huyDon(): void" style="shape=umlClass;verticalAlign=top;html=1;pointerEvents=0;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;" parent="canvas" vertex="1">
+                    <mxGeometry x="400" y="440" width="240" height="260" as="geometry"/>
+                </mxCell>
+                <mxCell id="class_payment" value="&lt;&lt;Document&gt;&gt;&#xa;&lt;b&gt;Payment&lt;/b&gt;&#xa;────────────────&#xa;- id: String&#xa;- orderId: String&#xa;- userId: String&#xa;- amount: Double&#xa;- method: String&#xa;- status: String&#xa;- transactionId: String&#xa;────────────────&#xa;+ xuLyThanhToan(): void&#xa;+ hoanTien(): void" style="shape=umlClass;verticalAlign=top;html=1;pointerEvents=0;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" parent="canvas" vertex="1">
+                    <mxGeometry x="720" y="440" width="240" height="240" as="geometry"/>
+                </mxCell>
+                <mxCell id="class_shipping" value="&lt;&lt;Document&gt;&gt;&#xa;&lt;b&gt;Shipping&lt;/b&gt;&#xa;────────────────&#xa;- id: String&#xa;- orderId: String&#xa;- userId: String&#xa;- sellerId: String&#xa;- provider: String&#xa;- trackingNumber: String&#xa;- status: String&#xa;────────────────&#xa;+ capNhatTrangThai(): void" style="shape=umlClass;verticalAlign=top;html=1;pointerEvents=0;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;" parent="canvas" vertex="1">
+                    <mxGeometry x="1040" y="440" width="220" height="240" as="geometry"/>
+                </mxCell>
+                <mxCell id="class_review" value="&lt;&lt;Document&gt;&gt;&#xa;&lt;b&gt;Review&lt;/b&gt;&#xa;────────────────&#xa;- id: String&#xa;- productId: String&#xa;- orderId: String&#xa;- userId: String&#xa;- rating: Integer&#xa;- comment: String&#xa;- status: String&#xa;────────────────&#xa;+ themReview(): void&#xa;+ duyetReview(): void" style="shape=umlClass;verticalAlign=top;html=1;pointerEvents=0;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" parent="canvas" vertex="1">
+                    <mxGeometry x="1360" y="440" width="220" height="240" as="geometry"/>
+                </mxCell>
+                <mxCell id="class_inventory" value="&lt;&lt;Document&gt;&gt;&#xa;&lt;b&gt;Inventory&lt;/b&gt;&#xa;────────────────&#xa;- id: String&#xa;- productId: String&#xa;- sellerId: String&#xa;- currentStock: Integer&#xa;- reservedStock: Integer&#xa;- status: String&#xa;────────────────&#xa;+ nhapKho(): void&#xa;+ capNhatTon(): void" style="shape=umlClass;verticalAlign=top;html=1;pointerEvents=0;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" parent="canvas" vertex="1">
+                    <mxGeometry x="1360" y="760" width="220" height="220" as="geometry"/>
+                </mxCell>
+                <mxCell id="class_voucher" value="&lt;&lt;Document&gt;&gt;&#xa;&lt;b&gt;Voucher&lt;/b&gt;&#xa;────────────────&#xa;- id: String&#xa;- code: String&#xa;- type: String&#xa;- value: Double&#xa;- shopId: String&#xa;- usageLimit: Integer&#xa;- status: String&#xa;────────────────&#xa;+ apDungVoucher(): void" style="shape=umlClass;verticalAlign=top;html=1;pointerEvents=0;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" parent="canvas" vertex="1">
+                    <mxGeometry x="80" y="760" width="220" height="220" as="geometry"/>
+                </mxCell>
+                <mxCell id="class_wallet" value="&lt;&lt;Document&gt;&gt;&#xa;&lt;b&gt;Wallet&lt;/b&gt;&#xa;────────────────&#xa;- id: String&#xa;- userId: String&#xa;- balance: Double&#xa;- currency: String&#xa;- status: String&#xa;────────────────&#xa;+ napTien(): void&#xa;+ rutTien(): void" style="shape=umlClass;verticalAlign=top;html=1;pointerEvents=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" parent="canvas" vertex="1">
+                    <mxGeometry x="400" y="760" width="220" height="200" as="geometry"/>
+                </mxCell>
+                <mxCell id="class_seller_financial" value="&lt;&lt;Document&gt;&gt;&#xa;&lt;b&gt;SellerFinancial&lt;/b&gt;&#xa;────────────────&#xa;- id: String&#xa;- sellerId: String&#xa;- bankName: String&#xa;- availableBalance: Double&#xa;- pendingBalance: Double&#xa;- commissionRate: Double&#xa;────────────────&#xa;+ capNhatSoDu(): void&#xa;+ rutTien(): void" style="shape=umlClass;verticalAlign=top;html=1;pointerEvents=0;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;" parent="canvas" vertex="1">
+                    <mxGeometry x="720" y="760" width="220" height="240" as="geometry"/>
+                </mxCell>
+                <mxCell id="class_notification" value="&lt;&lt;Document&gt;&gt;&#xa;&lt;b&gt;Notification&lt;/b&gt;&#xa;────────────────&#xa;- id: String&#xa;- userId: String&#xa;- title: String&#xa;- message: String&#xa;- type: String&#xa;- read: boolean&#xa;────────────────&#xa;+ guiThongBao(): void" style="shape=umlClass;verticalAlign=top;html=1;pointerEvents=0;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;" parent="canvas" vertex="1">
+                    <mxGeometry x="1040" y="760" width="220" height="200" as="geometry"/>
+                </mxCell>
+                <mxCell id="rel_user_seller" value="1" style="endArrow=block;endFill=0;startArrow=diamond;startFill=0;html=1;strokeColor=#000000;fontSize=10;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="canvas" source="class_user" target="class_seller" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="350" y="250" as="sourcePoint"/>
+                        <mxPoint x="400" y="200" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="label_user_seller" value="userId" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" parent="rel_user_seller" vertex="1" connectable="0">
+                    <mxGeometry x="-0.1" y="2" relative="1" as="geometry">
+                        <mxPoint y="-9" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel_seller_shop" value="1" style="endArrow=block;endFill=0;startArrow=diamond;startFill=0;html=1;strokeColor=#000000;fontSize=10;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="canvas" source="class_seller" target="class_shop" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="350" y="250" as="sourcePoint"/>
+                        <mxPoint x="400" y="200" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="label_seller_shop" value="ownerId" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" parent="rel_seller_shop" vertex="1" connectable="0">
+                    <mxGeometry x="-0.1" y="2" relative="1" as="geometry">
+                        <mxPoint y="-9" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel_category_product" value="*" style="endArrow=block;endFill=0;startArrow=diamond;startFill=0;html=1;strokeColor=#000000;fontSize=10;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="canvas" source="class_category" target="class_product" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="350" y="250" as="sourcePoint"/>
+                        <mxPoint x="400" y="200" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="1480" y="40"/>
+                            <mxPoint x="1160" y="40"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="label_category_product" value="categoryId" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" parent="rel_category_product" vertex="1" connectable="0">
+                    <mxGeometry x="-0.1" y="2" relative="1" as="geometry">
+                        <mxPoint y="-9" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel_seller_product" value="*" style="endArrow=block;endFill=0;startArrow=diamond;startFill=0;html=1;strokeColor=#000000;fontSize=10;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" parent="canvas" source="class_seller" target="class_product" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="350" y="450" as="sourcePoint"/>
+                        <mxPoint x="400" y="400" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="520" y="40"/>
+                            <mxPoint x="915" y="40"/>
+                            <mxPoint x="1100" y="40"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="label_seller_product" value="sellerId" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" parent="rel_seller_product" vertex="1" connectable="0">
+                    <mxGeometry x="-0.1" y="2" relative="1" as="geometry">
+                        <mxPoint x="207" y="-8" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel_user_cart" value="1" style="endArrow=block;endFill=0;startArrow=diamond;startFill=0;html=1;strokeColor=#000000;fontSize=10;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;entryPerimeter=0;" parent="canvas" edge="1">
+                    <mxGeometry x="-0.0943" width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="80" y="280" as="sourcePoint"/>
+                        <mxPoint x="80" y="485" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="50" y="280"/>
+                            <mxPoint x="50" y="485"/>
+                        </Array>
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="label_user_cart" value="userId" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" parent="rel_user_cart" vertex="1" connectable="0">
+                    <mxGeometry x="-0.1" y="2" relative="1" as="geometry">
+                        <mxPoint x="-2" y="91" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel_user_order" value="*" style="endArrow=block;endFill=0;startArrow=diamond;startFill=0;html=1;strokeColor=#000000;fontSize=10;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="canvas" source="class_user" target="class_order" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="350" y="450" as="sourcePoint"/>
+                        <mxPoint x="400" y="400" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="200" y="400"/>
+                            <mxPoint x="330" y="400"/>
+                            <mxPoint x="330" y="570"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="label_user_order" value="userId" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" parent="rel_user_order" vertex="1" connectable="0">
+                    <mxGeometry x="-0.1" y="2" relative="1" as="geometry">
+                        <mxPoint x="-2" y="101" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel_order_payment" value="1" style="endArrow=block;endFill=0;startArrow=diamond;startFill=0;html=1;strokeColor=#000000;fontSize=10;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="canvas" source="class_order" target="class_payment" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="350" y="250" as="sourcePoint"/>
+                        <mxPoint x="400" y="200" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="label_order_payment" value="orderId" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" parent="rel_order_payment" vertex="1" connectable="0">
+                    <mxGeometry x="-0.1" y="2" relative="1" as="geometry">
+                        <mxPoint y="-9" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel_order_shipping" value="1" style="endArrow=block;endFill=0;startArrow=diamond;startFill=0;html=1;strokeColor=#000000;fontSize=10;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.179;entryY=0.008;entryDx=0;entryDy=0;entryPerimeter=0;" parent="canvas" source="class_order" target="class_shipping" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="350" y="450" as="sourcePoint"/>
+                        <mxPoint x="1082" y="440" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="520" y="360"/>
+                            <mxPoint x="1080" y="360"/>
+                            <mxPoint x="1080" y="430"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="label_order_shipping" value="orderId" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" parent="rel_order_shipping" vertex="1" connectable="0">
+                    <mxGeometry x="-0.1" y="2" relative="1" as="geometry">
+                        <mxPoint x="183" y="-8" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel_product_inventory" value="1" style="endArrow=block;endFill=0;startArrow=diamond;startFill=0;html=1;strokeColor=#000000;fontSize=10;entryX=1.007;entryY=0.558;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="canvas" source="class_product" target="class_inventory" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="1160" y="360" as="sourcePoint"/>
+                        <mxPoint x="400" y="400" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="1160" y="360"/>
+                            <mxPoint x="1640" y="360"/>
+                            <mxPoint x="1640" y="883"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="label_product_inventory" value="productId" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" parent="rel_product_inventory" vertex="1" connectable="0">
+                    <mxGeometry x="-0.1" y="2" relative="1" as="geometry">
+                        <mxPoint x="14" y="382" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel_seller_financial" value="1" style="endArrow=block;endFill=0;startArrow=diamond;startFill=0;html=1;strokeColor=#000000;fontSize=10;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="canvas" source="class_seller" target="class_seller_financial" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="350" y="450" as="sourcePoint"/>
+                        <mxPoint x="400" y="400" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="520" y="340"/>
+                            <mxPoint x="380" y="340"/>
+                            <mxPoint x="380" y="720"/>
+                            <mxPoint x="830" y="720"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="label_seller_financial" value="sellerId" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" parent="rel_seller_financial" vertex="1" connectable="0">
+                    <mxGeometry x="-0.1" y="2" relative="1" as="geometry">
+                        <mxPoint x="215" y="101" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel_user_review" value="*" style="endArrow=block;endFill=0;startArrow=diamond;startFill=0;html=1;strokeColor=#000000;fontSize=10;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="canvas" source="class_user" target="class_review" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="350" y="450" as="sourcePoint"/>
+                        <mxPoint x="400" y="400" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="400" y="400"/>
+                            <mxPoint x="1310" y="400"/>
+                            <mxPoint x="1310" y="560"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="label_user_review" value="userId" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" parent="rel_user_review" vertex="1" connectable="0">
+                    <mxGeometry x="-0.1" y="2" relative="1" as="geometry">
+                        <mxPoint x="413" y="-9" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel_product_review" value="*" style="endArrow=block;endFill=0;startArrow=diamond;startFill=0;html=1;strokeColor=#000000;fontSize=10;exitX=1;exitY=1;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" parent="canvas" source="class_product" target="class_review" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="350" y="450" as="sourcePoint"/>
+                        <mxPoint x="400" y="400" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="1415" y="340"/>
+                            <mxPoint x="1415" y="400"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="label_product_review" value="productId" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" parent="rel_product_review" vertex="1" connectable="0">
+                    <mxGeometry x="-0.1" y="2" relative="1" as="geometry">
+                        <mxPoint x="34" y="52" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel_user_wallet" value="1" style="endArrow=block;endFill=0;startArrow=diamond;startFill=0;html=1;strokeColor=#000000;fontSize=10;entryX=0.545;entryY=1;entryDx=0;entryDy=0;entryPerimeter=0;" parent="canvas" target="class_wallet" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="80" y="197" as="sourcePoint"/>
+                        <mxPoint x="400" y="400" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="40" y="197"/>
+                            <mxPoint x="40" y="720"/>
+                            <mxPoint x="40" y="1090"/>
+                            <mxPoint x="520" y="1090"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="label_user_wallet" value="userId" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" parent="rel_user_wallet" vertex="1" connectable="0">
+                    <mxGeometry x="-0.1" y="2" relative="1" as="geometry">
+                        <mxPoint x="228" y="242" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel_user_notification" value="*" style="endArrow=block;endFill=0;startArrow=diamond;startFill=0;html=1;strokeColor=#000000;fontSize=10;exitX=1;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" parent="canvas" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="330" y="350" as="sourcePoint"/>
+                        <mxPoint x="1160" y="950" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="370" y="350"/>
+                            <mxPoint x="370" y="1030"/>
+                            <mxPoint x="1160" y="1030"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="label_user_notification" value="userId" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" parent="rel_user_notification" vertex="1" connectable="0">
+                    <mxGeometry x="-0.1" y="2" relative="1" as="geometry">
+                        <mxPoint x="458" y="5" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel_shop_voucher" value="*" style="endArrow=block;endFill=0;startArrow=diamond;startFill=0;html=1;strokeColor=#000000;fontSize=10;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="canvas" source="class_shop" target="class_voucher" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="350" y="450" as="sourcePoint"/>
+                        <mxPoint x="400" y="400" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="700" y="300"/>
+                            <mxPoint x="700" y="740"/>
+                            <mxPoint x="190" y="740"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="label_shop_voucher" value="shopId" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" parent="rel_shop_voucher" vertex="1" connectable="0">
+                    <mxGeometry x="-0.1" y="2" relative="1" as="geometry">
+                        <mxPoint x="-402" y="81" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

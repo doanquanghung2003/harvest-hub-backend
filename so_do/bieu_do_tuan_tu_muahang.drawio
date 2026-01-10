@@ -1,47 +1,47 @@
 <mxfile host="65bd71144e">
     <diagram id="seqPurchase" name="Tuần tự - Mua hàng">
-        <mxGraphModel dx="1903" dy="1113" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+        <mxGraphModel dx="1615" dy="1183" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
                 <mxCell id="canvas" value="Biểu đồ tuần tự mua hàng" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fontSize=16;strokeColor=#9673a6;fillColor=#ffffff;rounded=1;movable=1;resizable=1;rotatable=1;deletable=1;editable=1;locked=0;connectable=1;arcSize=50;" parent="1" vertex="1">
-                    <mxGeometry x="60" y="70" width="1020" height="610" as="geometry"/>
+                    <mxGeometry x="60" y="70" width="1650" height="750" as="geometry"/>
                 </mxCell>
                 <mxCell id="actor_customer" value="Khách hàng" style="shape=rect;rounded=1;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#dae8fc;fontSize=14;" parent="canvas" vertex="1">
-                    <mxGeometry x="100" y="240" width="150" height="50" as="geometry"/>
+                    <mxGeometry x="50" y="60" width="150" height="50" as="geometry"/>
                 </mxCell>
                 <mxCell id="actor_app" value="Ứng dụng Harvest Hub" style="shape=rect;rounded=1;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#e1d5e7;fontSize=14;" parent="canvas" vertex="1">
-                    <mxGeometry x="460" y="240" width="190" height="50" as="geometry"/>
+                    <mxGeometry x="260" y="60" width="190" height="50" as="geometry"/>
                 </mxCell>
                 <mxCell id="actor_cart" value="Dịch vụ Giỏ hàng" style="shape=rect;rounded=1;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#d5e8d4;fontSize=14;" parent="canvas" vertex="1">
-                    <mxGeometry x="740" y="240" width="190" height="50" as="geometry"/>
+                    <mxGeometry x="500" y="60" width="190" height="50" as="geometry"/>
                 </mxCell>
                 <mxCell id="actor_order" value="Dịch vụ Đơn hàng" style="shape=rect;rounded=1;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#fff2cc;fontSize=14;" parent="canvas" vertex="1">
-                    <mxGeometry x="100" y="400" width="190" height="50" as="geometry"/>
+                    <mxGeometry x="730" y="60" width="190" height="50" as="geometry"/>
                 </mxCell>
                 <mxCell id="actor_payment" value="Cổng thanh toán" style="shape=rect;rounded=1;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#f8cecc;fontSize=14;" parent="canvas" vertex="1">
-                    <mxGeometry x="460" y="400" width="190" height="50" as="geometry"/>
+                    <mxGeometry x="970" y="60" width="190" height="50" as="geometry"/>
                 </mxCell>
                 <mxCell id="actor_partner" value="Đối tác giao hàng" style="shape=rect;rounded=1;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#fffbe6;fontSize=14;" parent="canvas" vertex="1">
-                    <mxGeometry x="740" y="400" width="190" height="50" as="geometry"/>
+                    <mxGeometry x="1210" y="60" width="190" height="50" as="geometry"/>
                 </mxCell>
                 <mxCell id="life_customer" style="shape=line;strokeColor=#666666;dashed=1;" parent="canvas" vertex="1">
-                    <mxGeometry x="85" y="90" height="720" as="geometry"/>
+                    <mxGeometry x="125" y="130" height="600" as="geometry"/>
                 </mxCell>
                 <mxCell id="life_app" style="shape=line;strokeColor=#666666;dashed=1;" parent="canvas" vertex="1">
-                    <mxGeometry x="300" y="90" height="720" as="geometry"/>
+                    <mxGeometry x="345" y="130" height="600" as="geometry"/>
                 </mxCell>
                 <mxCell id="life_cart" style="shape=line;strokeColor=#666666;dashed=1;" parent="canvas" vertex="1">
-                    <mxGeometry x="560" y="80" height="640" as="geometry"/>
+                    <mxGeometry x="585" y="130" height="600" as="geometry"/>
                 </mxCell>
                 <mxCell id="life_order" style="shape=line;strokeColor=#666666;dashed=1;" parent="canvas" vertex="1">
-                    <mxGeometry x="800" y="80" height="640" as="geometry"/>
+                    <mxGeometry x="825" y="130" height="600" as="geometry"/>
                 </mxCell>
                 <mxCell id="life_payment" style="shape=line;strokeColor=#666666;dashed=1;" parent="canvas" vertex="1">
-                    <mxGeometry x="1040" y="80" height="640" as="geometry"/>
+                    <mxGeometry x="1065" y="130" height="600" as="geometry"/>
                 </mxCell>
                 <mxCell id="life_partner" style="shape=line;strokeColor=#666666;dashed=1;" parent="canvas" vertex="1">
-                    <mxGeometry x="1280" y="80" height="640" as="geometry"/>
+                    <mxGeometry x="1305" y="130" height="600" as="geometry"/>
                 </mxCell>
                 <mxCell id="msg_browse" value="Duyệt &amp; chọn sản phẩm" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="canvas" source="actor_customer" target="actor_app" edge="1">
                     <mxGeometry relative="1" as="geometry">
@@ -87,7 +87,7 @@
                         </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="2" value="Thông báo hoàn tất" style="endArrow=classic;html=1;strokeColor=#82b366;entryX=0.794;entryY=0.003;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.197;exitY=-0.03;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="canvas" source="actor_app" target="actor_customer">
+                <mxCell id="2" value="Thông báo hoàn tất" style="endArrow=classic;html=1;strokeColor=#82b366;entryX=0.794;entryY=0.003;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.197;exitY=-0.03;exitDx=0;exitDy=0;exitPerimeter=0;" parent="canvas" source="actor_app" target="actor_customer" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="240" y="190" as="targetPoint"/>
                         <mxPoint x="450" y="190" as="sourcePoint"/>
@@ -97,7 +97,7 @@
                         </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="3" value="Hiển thị kết quả &amp; tracking" style="endArrow=classic;html=1;strokeColor=#9673a6;exitX=0.421;exitY=0;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="canvas" source="actor_app">
+                <mxCell id="3" value="Hiển thị kết quả &amp; tracking" style="endArrow=classic;html=1;strokeColor=#9673a6;exitX=0.421;exitY=0;exitDx=0;exitDy=0;exitPerimeter=0;" parent="canvas" source="actor_app" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="180" y="240" as="targetPoint"/>
                         <mxPoint x="390" y="160" as="sourcePoint"/>
@@ -107,7 +107,7 @@
                         </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="4" value="Chọn phương thức &amp; xác nhận" style="endArrow=classic;html=1;strokeColor=#b85450;exitX=0.8;exitY=1.037;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="canvas" source="actor_customer">
+                <mxCell id="4" value="Chọn phương thức &amp; xác nhận" style="endArrow=classic;html=1;strokeColor=#b85450;exitX=0.8;exitY=1.037;exitDx=0;exitDy=0;exitPerimeter=0;" parent="canvas" source="actor_customer" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="480" y="291" as="targetPoint"/>
                         <mxPoint x="220" y="300" as="sourcePoint"/>
@@ -117,7 +117,7 @@
                         </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="5" value="Cập nhật tiến độ giao" style="endArrow=classic;html=1;strokeColor=#d6b656;dashed=1;exitX=0.209;exitY=1.067;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.84;entryY=1.026;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="canvas" source="actor_partner" target="actor_order">
+                <mxCell id="5" value="Cập nhật tiến độ giao" style="endArrow=classic;html=1;strokeColor=#d6b656;dashed=1;exitX=0.209;exitY=1.067;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.84;entryY=1.026;entryDx=0;entryDy=0;entryPerimeter=0;" parent="canvas" source="actor_partner" target="actor_order" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="330" y="480" as="targetPoint"/>
                         <mxPoint x="780" y="480" as="sourcePoint"/>
@@ -127,7 +127,7 @@
                         </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="6" value="Xác nhận tiếp nhận" style="endArrow=classic;html=1;strokeColor=#6c8ebf;exitX=0.415;exitY=1.067;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.637;entryY=1.039;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="canvas" source="actor_partner" target="actor_order">
+                <mxCell id="6" value="Xác nhận tiếp nhận" style="endArrow=classic;html=1;strokeColor=#6c8ebf;exitX=0.415;exitY=1.067;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.637;entryY=1.039;entryDx=0;entryDy=0;entryPerimeter=0;" parent="canvas" source="actor_partner" target="actor_order" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="370" y="500" as="targetPoint"/>
                         <mxPoint x="820" y="500" as="sourcePoint"/>
@@ -137,7 +137,7 @@
                         </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="7" value="Gửi yêu cầu giao" style="endArrow=classic;html=1;strokeColor=#6c8ebf;exitX=0.412;exitY=1.067;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.626;entryY=1.012;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="canvas" source="actor_order" target="actor_partner">
+                <mxCell id="7" value="Gửi yêu cầu giao" style="endArrow=classic;html=1;strokeColor=#6c8ebf;exitX=0.412;exitY=1.067;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.626;entryY=1.012;entryDx=0;entryDy=0;entryPerimeter=0;" parent="canvas" source="actor_order" target="actor_partner" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="800" y="550" as="targetPoint"/>
                         <mxPoint x="350" y="550" as="sourcePoint"/>
@@ -147,7 +147,7 @@
                         </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="10" value="Hoàn tất đơn" style="endArrow=classic;html=1;strokeColor=#82b366;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=0.633;entryY=0.005;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="canvas" source="actor_order" target="actor_app">
+                <mxCell id="10" value="Hoàn tất đơn" style="endArrow=classic;html=1;strokeColor=#82b366;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=0.633;entryY=0.005;entryDx=0;entryDy=0;entryPerimeter=0;" parent="canvas" source="actor_order" target="actor_app" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="878" y="-20" as="targetPoint"/>
                         <mxPoint x="630" y="90" as="sourcePoint"/>
@@ -158,7 +158,7 @@
                         </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="11" value="Thông báo trạng thái cho ứng dụng" style="endArrow=classic;html=1;strokeColor=#9673a6;entryX=0.521;entryY=-0.009;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="canvas" target="actor_app">
+                <mxCell id="11" value="Thông báo trạng thái cho ứng dụng" style="endArrow=classic;html=1;strokeColor=#9673a6;entryX=0.521;entryY=-0.009;entryDx=0;entryDy=0;entryPerimeter=0;" parent="canvas" target="actor_app" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="610" y="140" as="targetPoint"/>
                         <mxPoint x="100" y="420" as="sourcePoint"/>
@@ -169,7 +169,7 @@
                         </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="12" value="Cập nhật trạng thái đơn" style="endArrow=classic;html=1;strokeColor=#82b366;entryX=0;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="canvas" target="actor_order">
+                <mxCell id="12" value="Cập nhật trạng thái đơn" style="endArrow=classic;html=1;strokeColor=#82b366;entryX=0;entryY=0;entryDx=0;entryDy=0;" parent="canvas" target="actor_order" edge="1">
                     <mxGeometry x="-0.1653" relative="1" as="geometry">
                         <mxPoint x="80" y="400" as="targetPoint"/>
                         <mxPoint x="518" y="240" as="sourcePoint"/>
@@ -181,7 +181,7 @@
                         <mxPoint as="offset"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="13" value="Trả tổng tiền/chi tiết" style="endArrow=classic;html=1;strokeColor=#9673a6;entryX=0.32;entryY=1.077;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="canvas" target="actor_app">
+                <mxCell id="13" value="Trả tổng tiền/chi tiết" style="endArrow=classic;html=1;strokeColor=#9673a6;entryX=0.32;entryY=1.077;entryDx=0;entryDy=0;entryPerimeter=0;" parent="canvas" target="actor_app" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="440" y="280" as="targetPoint"/>
                         <mxPoint x="220" y="400" as="sourcePoint"/>
@@ -191,7 +191,7 @@
                         </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="14" value="Tạo đơn nháp" style="endArrow=classic;html=1;strokeColor=#d79b00;" edge="1" parent="canvas">
+                <mxCell id="14" value="Tạo đơn nháp" style="endArrow=classic;html=1;strokeColor=#d79b00;" parent="canvas" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="180" y="400" as="targetPoint"/>
                         <mxPoint x="500" y="292" as="sourcePoint"/>
@@ -201,7 +201,7 @@
                         </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="15" value="Lock tồn kho" style="endArrow=classic;html=1;strokeColor=#d79b00;entryX=0.842;entryY=1;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="canvas" target="actor_cart">
+                <mxCell id="15" value="Lock tồn kho" style="endArrow=classic;html=1;strokeColor=#d79b00;entryX=0.842;entryY=1;entryDx=0;entryDy=0;entryPerimeter=0;" parent="canvas" target="actor_cart" edge="1">
                     <mxGeometry x="0.4815" relative="1" as="geometry">
                         <mxPoint x="920" y="340" as="targetPoint"/>
                         <mxPoint x="200" y="400" as="sourcePoint"/>
@@ -212,7 +212,7 @@
                         <mxPoint as="offset"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="16" value="Kết quả thanh toán" style="endArrow=classic;html=1;strokeColor=#82b366;" edge="1" parent="canvas">
+                <mxCell id="16" value="Kết quả thanh toán" style="endArrow=classic;html=1;strokeColor=#82b366;" parent="canvas" edge="1">
                     <mxGeometry x="-0.4545" relative="1" as="geometry">
                         <mxPoint x="620" y="290" as="targetPoint"/>
                         <mxPoint x="620" y="400" as="sourcePoint"/>

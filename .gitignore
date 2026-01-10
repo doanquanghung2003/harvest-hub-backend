@@ -31,3 +31,9 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Local configuration files with secrets ###
+application-local.properties
+application-local.yml
+*.local.properties
+*.local.yml

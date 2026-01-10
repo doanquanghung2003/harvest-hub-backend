@@ -21,6 +21,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import java.io.IOException;
 
 
 @Configuration
@@ -42,6 +43,8 @@ public class SecurityConfig {
     public JwtAuthenticationFilter jwtAuthenticationFilter(JwtService jwtService, org.springframework.security.core.userdetails.UserDetailsService userDetailsService) {
         return new JwtAuthenticationFilter(jwtService, userDetailsService);
     }
+    
+    // CustomOAuth2UserService đã được đánh dấu @Service, Spring sẽ tự động inject vào SecurityFilterChain
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -114,14 +117,40 @@ public class SecurityConfig {
 
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthFilter) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthFilter, 
+            OAuth2SuccessHandler oauth2SuccessHandler, CustomOAuth2UserService customOAuth2UserService) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
             .cors(Customizer.withDefaults())
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            // OAuth2 cần session, nhưng các endpoint khác dùng STATELESS
+            .sessionManagement(session -> session
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                .sessionFixation().migrateSession()
+            )
+            .oauth2Login(oauth2 -> oauth2
+                .userInfoEndpoint(userInfo -> userInfo
+                    .userService(customOAuth2UserService)
+                )
+                .successHandler(oauth2SuccessHandler)
+                .failureHandler((request, response, exception) -> {
+                    System.err.println("OAuth2 Login Failed: " + exception.getMessage());
+                    exception.printStackTrace();
+                    // Redirect về frontend với error
+                    String frontendUrl = "https://f64055e91085.ngrok-free.app/auth?error=oauth2_failed&message=" + exception.getMessage();
+                    try {
+                        response.sendRedirect(frontendUrl);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                })
+            )
             .authorizeHttpRequests(auth -> auth
                 // Public endpoints - Authentication & Registration
                 .requestMatchers("/api/auth/**").permitAll()
+                // Public endpoints - OAuth2 (phải permitAll trước khi authenticated)
+                .requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll()
+                // Public endpoint - OAuth2 callback handler
+                .requestMatchers("/oauth2/callback").permitAll()
                 
                 // Public endpoints - AI Chat
                 .requestMatchers("/api/chat/**").permitAll()
@@ -152,7 +181,7 @@ public class SecurityConfig {
                 .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/api-docs/**", "/v3/api-docs/**").permitAll()
                 
                 // Public endpoints - Seller registration (initial registration should be public)
-                .requestMatchers(HttpMethod.POST, "/api/sellers/register", "/api/sellers/register/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/sellers", "/api/sellers/register", "/api/sellers/register/**").permitAll()
                 
                 // Public endpoints - Seller info (read-only for product display)
                 .requestMatchers(HttpMethod.GET, "/api/sellers/{id}").permitAll()

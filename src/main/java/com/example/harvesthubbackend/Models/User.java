@@ -51,6 +51,10 @@ public class User implements UserDetails {
     
     // Payment security
     private String paymentPin; // Mã khóa xác thực 6 số cho thanh toán
+    
+    // OAuth2 fields
+    private String provider; // OAuth provider: "google", "facebook", or null for local
+    private String providerId; // Provider's unique user ID
 
     public User() {}
 
@@ -185,5 +189,22 @@ public class User implements UserDetails {
     
     public void setPaymentPin(String paymentPin) {
         this.paymentPin = paymentPin;
+    }
+    
+    // Getters/Setters cho OAuth2
+    public String getProvider() {
+        return provider;
+    }
+    
+    public void setProvider(String provider) {
+        this.provider = provider;
+    }
+    
+    public String getProviderId() {
+        return providerId;
+    }
+    
+    public void setProviderId(String providerId) {
+        this.providerId = providerId;
     }
 }

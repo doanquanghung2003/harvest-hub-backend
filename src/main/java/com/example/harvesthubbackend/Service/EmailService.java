@@ -30,6 +30,24 @@ public class EmailService {
                 return;
             }
             
+            // Kiểm tra xem mailSender có cấu hình username/password không
+            if (mailSender instanceof org.springframework.mail.javamail.JavaMailSenderImpl) {
+                org.springframework.mail.javamail.JavaMailSenderImpl impl = 
+                    (org.springframework.mail.javamail.JavaMailSenderImpl) mailSender;
+                String username = impl.getUsername();
+                String password = impl.getPassword();
+                
+                if (username == null || username.trim().isEmpty() || 
+                    password == null || password.trim().isEmpty()) {
+                    System.err.println("========================================");
+                    System.err.println("WARNING: Email credentials not configured!");
+                    System.err.println("MAIL_USERNAME or MAIL_PASSWORD is missing or empty.");
+                    System.err.println("Reset link for " + toEmail + ": " + resetLink);
+                    System.err.println("========================================");
+                    return;
+                }
+            }
+            
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(fromEmail);
             message.setTo(toEmail);
@@ -38,11 +56,46 @@ public class EmailService {
                     + resetLink +
                     "\n\nLiên kết này sẽ hết hạn sau 1 giờ. Nếu bạn không yêu cầu đặt lại mật khẩu, vui lòng bỏ qua email này.");
             mailSender.send(message);
-            System.out.println("Password reset email sent successfully to: " + toEmail);
+            System.out.println("✓ Password reset email sent successfully to: " + toEmail);
+        } catch (org.springframework.mail.MailAuthenticationException e) {
+            System.err.println("========================================");
+            System.err.println("ERROR: Email authentication failed!");
+            System.err.println("Email: " + toEmail);
+            System.err.println("Error: " + e.getMessage());
+            Throwable cause = e.getCause();
+            if (cause != null) {
+                System.err.println("Root cause: " + cause.getClass().getName() + " - " + cause.getMessage());
+            }
+            System.err.println("Nguyên nhân: Username hoặc password không đúng, hoặc App Password đã hết hạn");
+            System.err.println("Giải pháp:");
+            System.err.println("  1. Kiểm tra lại MAIL_USERNAME và MAIL_PASSWORD");
+            System.err.println("  2. App Password phải là 16 ký tự LIỀN NHAU (không có khoảng trắng)");
+            System.err.println("  3. Ví dụ: 'rihw qljw whki ygjo' → 'rihwqljwwhkiygjo'");
+            System.err.println("  4. Tạo App Password mới tại: https://myaccount.google.com/apppasswords");
+            System.err.println("Reset link for " + toEmail + ": " + resetLink);
+            System.err.println("========================================");
+            e.printStackTrace();
+        } catch (org.springframework.mail.MailSendException e) {
+            System.err.println("========================================");
+            System.err.println("ERROR: Failed to send password reset email!");
+            System.err.println("Email: " + toEmail);
+            System.err.println("Error: " + e.getMessage());
+            Throwable cause = e.getCause();
+            if (cause != null) {
+                System.err.println("Root cause: " + cause.getClass().getName() + " - " + cause.getMessage());
+                if (cause instanceof jakarta.mail.AuthenticationFailedException) {
+                    System.err.println("→ Authentication failed - check username/password");
+                }
+            }
+            System.err.println("Reset link for " + toEmail + ": " + resetLink);
+            System.err.println("========================================");
+            e.printStackTrace();
         } catch (Exception e) {
+            System.err.println("========================================");
             System.err.println("ERROR: Failed to send password reset email to " + toEmail);
             System.err.println("Error: " + e.getMessage());
             System.err.println("Reset link for " + toEmail + ": " + resetLink);
+            System.err.println("========================================");
             e.printStackTrace();
         }
     }
@@ -58,6 +111,35 @@ public class EmailService {
                 return;
             }
             
+            // Kiểm tra xem mailSender có cấu hình username/password không
+            if (mailSender instanceof org.springframework.mail.javamail.JavaMailSenderImpl) {
+                org.springframework.mail.javamail.JavaMailSenderImpl impl = 
+                    (org.springframework.mail.javamail.JavaMailSenderImpl) mailSender;
+                String username = impl.getUsername();
+                String password = impl.getPassword();
+                
+                // Debug logging
+                System.out.println("DEBUG: Attempting to send email to: " + toEmail);
+                System.out.println("DEBUG: Username from config: " + (username != null ? username : "NULL"));
+                System.out.println("DEBUG: Password length: " + (password != null ? password.length() : "NULL"));
+                System.out.println("DEBUG: Password contains spaces: " + (password != null ? password.contains(" ") : "N/A"));
+                
+                if (username == null || username.trim().isEmpty() || 
+                    password == null || password.trim().isEmpty()) {
+                    System.err.println("========================================");
+                    System.err.println("WARNING: Email credentials not configured!");
+                    System.err.println("MAIL_USERNAME or MAIL_PASSWORD is missing or empty.");
+                    System.err.println("Please set environment variables:");
+                    System.err.println("  - MAIL_USERNAME=your-email@gmail.com");
+                    System.err.println("  - MAIL_PASSWORD=your-app-password");
+                    System.err.println("For Gmail, you need to use an App Password (not regular password).");
+                    System.err.println("Mã xác minh cho " + toEmail + " là: " + code);
+                    System.err.println("(Mã đã được lưu vào DB nhưng không thể gửi email)");
+                    System.err.println("========================================");
+                    return;
+                }
+            }
+            
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(fromEmail);
             message.setTo(toEmail);
@@ -68,16 +150,74 @@ public class EmailService {
                     "Nếu bạn không yêu cầu mã xác minh này, vui lòng bỏ qua email này.\n\n" +
                     "Trân trọng,\nĐội ngũ Harvest Hub");
             mailSender.send(message);
-            System.out.println("Verification code email sent successfully to: " + toEmail);
+            System.out.println("✓ Verification code email sent successfully to: " + toEmail);
+        } catch (org.springframework.mail.MailAuthenticationException e) {
+            System.err.println("========================================");
+            System.err.println("ERROR: Email authentication failed!");
+            System.err.println("Email: " + toEmail);
+            System.err.println("Error: " + e.getMessage());
+            Throwable cause = e.getCause();
+            if (cause != null) {
+                System.err.println("Root cause: " + cause.getClass().getName() + " - " + cause.getMessage());
+            }
+            System.err.println("Nguyên nhân: Username hoặc password không đúng, hoặc App Password đã hết hạn");
+            System.err.println("Giải pháp:");
+            System.err.println("  1. Kiểm tra lại MAIL_USERNAME và MAIL_PASSWORD");
+            System.err.println("  2. Đối với Gmail, cần sử dụng App Password (không phải mật khẩu thường)");
+            System.err.println("  3. Tạo App Password mới tại: https://myaccount.google.com/apppasswords");
+            System.err.println("Mã xác minh cho " + toEmail + " là: " + code);
+            System.err.println("(Mã đã được lưu vào DB nhưng không thể gửi email)");
+            System.err.println("========================================");
+            e.printStackTrace();
+        } catch (org.springframework.mail.MailSendException e) {
+            System.err.println("========================================");
+            System.err.println("ERROR: Failed to send verification code email!");
+            System.err.println("Email: " + toEmail);
+            System.err.println("Error: " + e.getMessage());
+            System.err.println("Error class: " + e.getClass().getName());
+            Throwable cause = e.getCause();
+            if (cause != null) {
+                System.err.println("Root cause: " + cause.getClass().getName() + " - " + cause.getMessage());
+                if (cause instanceof jakarta.mail.AuthenticationFailedException) {
+                    System.err.println("→ Authentication failed - check username/password");
+                } else if (cause instanceof jakarta.mail.MessagingException) {
+                    System.err.println("→ Messaging error - check SMTP configuration");
+                }
+            }
+            System.err.println("Nguyên nhân có thể:");
+            System.err.println("  - Chưa cấu hình MAIL_USERNAME và MAIL_PASSWORD");
+            System.err.println("  - SMTP server không khả dụng");
+            System.err.println("  - Firewall hoặc network issue");
+            System.err.println("  - Gmail App Password đã hết hạn hoặc không đúng");
+            System.err.println("Mã xác minh cho " + toEmail + " là: " + code);
+            System.err.println("(Mã đã được lưu vào DB nhưng không thể gửi email)");
+            System.err.println("========================================");
+            e.printStackTrace();
+        } catch (org.springframework.mail.MailException e) {
+            System.err.println("========================================");
+            System.err.println("ERROR: Mail exception occurred!");
+            System.err.println("Email: " + toEmail);
+            System.err.println("Error: " + e.getMessage());
+            System.err.println("Error class: " + e.getClass().getName());
+            Throwable cause = e.getCause();
+            if (cause != null) {
+                System.err.println("Root cause: " + cause.getClass().getName() + " - " + cause.getMessage());
+            }
+            System.err.println("Mã xác minh cho " + toEmail + " là: " + code);
+            System.err.println("(Mã đã được lưu vào DB nhưng không thể gửi email)");
+            System.err.println("========================================");
+            e.printStackTrace();
         } catch (Exception e) {
             // Log lỗi nhưng không throw exception để tránh 500 error
             // In mã xác minh ra console để có thể test trong môi trường development
             System.err.println("========================================");
-            System.err.println("ERROR: Failed to send verification code email to " + toEmail);
+            System.err.println("ERROR: Unexpected error when sending verification code email!");
+            System.err.println("Email: " + toEmail);
             System.err.println("Error: " + e.getMessage());
+            System.err.println("Error class: " + e.getClass().getName());
             System.err.println("Nguyên nhân có thể: Chưa cấu hình MAIL_USERNAME và MAIL_PASSWORD trong biến môi trường");
             System.err.println("Mã xác minh cho " + toEmail + " là: " + code);
-            System.err.println("(Mã đã được in ra console do không thể gửi email)");
+            System.err.println("(Mã đã được lưu vào DB nhưng không thể gửi email)");
             System.err.println("========================================");
             e.printStackTrace();
             
