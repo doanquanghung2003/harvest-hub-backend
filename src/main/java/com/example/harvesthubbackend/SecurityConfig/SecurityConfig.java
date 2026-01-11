@@ -117,33 +117,32 @@ public class SecurityConfig {
 
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthFilter, 
-            OAuth2SuccessHandler oauth2SuccessHandler, CustomOAuth2UserService customOAuth2UserService) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthFilter) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
             .cors(Customizer.withDefaults())
             // OAuth2 cần session, nhưng các endpoint khác dùng STATELESS
             .sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .sessionFixation().migrateSession()
             )
-            .oauth2Login(oauth2 -> oauth2
-                .userInfoEndpoint(userInfo -> userInfo
-                    .userService(customOAuth2UserService)
-                )
-                .successHandler(oauth2SuccessHandler)
-                .failureHandler((request, response, exception) -> {
-                    System.err.println("OAuth2 Login Failed: " + exception.getMessage());
-                    exception.printStackTrace();
-                    // Redirect về frontend với error
-                    String frontendUrl = "https://f64055e91085.ngrok-free.app/auth?error=oauth2_failed&message=" + exception.getMessage();
-                    try {
-                        response.sendRedirect(frontendUrl);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                })
-            )
+            // OAuth2 is disabled - uncomment below and set GOOGLE_CLIENT_ID to enable
+            // .oauth2Login(oauth2 -> oauth2
+            //     .userInfoEndpoint(userInfo -> userInfo
+            //         .userService(customOAuth2UserService)
+            //     )
+            //     .successHandler(oauth2SuccessHandler)
+            //     .failureHandler((request, response, exception) -> {
+            //         System.err.println("OAuth2 Login Failed: " + exception.getMessage());
+            //         exception.printStackTrace();
+            //         String frontendUrl = "https://f64055e91085.ngrok-free.app/auth?error=oauth2_failed&message=" + exception.getMessage();
+            //         try {
+            //             response.sendRedirect(frontendUrl);
+            //         } catch (IOException e) {
+            //             e.printStackTrace();
+            //         }
+            //     })
+            // )
             .authorizeHttpRequests(auth -> auth
                 // Public endpoints - Authentication & Registration
                 .requestMatchers("/api/auth/**").permitAll()
