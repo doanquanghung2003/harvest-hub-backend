@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: harvest-hub-backend
+    env: java
+    buildCommand: mvn clean package -DskipTests
+    startCommand: java -jar target/harvest-hub-backend-0.0.1-SNAPSHOT.jar
+    plan: free
+    envVars:
+      - key: JAVA_VERSION
+        value: 21
+      - key: SPRING_PROFILES_ACTIVE
+        value: production
+      # Thêm các biến môi trường sau khi tạo MongoDB Atlas
+      - key: SPRING_DATA_MONGODB_URI
+        sync: false  # Set manually in Render dashboard
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: FACEBOOK_CLIENT_ID
+        sync: false
+      - key: FACEBOOK_CLIENT_SECRET
+        sync: false
+      - key: MAIL_USERNAME
+        sync: false
+      - key: MAIL_PASSWORD
+        sync: false
+      - key: FRONTEND_BASE_URL
+        sync: false

@@ -1,0 +1,15 @@
+target/
+.mvn/
+.git/
+.gitignore
+*.md
+so_do/
+uploads/
+*.bat
+*.drawio
+*.png
+*.jpg
+*.webp
+.DS_Store
+.idea/
+.vscode/
