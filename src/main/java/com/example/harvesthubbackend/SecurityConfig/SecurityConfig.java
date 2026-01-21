@@ -21,13 +21,47 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Conditional;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.core.env.Environment;
+import org.springframework.lang.NonNull;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
+import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import java.io.IOException;
+import java.util.ArrayList;
 
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
+
+    @Autowired(required = false)
+    @Lazy
+    private CustomOAuth2UserService customOAuth2UserService;
+    
+    @Autowired(required = false)
+    @Lazy
+    private OAuth2SuccessHandler oauth2SuccessHandler;
+    
+    @Autowired
+    private Environment environment;
+    
+    @Autowired
+    private ApplicationContext applicationContext;
+    
+    @Value("${frontend.base-url:http://localhost:8082}")
+    private String frontendBaseUrl;
+    
+    @Value("${server.port:8081}")
+    private int serverPort;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -45,6 +79,86 @@ public class SecurityConfig {
     }
     
     // CustomOAuth2UserService đã được đánh dấu @Service, Spring sẽ tự động inject vào SecurityFilterChain
+
+    /**
+     * Tạo ClientRegistrationRepository thủ công nếu có GOOGLE_CLIENT_ID
+     * Điều này cần thiết vì chúng ta đã exclude OAuth2ClientAutoConfiguration
+     * Chỉ tạo bean khi có credentials, nếu không sẽ không tạo bean này
+     */
+    @Bean
+    @Conditional(OAuth2CredentialsCondition.class)
+    public ClientRegistrationRepository clientRegistrationRepository() {
+        String googleClientId = environment.getProperty("spring.security.oauth2.client.registration.google.client-id");
+        String googleClientSecret = environment.getProperty("spring.security.oauth2.client.registration.google.client-secret");
+        
+        // Nếu không có GOOGLE_CLIENT_ID, thử lấy từ environment variable
+        if (googleClientId == null || googleClientId.isEmpty()) {
+            googleClientId = System.getenv("GOOGLE_CLIENT_ID");
+        }
+        if (googleClientSecret == null || googleClientSecret.isEmpty()) {
+            googleClientSecret = System.getenv("GOOGLE_CLIENT_SECRET");
+        }
+        
+        // Kiểm tra lại (condition đã check nhưng để chắc chắn)
+        if (googleClientId == null || googleClientId.isEmpty() 
+            || googleClientSecret == null || googleClientSecret.isEmpty()) {
+            throw new IllegalStateException("OAuth2 credentials not found");
+        }
+        
+        ClientRegistration googleRegistration = ClientRegistration
+            .withRegistrationId("google")
+            .clientId(googleClientId)
+            .clientSecret(googleClientSecret)
+            .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+            .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+            .redirectUri("{baseUrl}/login/oauth2/code/{registrationId}")
+            .scope("openid", "profile", "email")
+            .authorizationUri("https://accounts.google.com/o/oauth2/v2/auth")
+            .tokenUri("https://oauth2.googleapis.com/token")
+            .userInfoUri("https://www.googleapis.com/oauth2/v2/userinfo")
+            .userNameAttributeName("sub")
+            .clientName("Google")
+            .build();
+        
+        List<ClientRegistration> registrations = new ArrayList<>();
+        registrations.add(googleRegistration);
+        
+        System.out.println("✓ OAuth2 Google Client Registration created successfully");
+        
+        return new InMemoryClientRegistrationRepository(registrations);
+    }
+    
+    /**
+     * Condition để kiểm tra xem có OAuth2 credentials không
+     */
+    static class OAuth2CredentialsCondition implements org.springframework.context.annotation.Condition {
+        @Override
+        public boolean matches(@NonNull org.springframework.context.annotation.ConditionContext context, 
+                             @NonNull org.springframework.core.type.AnnotatedTypeMetadata metadata) {
+            org.springframework.core.env.Environment env = context.getEnvironment();
+            
+            // Kiểm tra trong properties
+            String clientId = env.getProperty("spring.security.oauth2.client.registration.google.client-id");
+            String clientSecret = env.getProperty("spring.security.oauth2.client.registration.google.client-secret");
+            
+            // Nếu không có trong properties, kiểm tra environment variables
+            if (clientId == null || clientId.isEmpty()) {
+                clientId = System.getenv("GOOGLE_CLIENT_ID");
+            }
+            if (clientSecret == null || clientSecret.isEmpty()) {
+                clientSecret = System.getenv("GOOGLE_CLIENT_SECRET");
+            }
+            
+            boolean hasCredentials = clientId != null && !clientId.isEmpty() 
+                                  && clientSecret != null && !clientSecret.isEmpty();
+            
+            if (!hasCredentials) {
+                System.out.println("⚠ OAuth2 disabled: GOOGLE_CLIENT_ID or GOOGLE_CLIENT_SECRET not set");
+            }
+            
+            return hasCredentials;
+        }
+    }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -125,24 +239,49 @@ public class SecurityConfig {
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .sessionFixation().migrateSession()
-            )
-            // OAuth2 is disabled - uncomment below and set GOOGLE_CLIENT_ID to enable
-            // .oauth2Login(oauth2 -> oauth2
-            //     .userInfoEndpoint(userInfo -> userInfo
-            //         .userService(customOAuth2UserService)
-            //     )
-            //     .successHandler(oauth2SuccessHandler)
-            //     .failureHandler((request, response, exception) -> {
-            //         System.err.println("OAuth2 Login Failed: " + exception.getMessage());
-            //         exception.printStackTrace();
-            //         String frontendUrl = "https://f64055e91085.ngrok-free.app/auth?error=oauth2_failed&message=" + exception.getMessage();
-            //         try {
-            //             response.sendRedirect(frontendUrl);
-            //         } catch (IOException e) {
-            //             e.printStackTrace();
-            //         }
-            //     })
-            // )
+            );
+        
+        // Lấy ClientRegistrationRepository từ ApplicationContext (nếu có)
+        // Tránh circular dependency bằng cách không inject trực tiếp vào field
+        ClientRegistrationRepository clientRegistrationRepository = null;
+        try {
+            clientRegistrationRepository = applicationContext.getBean(ClientRegistrationRepository.class);
+        } catch (NoSuchBeanDefinitionException e) {
+            // Bean không tồn tại, OAuth2 sẽ không được enable
+            System.out.println("⚠ ClientRegistrationRepository bean not found, OAuth2 will be disabled.");
+        }
+        
+        // Chỉ enable OAuth2 login nếu có ClientRegistrationRepository bean (đã được tạo khi có credentials)
+        // và các services đã được inject
+        if (clientRegistrationRepository != null 
+            && customOAuth2UserService != null 
+            && oauth2SuccessHandler != null) {
+            http.oauth2Login(oauth2 -> {
+                oauth2
+                    .userInfoEndpoint(userInfo -> userInfo
+                        .userService(customOAuth2UserService)
+                    )
+                    .successHandler(oauth2SuccessHandler)
+                    .failureHandler((request, response, exception) -> {
+                        System.err.println("OAuth2 Login Failed: " + exception.getMessage());
+                        exception.printStackTrace();
+                        String frontendUrl = frontendBaseUrl + "/auth?error=oauth2_failed&message=" + 
+                            java.net.URLEncoder.encode(exception.getMessage(), java.nio.charset.StandardCharsets.UTF_8);
+                        try {
+                            response.sendRedirect(frontendUrl);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                System.out.println("✓ OAuth2 login enabled successfully");
+            });
+        } else {
+            // Không có ClientRegistrationRepository nghĩa là không có credentials
+            // Không enable OAuth2, không có lỗi
+            System.out.println("⚠ OAuth2 login not enabled: ClientRegistrationRepository or required services not available.");
+        }
+        
+        http
             .authorizeHttpRequests(auth -> auth
                 // Public endpoints - Authentication & Registration
                 .requestMatchers("/api/auth/**").permitAll()

@@ -446,6 +446,62 @@ public class ProductController {
         return ResponseEntity.ok(stats);
     }
     
+    // Endpoint để lấy top sản phẩm bán chạy nhất (public, không cần auth)
+    @Operation(summary = "Get top selling products", description = "Retrieve top selling products sorted by sold count")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Top selling products retrieved successfully")
+    })
+    @GetMapping("/top-selling")
+    public ResponseEntity<List<Product>> getTopSellingProducts(
+        @Parameter(description = "Number of products to return", example = "6") 
+        @RequestParam(defaultValue = "6") int limit) {
+        List<Product> allProducts = productService.getAll();
+        
+        // Lọc chỉ lấy sản phẩm active và có soldCount > 0
+        List<Product> topProducts = allProducts.stream()
+            .filter(p -> {
+                String status = p.getStatus() != null ? p.getStatus().toLowerCase() : "";
+                return (status.equals("active") || status.equals("hoạt động")) 
+                    && p.getSoldCount() > 0;
+            })
+            .sorted((p1, p2) -> Integer.compare(p2.getSoldCount(), p1.getSoldCount()))
+            .limit(limit)
+            .collect(java.util.stream.Collectors.toList());
+        
+        // Normalize URL ảnh để hoạt động với mọi IP/hostname
+        ImageUrlUtils.normalizeProducts(topProducts);
+        
+        return ResponseEntity.ok(topProducts);
+    }
+    
+    // Endpoint để lấy sản phẩm có nhiều đánh giá nhất (public, không cần auth)
+    @Operation(summary = "Get most reviewed products", description = "Retrieve products with most reviews sorted by review count")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Most reviewed products retrieved successfully")
+    })
+    @GetMapping("/most-reviewed")
+    public ResponseEntity<List<Product>> getMostReviewedProducts(
+        @Parameter(description = "Number of products to return", example = "6") 
+        @RequestParam(defaultValue = "6") int limit) {
+        List<Product> allProducts = productService.getAll();
+        
+        // Lọc chỉ lấy sản phẩm active và có reviewCount > 0
+        List<Product> mostReviewedProducts = allProducts.stream()
+            .filter(p -> {
+                String status = p.getStatus() != null ? p.getStatus().toLowerCase() : "";
+                return (status.equals("active") || status.equals("hoạt động")) 
+                    && p.getReviewCount() > 0;
+            })
+            .sorted((p1, p2) -> Integer.compare(p2.getReviewCount(), p1.getReviewCount()))
+            .limit(limit)
+            .collect(java.util.stream.Collectors.toList());
+        
+        // Normalize URL ảnh để hoạt động với mọi IP/hostname
+        ImageUrlUtils.normalizeProducts(mostReviewedProducts);
+        
+        return ResponseEntity.ok(mostReviewedProducts);
+    }
+    
     
     
     @Operation(summary = "Get product by ID", description = "Retrieve a specific product by its ID")
