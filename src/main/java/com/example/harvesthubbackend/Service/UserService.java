@@ -4,6 +4,7 @@ import com.example.harvesthubbackend.Models.User;
 import com.example.harvesthubbackend.Models.Seller;
 import com.example.harvesthubbackend.Repository.SellerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -40,6 +41,7 @@ public class UserService implements UserDetailsService {
     private UserRepository userRepository;
     
     @Autowired
+    @Lazy
     private PasswordEncoder passwordEncoder;
     
     @Autowired

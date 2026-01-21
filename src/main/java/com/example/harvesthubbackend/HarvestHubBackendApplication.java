@@ -3,7 +3,6 @@ package com.example.harvesthubbackend;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -16,11 +15,13 @@ import com.example.harvesthubbackend.Service.UserService;
 
 @SpringBootApplication(
     exclude = {
-        // Conditionally exclude OAuth2 auto-config if GOOGLE_CLIENT_ID is not set
-        // This prevents "Client id must not be empty" error
+        // Exclude OAuth2 auto-config để tránh lỗi "Client id must not be empty" khi không có GOOGLE_CLIENT_ID
+        // OAuth2 sẽ được enable thủ công trong SecurityConfig khi có GOOGLE_CLIENT_ID
         org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientAutoConfiguration.class
     }
 )
+// OAuth2 sẽ được enable trong SecurityConfig khi có GOOGLE_CLIENT_ID và GOOGLE_CLIENT_SECRET
+// Nếu không có, OAuth2 sẽ không được enable và không có lỗi
 @EnableScheduling
 public class HarvestHubBackendApplication {
 
